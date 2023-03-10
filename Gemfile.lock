@@ -152,6 +152,8 @@ GEM
     crass (1.0.6)
     date (3.3.3)
     debug (1.7.1)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     deep_merge (1.2.2)
     deprecation (1.1.0)
       activesupport
@@ -265,6 +267,9 @@ GEM
     importmap-rails (1.1.5)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
+    io-console (0.6.0)
+    irb (1.6.3)
+      reline (>= 0.3.0)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -385,6 +390,8 @@ GEM
     redis-client (0.13.0)
       connection_pool
     regexp_parser (2.7.0)
+    reline (0.3.2)
+      io-console (~> 0.5)
     responders (3.1.0)
       actionpack (>= 5.2)
       railties (>= 5.2)
@@ -478,7 +485,7 @@ GEM
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
-    twitter-typeahead-rails (0.11.1.pre.corejavascript)
+    twitter-typeahead-rails (0.11.1)
       actionpack (>= 3.1)
       jquery-rails
       railties (>= 3.1)
@@ -561,7 +568,7 @@ DEPENDENCIES
   standardrb
   stimulus-rails
   turbo-rails
-  twitter-typeahead-rails (= 0.11.1.pre.corejavascript)
+  twitter-typeahead-rails (= 0.11.1)
   tzinfo-data
   web-console
   webdrivers
