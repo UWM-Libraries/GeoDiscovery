@@ -91,7 +91,7 @@ gem "blacklight_advanced_search", git: "https://github.com/ewlarson/blacklight_a
 gem "geoblacklight", "~> 4.0"
 gem "geoblacklight_sidecar_images", "~> 1.0"
 gem "mini_magick", "~> 4.0"
-gem "sprockets", "< 4.0"
+gem "sprockets", "< 5.0"
 
 group :development, :test do
   gem "solr_wrapper", ">= 0.3"
