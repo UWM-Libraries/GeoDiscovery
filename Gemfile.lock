@@ -113,9 +113,9 @@ GEM
       view_component (~> 2.66)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
-    bootstrap (4.6.2)
+    bootstrap (5.2.3)
       autoprefixer-rails (>= 9.1.0)
-      popper_js (>= 1.16.1, < 2)
+      popper_js (>= 2.11.6, < 3)
       sassc-rails (>= 2.0.0)
     builder (3.2.4)
     capistrano (3.17.2)
@@ -152,6 +152,8 @@ GEM
     crass (1.0.6)
     date (3.3.3)
     debug (1.7.1)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     deep_merge (1.2.2)
     deprecation (1.1.0)
       activesupport
@@ -265,6 +267,9 @@ GEM
     importmap-rails (1.1.5)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
+    io-console (0.6.0)
+    irb (1.6.3)
+      reline (>= 0.3.0)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -344,7 +349,7 @@ GEM
     passenger (6.0.17)
       rack
       rake (>= 0.8.1)
-    popper_js (1.16.1)
+    popper_js (2.11.6)
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
@@ -385,6 +390,8 @@ GEM
     redis-client (0.13.0)
       connection_pool
     regexp_parser (2.7.0)
+    reline (0.3.2)
+      io-console (~> 0.5)
     responders (3.1.0)
       actionpack (>= 5.2)
       railties (>= 5.2)
@@ -523,7 +530,7 @@ DEPENDENCIES
   blacklight (~> 7.0)
   blacklight_advanced_search!
   bootsnap
-  bootstrap (~> 4.0)
+  bootstrap (~> 5.2)
   capistrano (~> 3.17)
   capistrano-bundler (~> 2.0.0)
   capistrano-passenger (~> 0.2)
