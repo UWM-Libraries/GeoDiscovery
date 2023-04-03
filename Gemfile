@@ -51,7 +51,7 @@ gem "bootsnap", require: false
 group :production do
   gem "mysql2"
   gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
-  gem "sidekiq", "~> 7.0", ">= 7.0.6"
+  gem "sidekiq", "~> 7.0"
 end
 
 group :development, :test do
