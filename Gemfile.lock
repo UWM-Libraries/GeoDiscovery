@@ -354,7 +354,7 @@ GEM
       rake (>= 0.8.1)
     popper_js (1.16.1)
     public_suffix (5.0.1)
-    puma (6.2.1)
+    puma (6.3.0)
       nio4r (~> 2.0)
     racc (1.6.2)
     rack (2.2.6.4)
@@ -557,7 +557,7 @@ DEPENDENCIES
   mini_magick (~> 4.0)
   mysql2
   passenger (>= 5.0.25)
-  puma (~> 6.2)
+  puma (~> 6.3)
   rails (~> 7.0.4, >= 7.0.4.2)
   redis (~> 5.0)
   rsolr (>= 1.0, < 3)
