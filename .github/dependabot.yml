@@ -12,3 +12,4 @@ updates:
     ignore:
       - dependency-name: "bootstrap"
       - dependency-name: "sprockets"
+      - dependency-name: "selenium-webdriver"
