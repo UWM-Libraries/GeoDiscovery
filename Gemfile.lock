@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/UWM-Libraries/GeoCombine.git
-  revision: 981b9db1b9510d65aa4ef48c09e05a546d44c658
+  revision: 2013b17df4018a5a3a05ab1335e2e09657eb8d3d
   branch: main
   specs:
     geo_combine (0.8.0)
