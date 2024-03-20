@@ -129,6 +129,8 @@ WEBSERVICES_SHOWN:
   - 'tiled_map_layer'
   - 'dynamic_map_layer'
   - 'image_map_layer'
+  - 'cog'
+  - 'pmtiles'
 
 # Relationships to display
 RELATIONSHIPS_SHOWN:
@@ -245,3 +247,10 @@ HELP_TEXT:
       - 'wms'
       - 'tms'
       - 'oembed'
+      - 'pmtiles'
+      - 'cog'
+
+# Enable catalog#show sidebar static map for items with the following viewer protocols
+SIDEBAR_STATIC_MAP:
+  - 'iiif'
+  - 'iiif_manifest'
