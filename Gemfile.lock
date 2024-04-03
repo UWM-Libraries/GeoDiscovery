@@ -583,6 +583,7 @@ DEPENDENCIES
   turbo-rails
   twitter-typeahead-rails (= 0.11.1)
   tzinfo-data
+  vite_rails
   web-console
   webdrivers
   whenever (~> 1.0.0)

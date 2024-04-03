@@ -91,6 +91,7 @@ gem "blacklight", "~> 7.35"
 # See: https://github.com/projectblacklight/blacklight_advanced_search/issues/127
 gem "blacklight_advanced_search", git: "https://github.com/ewlarson/blacklight_advanced_search.git",
   branch: "bl7-fix-gentle-hands"
+# Use pre-release tag of GeoBlacklight
 gem "geoblacklight", git: "git@github.com:geoblacklight/geoblacklight.git",
   tag: "v4.4.0.rc1"
 gem "geoblacklight_sidecar_images", "~> 1.0"
@@ -133,3 +134,6 @@ gem "ed25519", ">=1.2", "< 2.0"
 gem "exception_notification", "~> 4.5"
 
 gem "base64", "~> 0.1.1"
+
+# Add support for vite and clover
+gem "vite_rails"
