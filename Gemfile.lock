@@ -373,7 +373,8 @@ GEM
     rchardet (1.8.0)
     rdoc (6.6.3.1)
       psych (>= 4.0.0)
-    redis (4.8.1)
+    redis (5.2.0)
+      redis-client (>= 0.22.0)
     redis-client (0.22.1)
       connection_pool
     regexp_parser (2.9.0)
@@ -553,7 +554,7 @@ DEPENDENCIES
   passenger (>= 5.0.25)
   puma (~> 6.4)
   rails (~> 7.0.4, >= 7.0.4.2)
-  redis (~> 4.0)
+  redis (~> 5.2)
   rsolr (>= 1.0, < 3)
   sassc-rails (~> 2.1)
   selenium-webdriver
