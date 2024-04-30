@@ -12,7 +12,7 @@ gem "rails", "~> 7.0.4", ">= 7.0.4.2"
 gem "sprockets-rails"
 
 # Use sqlite3 as the dev and test environment database
-gem "sqlite3", "~> 1.7"
+gem "sqlite3", "~> 2.0"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 6.4"
