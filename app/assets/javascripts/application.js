@@ -21,6 +21,8 @@
 // - set initial bbox
 // following was borrowed from BTAA with slight modifications
 
+//= require_tree ../../../vendor/assets/javascripts/.
+
 GeoBlacklight.Viewer.Map = GeoBlacklight.Viewer.extend({
 
   options: {
