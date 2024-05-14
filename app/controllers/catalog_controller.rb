@@ -62,7 +62,7 @@ class CatalogController < ApplicationController
     config.show.display_type_field = "format"
     config.show.partials.delete(:show)
     config.show.partials << "show_default_display_note"
-    #config.show.partials << "show_default_viewer_container"
+    # config.show.partials << "show_default_viewer_container"
 
     # Blacklight::Allmaps Tabbed Viewer
     config.show.partials << "show_allmaps_tabbed_viewer_container"
