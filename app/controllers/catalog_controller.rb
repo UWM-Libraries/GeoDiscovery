@@ -20,6 +20,10 @@ class CatalogController < ApplicationController
     # Please see https://github.com/projectblacklight/blacklight/pull/2006/
     config.raw_endpoint.enabled = true
 
+    # Blacklight::Allmaps Viewer
+    config.default_solr_unique_key = "id"
+    config.default_georeferenced_field = "gbl_georeferenced_b"
+
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     ## @see https://lucene.apache.org/solr/guide/6_6/common-query-parameters.html
     ## @see https://lucene.apache.org/solr/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Theq.altParameter
@@ -58,7 +62,10 @@ class CatalogController < ApplicationController
     config.show.display_type_field = "format"
     config.show.partials.delete(:show)
     config.show.partials << "show_default_display_note"
-    config.show.partials << "show_default_viewer_container"
+    #config.show.partials << "show_default_viewer_container"
+
+    # Blacklight::Allmaps Tabbed Viewer
+    config.show.partials << "show_allmaps_tabbed_viewer_container"
     config.show.partials << "show_default_attribute_table"
     config.show.partials << "show_default_viewer_information"
     config.show.partials << :show
