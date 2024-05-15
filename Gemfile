@@ -138,3 +138,4 @@ gem "base64", "~> 0.1.1"
 
 # Blackligiht::Allmaps
 gem "blacklight_allmaps"
+gem 'capistrano-yarn'
