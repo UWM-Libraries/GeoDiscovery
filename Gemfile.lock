@@ -336,6 +336,8 @@ GEM
       net-protocol
     net-ssh (7.2.3)
     nio4r (2.7.3)
+    nokogiri (1.16.5-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
@@ -473,6 +475,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    sqlite3 (1.7.3-arm64-darwin)
     sqlite3 (1.7.3-x86_64-linux)
     sshkit (1.22.2)
       base64
@@ -547,6 +550,7 @@ GEM
     zeitwerk (2.6.14)
 
 PLATFORMS
+  arm64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
