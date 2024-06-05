@@ -8,6 +8,9 @@
 //= require bootstrap
 //= require blacklight/blacklight
 
+    // Required by Blacklight::Allmaps
+    //= require blacklight-allmaps/app/assets/javascripts/blacklight/allmaps/blacklight-allmaps.js
+
 // Required by GeoBlacklight
 //= require geoblacklight
 
