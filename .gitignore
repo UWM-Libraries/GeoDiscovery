@@ -73,3 +73,6 @@ public/*.sidecar_report.csv
 
 # Ignore Python virtual environment
 lib/opendataharvest/venv/
+
+# Ignore DS_Store
+.DS_Store
