@@ -85,7 +85,7 @@ namespace :uwm do
       if RUBY_PLATFORM =~ /mswin|mingw|cygwin/
         sh "setup_python_env.bat"
       else
-        sh "bash setup_python_env.sh"
+        sh "lib/opendataharvest/setup_python_env.sh"
       end
     end
     

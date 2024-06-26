@@ -1,4 +1,6 @@
-# setup_python_env.sh
+#!/bin/bash
+
+cd lib/opendataharvest
 python3 -m venv venv
-source venv/bin/activate
+. venv/bin/activate
 pip install -r requirements.txt
