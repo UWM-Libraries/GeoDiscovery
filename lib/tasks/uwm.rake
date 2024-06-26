@@ -84,7 +84,7 @@ namespace :uwm do
     task :setup_python_env do
       sh "lib/opendataharvest/setup_python_env.sh"
     end
-    
+
     desc "Run the DCAT_Harvester.py Python script"
     task :harvest_dcat do
       sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/opendataharvest/DCAT_Harvester.py"
