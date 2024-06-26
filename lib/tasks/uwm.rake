@@ -80,16 +80,12 @@ namespace :uwm do
   end
 
   namespace :opendataharvest do
-    desc "Set up Python environment"
+    desc "Set up Python venv environment for opendataharvest"
     task :setup_python_env do
-      if RUBY_PLATFORM =~ /mswin|mingw|cygwin/
-        sh "setup_python_env.bat"
-      else
-        sh "lib/opendataharvest/setup_python_env.sh"
-      end
+      sh "lib/opendataharvest/setup_python_env.sh"
     end
     
-    desc "Run the OpenDataHarvest Python script"
+    desc "Run the DCAT_Harvester.py Python script"
     task :harvest_dcat do
       sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/opendataharvest/DCAT_Harvester.py"
     end
