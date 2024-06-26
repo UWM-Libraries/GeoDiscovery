@@ -79,6 +79,11 @@ namespace :uwm do
     end
   end
 
+  desc "Run the OpenDataHarvest Python script"
+  task :opendataharvest do
+    sh "python3 lib/opendataharvest/opendataharvest/DCAT_Harvester.py"
+  end
+
   namespace :index do
     desc "Put all sample data into solr"
     task seed: :environment do

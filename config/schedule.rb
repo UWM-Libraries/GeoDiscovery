@@ -23,6 +23,11 @@ every :day, at: "2:30am", roles: [:app] do
   rake "blacklight:delete_old_searches[7]"
 end
 
+# Runs the OpenDataHarvest DCAT script
+every :monday, at: "3:30am", roles: [:app] do
+  rake "uwm:opendataharvest"
+end
+
 # Updates the UWM OpenGeoMetadata directory (git pull) and re-index
 every :monday, at: "4:00 am", roles: [:app] do
   # Ours
