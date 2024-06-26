@@ -38,7 +38,7 @@ def string2array(data_dict: Dict) -> Dict:
             data_dict[key] = [data_dict[key]]
     return data_dict
 
-def check_required(data_dict: Dict) -> None:
+def check_required(data_dict: Dict, resource_class_default: str, place_default: str) -> None:
     requirements = [
         "dct_publisher_sm", "dct_spatial_sm", "gbl_mdVersion_s",
         "dct_title_s", "gbl_resourceClass_sm", "id",
@@ -48,9 +48,9 @@ def check_required(data_dict: Dict) -> None:
     for req in requirements:
         if req not in data_dict:
             logging.warning(f"Requirement {req} is not present...")
-            handle_missing_field(data_dict, req)
+            handle_missing_field(data_dict, req, resource_class_default, place_default)
 
-def handle_missing_field(data_dict: Dict, field: str) -> None:
+def handle_missing_field(data_dict: Dict, field: str, resource_class_default: str, place_default: str) -> None:
     if field == "gbl_resourceClass_sm":
         if "dct_format_s" in data_dict:
             format = data_dict["dct_format_s"]
@@ -62,11 +62,11 @@ def handle_missing_field(data_dict: Dict, field: str) -> None:
                 else:
                     data_dict["gbl_resourceClass_sm"] = "Datasets"
         else:
-            data_dict["gbl_resourceClass_sm"] = [RESOURCE_CLASS_DEFAULT]
+            data_dict["gbl_resourceClass_sm"] = [resource_class_default]
     elif field == "dct_spatial_sm":
-        if PLACE_DEFAULT:
-            data_dict["dct_spatial_sm"] = [PLACE_DEFAULT]
-            logging.info(f"Replaced dct_spatial_sm:Null with dct_spatial_sm:{PLACE_DEFAULT}")
+        if place_default:
+            data_dict["dct_spatial_sm"] = [place_default]
+            logging.info(f"Replaced dct_spatial_sm:Null with dct_spatial_sm:{place_default}")
         else:
             logging.warning(f"There is no dct_spatial_sm")
     elif field == "gbl_mdModified_dt":
@@ -99,7 +99,7 @@ def stanford_place(data_dict: Dict) -> None:
         logging.info("Fixing the Wisconsin issue in US coverage")
         data_dict["dct_spatial_sm"] = ["United States"]
 
-def schema_update(filepath: Path, dir_new_schema: Path) -> None:
+def schema_update(filepath: Path, dir_new_schema: Path, resource_class_default: str, place_default: str) -> None:
     try:
         with open(filepath, encoding="utf8") as fr:
             data = json.load(fr)
@@ -115,7 +115,7 @@ def schema_update(filepath: Path, dir_new_schema: Path) -> None:
 
         data.pop("geoblacklight_version", None)
 
-        check_required(data)
+        check_required(data, resource_class_default, place_default)
         remove_deprecated(data)
         if "dct_spatial_sm" in data:
             stanford_place(data)
@@ -132,20 +132,22 @@ def list_all_json(rootdir: Path) -> List[Path]:
     rootdir = Path(rootdir)
     return [path for path in sorted(rootdir.rglob("*.json")) if path.name != "layers.json"]
 
-def main_function(dir_old_schema: Path, dir_new_schema: Path) -> None:
+def main_function(dir_old_schema: Path, dir_new_schema: Path, resource_class_default: str, place_default: str) -> None:
     if not dir_new_schema.exists():
         dir_new_schema.mkdir()
 
     files = list_all_json(dir_old_schema)
     for file in files:
         logging.info(f"Executing {file} ...")
-        schema_update(file, dir_new_schema)
+        schema_update(file, dir_new_schema, resource_class_default, place_default)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Update metadata schema from GBL 1.0 to Aardvark.')
     parser.add_argument('dir_old_schema', type=Path, help='Directory of JSON files in the old schema')
     parser.add_argument('dir_new_schema', type=Path, help='Directory for the new schema JSON files')
+    parser.add_argument('--resource_class_default', type=str, default='Other', help='Default resource class')
+    parser.add_argument('--place_default', type=str, default="United States", help='Default place value')
 
     args = parser.parse_args()
 
-    main_function(args.dir_old_schema, args.dir_new_schema)
+    main_function(args.dir_old_schema, args.dir_new_schema, args.resource_class_default, args.place_default)
