@@ -81,7 +81,7 @@ namespace :uwm do
 
   desc "Run the OpenDataHarvest Python script"
   task :opendataharvest do
-    sh "python3 lib/opendataharvest/opendataharvest/DCAT_Harvester.py"
+    sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/opendataharvest/DCAT_Harvester.py"
   end
 
   namespace :index do
