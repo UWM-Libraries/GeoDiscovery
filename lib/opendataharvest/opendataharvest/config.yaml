@@ -11,7 +11,7 @@
 
 CONFIG:
   CATALOG: "TestSites" # TestSites, DCAT_Sites, or CKAN_Sites
-  OUTPUTDIR: "tmp/opengeometadata/edu.uwm.opendata/" 
+  OUTPUTDIR: "tmp/opengeometadata/edu.uwm.opendata.test/" 
   LOGDIR: "log/" 
   DEFAULTBBOX: "lib/opendataharvest/opendataharvest/default_bbox.csv"
   MAXRETRY: 3

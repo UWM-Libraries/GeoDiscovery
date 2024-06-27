@@ -696,6 +696,15 @@ class Aardvark:
 def main():
     list_of_sites = harvest_sites()
 
+    # Create output dir if it doesn't exist:
+    if not OUTPUTDIR.is_dir():
+        try:
+            logging.warning(f"Creating directory {str(OUTPUTDIR)}")
+            OUTPUTDIR.mkdir()
+        except Exception as e:
+            logging.warning("Unable to create output directory")
+            return
+
     for website in list_of_sites:
         new_aardvark_objects = []
         for dataset in website.site_json["dataset"]:
@@ -711,10 +720,11 @@ def main():
                 logging.info(str(e))
 
 if __name__ == "__main__":
+    dt = datetime.now().strftime(r'%Y-%m-%d %H:%M:%S')
     try:
         main()
-        dt = datetime.now().strftime(r'%Y-%m-%d %H:%M:%S')
         logging.warning(f"Script finished at {dt}")
     except Exception as e:
         logging.error(str(e))
+        logging.warning(f"Script finished with errors at {dt}")
   
