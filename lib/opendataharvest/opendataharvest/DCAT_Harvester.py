@@ -94,7 +94,7 @@ logging.basicConfig(
     filename=logfile, filemode="a", level=logging_level, format="%(message)s"
 )
 
-dt = datetime.now().strftime(r'%Y-%m-%d %H:%M:%S')
+dt = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
 logging.warning(f"Script running at {dt}")
 
 
@@ -716,12 +716,12 @@ def main():
             except InitializationError as e:
                 logging.info(str(e))
 
+
 if __name__ == "__main__":
-    dt = datetime.now().strftime(r'%Y-%m-%d %H:%M:%S')
+    dt = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     try:
         main()
         logging.warning(f"Script finished at {dt}")
     except Exception as e:
         logging.error(str(e))
         logging.warning(f"Script finished with errors at {dt}")
-  

@@ -73,15 +73,39 @@ class SchemaUpdater:
                 data[key] = value
 
             self.check_required(data)
+
+            # Add restricted display note if dc_rights_s is "restricted"
+            self.add_restricted_display_notes(data)
+
             self.remove_deprecated(data)
             self.fix_stanford_place_issue(data)
             data = self.string2array(data)
 
-            new_filepath = dir_new_schema / (filepath.name if filepath.name != "geoblacklight.json" else f"{data['id']}.json")
+            new_filepath = dir_new_schema / (
+                filepath.name
+                if filepath.name != "geoblacklight.json"
+                else f"{data['id']}.json"
+            )
             with open(new_filepath, "w", encoding="utf8") as fw:
                 json.dump(data, fw, indent=2)
         except Exception as e:
             logging.error(f"Failed to update schema for {filepath.name}: {e}")
+
+    @staticmethod
+    def add_restricted_display_notes(data_dict: Dict) -> None:
+        """Add a restricted display note if dc_rights_s is 'restricted'."""
+        if data_dict.get("dc_rights_s") == "restricted":
+            note = "Warning: This dataset is restricted and you may not be able to access the resource. Contact the dataset provider or the AGSL for assistance."
+            if "gbl_displayNote_sm" in data_dict:
+                if isinstance(data_dict["gbl_displayNote_sm"], list):
+                    data_dict["gbl_displayNote_sm"].append(note)
+                else:
+                    data_dict["gbl_displayNote_sm"] = [
+                        data_dict["gbl_displayNote_sm"],
+                        note,
+                    ]
+            else:
+                data_dict["gbl_displayNote_sm"] = [note]
 
     def check_required(self, data_dict: Dict) -> None:
         """Check for required fields and handle missing ones."""
@@ -106,9 +130,13 @@ class SchemaUpdater:
         if field == "gbl_resourceClass_sm":
             data_dict["gbl_resourceClass_sm"] = self.determine_resource_class(data_dict)
         elif field == "dct_spatial_sm":
-            data_dict["dct_spatial_sm"] = [self.PLACE_DEFAULT] if self.PLACE_DEFAULT else []
+            data_dict["dct_spatial_sm"] = (
+                [self.PLACE_DEFAULT] if self.PLACE_DEFAULT else []
+            )
         elif field == "gbl_mdModified_dt":
-            data_dict["gbl_mdModified_dt"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+            data_dict["gbl_mdModified_dt"] = datetime.utcnow().strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            )
         elif field == "dct_publisher_sm":
             data_dict["dct_publisher_sm"] = data_dict.get("dct_creator_sm", [])
         elif field == "gbl_resourceType_sm":
@@ -129,7 +157,10 @@ class SchemaUpdater:
     @staticmethod
     def determine_resource_type(data_dict: Dict) -> List[str]:
         """Determine the resource type based on the data dictionary."""
-        if "stanford-ch237ht4777" in data_dict.get("dct_source_sm", "") or data_dict.get("id") == "stanford-ch237ht4777":
+        if (
+            "stanford-ch237ht4777" in data_dict.get("dct_source_sm", "")
+            or data_dict.get("id") == "stanford-ch237ht4777"
+        ):
             return ["Index maps"]
         return []
 
@@ -165,23 +196,45 @@ class SchemaUpdater:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Update metadata schema from GBL 1.0 to Aardvark.")
-    parser.add_argument("dir_old_schema", type=Path, help="Directory of JSON files in the old schema")
-    parser.add_argument("dir_new_schema", type=Path, help="Directory for the new schema JSON files")
+    parser = argparse.ArgumentParser(
+        description="Update metadata schema from GBL 1.0 to Aardvark."
+    )
+    parser.add_argument(
+        "dir_old_schema", type=Path, help="Directory of JSON files in the old schema"
+    )
+    parser.add_argument(
+        "dir_new_schema", type=Path, help="Directory for the new schema JSON files"
+    )
 
     # Optional arguments for overwriting required values
-    parser.add_argument("--dct_publisher_sm", type=str, help="Overwrite dct_publisher_sm")
+    parser.add_argument(
+        "--dct_publisher_sm", type=str, help="Overwrite dct_publisher_sm"
+    )
     parser.add_argument("--dct_spatial_sm", type=str, help="Overwrite dct_spatial_sm")
-    parser.add_argument("--gbl_resourceClass_sm", type=str, help="Overwrite gbl_resourceClass_sm")
-    parser.add_argument("--gbl_resourceType_sm", type=str, help="Overwrite gbl_resourceType_sm")
+    parser.add_argument(
+        "--gbl_resourceClass_sm", type=str, help="Overwrite gbl_resourceClass_sm"
+    )
+    parser.add_argument(
+        "--gbl_resourceType_sm", type=str, help="Overwrite gbl_resourceType_sm"
+    )
     parser.add_argument("--id", type=str, help="Overwrite id")
-    parser.add_argument("--gbl_mdModified_dt", type=str, help="Overwrite gbl_mdModified_dt")
-    parser.add_argument("--schema_provider_s", type=str, help="Overwrite schema_provider_s")
-    parser.add_argument("--gbl_displayNote_sm", type=str, help="Overwrite gbl_displayNote_sm")
-    
+    parser.add_argument(
+        "--gbl_mdModified_dt", type=str, help="Overwrite gbl_mdModified_dt"
+    )
+    parser.add_argument(
+        "--schema_provider_s", type=str, help="Overwrite schema_provider_s"
+    )
+    parser.add_argument(
+        "--gbl_displayNote_sm", type=str, help="Overwrite gbl_displayNote_sm"
+    )
+
     args = parser.parse_args()
 
-    overwrite_values = {k: v for k, v in vars(args).items() if v is not None and k not in ['dir_old_schema', 'dir_new_schema']}
+    overwrite_values = {
+        k: v
+        for k, v in vars(args).items()
+        if v is not None and k not in ["dir_old_schema", "dir_new_schema"]
+    }
 
     LoggerConfig.configure_logging("log/gbl-1_to_aardvark.log")
     schema_updater = SchemaUpdater(overwrite_values)
