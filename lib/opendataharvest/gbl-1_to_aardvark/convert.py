@@ -20,7 +20,12 @@ class LoggerConfig:
 
 
 class SchemaUpdater:
-    def __init__(self, overwrite_values: Optional[Dict[str, str]] = None, resource_class_default: str = "Maps", place_default: Optional[str] = None):
+    def __init__(
+        self,
+        overwrite_values: Optional[Dict[str, str]] = None,
+        resource_class_default: str = None,
+        place_default: Optional[str] = "Kokamo",
+    ):
         self.RESOURCE_CLASS_DEFAULT = resource_class_default
         self.PLACE_DEFAULT = place_default
         self.crosswalk = self.load_crosswalk(self.CROSSWALK_PATH)
@@ -150,13 +155,38 @@ class SchemaUpdater:
             or data_dict.get("id") == "stanford-ch237ht4777"
         ):
             return ["Maps"]
-        
+
         format = data_dict.get("dct_format_s", "")
         if format in ["Shapefile", "ArcGrid", "GeoDatabase", "Arc/Info Binary Grid"]:
             return ["Datasets"]
-        elif format == "GeoTIFF":
+        elif format in ["GeoTIFF", "TIFF"]:
             description = data_dict.get("dct_description_sm", "")
-            return ["Maps"] if "georeferenced" in description else ["Datasets"]
+            return (
+                ["Maps"]
+                if ("relief" in description.lower())
+                or ("map" in description.lower())
+                or ("parcels" in description.lower())
+                else ["Datasets"]
+            )
+        elif format == "":
+            description = data_dict.get("dct_description_sm", "")
+            return (
+                ["Maps"]
+                if ("relief" in description.lower()) or ("map" in description.lower())
+                else [SchemaUpdater.RESOURCE_CLASS_DEFAULT]
+            )
+        elif (
+            any(
+                "sanborn" in publisher.lower()
+                for publisher in data_dict.get("dct_publisher_sm", [])
+            )
+        ) or (
+            any(
+                "maps" in subject.lower()
+                for subject in data_dict.get("dct_subject_sm", [])
+            )
+        ):
+            return ["Maps"]
         else:
             return [SchemaUpdater.RESOURCE_CLASS_DEFAULT]
 
@@ -168,7 +198,13 @@ class SchemaUpdater:
             or data_dict.get("id") == "stanford-ch237ht4777"
         ):
             return ["Index maps"]
-        return []
+        elif any(
+            "sanborn" in publisher.lower()
+            for publisher in data_dict.get("dct_publisher_sm", [])
+        ):
+            return ["Fire insurance maps", "Atlases"]
+        else:
+            return []
 
     @staticmethod
     def remove_deprecated(data_dict: Dict) -> None:
