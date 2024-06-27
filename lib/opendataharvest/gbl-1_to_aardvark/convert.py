@@ -20,14 +20,13 @@ class LoggerConfig:
 
 
 class SchemaUpdater:
-    RESOURCE_CLASS_DEFAULT = "Maps" # Since this field is required, it should never be None
-    # https://opengeometadata.org/ogm-aardvark/#resource-class-values
-    PLACE_DEFAULT = None # Not ideal if this is None, but it shouldn't break.
-    CROSSWALK_PATH = Path("lib/opendataharvest/gbl-1_to_aardvark/crosswalk.csv")
-
-    def __init__(self, overwrite_values: Optional[Dict[str, str]] = None):
+    def __init__(self, overwrite_values: Optional[Dict[str, str]] = None, resource_class_default: str = "Maps", place_default: Optional[str] = None):
+        self.RESOURCE_CLASS_DEFAULT = resource_class_default
+        self.PLACE_DEFAULT = place_default
         self.crosswalk = self.load_crosswalk(self.CROSSWALK_PATH)
         self.overwrite_values = overwrite_values if overwrite_values else {}
+
+    CROSSWALK_PATH = Path("lib/opendataharvest/gbl-1_to_aardvark/crosswalk.csv")
 
     @staticmethod
     def load_crosswalk(crosswalk_path: Path) -> Dict[str, str]:
@@ -208,7 +207,7 @@ if __name__ == "__main__":
     parser.add_argument("dir_old_schema", type=Path, help="Directory of JSON files in the old schema")
     parser.add_argument("dir_new_schema", type=Path, help="Directory for the new schema JSON files")
 
-    # Optional arguments
+    # Optional arguments for overwriting values
     parser.add_argument("--dct_publisher_sm", type=str, help="Overwrite dct_publisher_sm")
     parser.add_argument("--dct_spatial_sm", type=str, help="Overwrite dct_spatial_sm")
     parser.add_argument("--gbl_resourceClass_sm", type=str, help="Overwrite gbl_resourceClass_sm")
@@ -218,14 +217,18 @@ if __name__ == "__main__":
     parser.add_argument("--schema_provider_s", type=str, help="Overwrite schema_provider_s")
     parser.add_argument("--gbl_displayNote_sm", type=str, help="Overwrite gbl_displayNote_sm")
 
+    # Optional arguments for setting default values
+    parser.add_argument("--resource_class_default", type=str, default="Maps", help="Set default value for resource class")
+    parser.add_argument("--place_default", type=str, help="Set default value for place")
+
     args = parser.parse_args()
 
     overwrite_values = {
         k: v
         for k, v in vars(args).items()
-        if v is not None and k not in ["dir_old_schema", "dir_new_schema"]
+        if v is not None and k not in ["dir_old_schema", "dir_new_schema", "resource_class_default", "place_default"]
     }
 
     LoggerConfig.configure_logging("log/gbl-1_to_aardvark.log")
-    schema_updater = SchemaUpdater(overwrite_values)
+    schema_updater = SchemaUpdater(overwrite_values, args.resource_class_default, args.place_default)
     schema_updater.update_all_schemas(args.dir_old_schema, args.dir_new_schema)
