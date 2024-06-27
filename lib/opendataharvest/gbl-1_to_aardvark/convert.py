@@ -172,14 +172,13 @@ if __name__ == "__main__":
     # Optional arguments for overwriting required values
     parser.add_argument("--dct_publisher_sm", type=str, help="Overwrite dct_publisher_sm")
     parser.add_argument("--dct_spatial_sm", type=str, help="Overwrite dct_spatial_sm")
-    parser.add_argument("--gbl_mdVersion_s", type=str, help="Overwrite gbl_mdVersion_s")
-    parser.add_argument("--dct_title_s", type=str, help="Overwrite dct_title_s")
     parser.add_argument("--gbl_resourceClass_sm", type=str, help="Overwrite gbl_resourceClass_sm")
+    parser.add_argument("--gbl_resourceType_sm", type=str, help="Overwrite gbl_resourceType_sm")
     parser.add_argument("--id", type=str, help="Overwrite id")
     parser.add_argument("--gbl_mdModified_dt", type=str, help="Overwrite gbl_mdModified_dt")
-    parser.add_argument("--gbl_resourceType_sm", type=str, help="Overwrite gbl_resourceType_sm")
     parser.add_argument("--schema_provider_s", type=str, help="Overwrite schema_provider_s")
-
+    parser.add_argument("--gbl_displayNote_sm", type=str, help="Overwrite gbl_displayNote_sm")
+    
     args = parser.parse_args()
 
     overwrite_values = {k: v for k, v in vars(args).items() if v is not None and k not in ['dir_old_schema', 'dir_new_schema']}
