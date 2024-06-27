@@ -178,6 +178,7 @@ if __name__ == "__main__":
     parser.add_argument("--id", type=str, help="Overwrite id")
     parser.add_argument("--gbl_mdModified_dt", type=str, help="Overwrite gbl_mdModified_dt")
     parser.add_argument("--gbl_resourceType_sm", type=str, help="Overwrite gbl_resourceType_sm")
+    parser.add_argument("--schema_provider_s", type=str, help="Overwrite schema_provider_s")
 
     args = parser.parse_args()
 
