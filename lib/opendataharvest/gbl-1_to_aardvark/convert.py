@@ -20,8 +20,9 @@ class LoggerConfig:
 
 
 class SchemaUpdater:
-    RESOURCE_CLASS_DEFAULT = "Other"
-    PLACE_DEFAULT = "Wisconsin"
+    RESOURCE_CLASS_DEFAULT = "Maps" # Since this field is required, it should never be None
+    # https://opengeometadata.org/ogm-aardvark/#resource-class-values
+    PLACE_DEFAULT = None # Not ideal if this is None, but it shouldn't break.
     CROSSWALK_PATH = Path("lib/opendataharvest/gbl-1_to_aardvark/crosswalk.csv")
 
     def __init__(self, overwrite_values: Optional[Dict[str, str]] = None):
@@ -94,7 +95,7 @@ class SchemaUpdater:
     @staticmethod
     def add_restricted_display_notes(data_dict: Dict) -> None:
         """Add a restricted display note if dc_rights_s is 'restricted'."""
-        if data_dict.get("dc_rights_s") == "restricted":
+        if data_dict.get("dct_accessRights_s") == "Restricted":
             note = "Warning: This dataset is restricted and you may not be able to access the resource. Contact the dataset provider or the AGSL for assistance."
             if "gbl_displayNote_sm" in data_dict:
                 if isinstance(data_dict["gbl_displayNote_sm"], list):
@@ -145,8 +146,14 @@ class SchemaUpdater:
     @staticmethod
     def determine_resource_class(data_dict: Dict) -> List[str]:
         """Determine the resource class based on the data dictionary."""
+        if (
+            "stanford-ch237ht4777" in data_dict.get("dct_source_sm", "")
+            or data_dict.get("id") == "stanford-ch237ht4777"
+        ):
+            return ["Maps"]
+        
         format = data_dict.get("dct_format_s", "")
-        if format in ["Shapefile", "ArcGrid", "GeoDatabase"]:
+        if format in ["Shapefile", "ArcGrid", "GeoDatabase", "Arc/Info Binary Grid"]:
             return ["Datasets"]
         elif format == "GeoTIFF":
             description = data_dict.get("dct_description_sm", "")
@@ -196,37 +203,20 @@ class SchemaUpdater:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Update metadata schema from GBL 1.0 to Aardvark."
-    )
-    parser.add_argument(
-        "dir_old_schema", type=Path, help="Directory of JSON files in the old schema"
-    )
-    parser.add_argument(
-        "dir_new_schema", type=Path, help="Directory for the new schema JSON files"
-    )
+    # fmt: off
+    parser = argparse.ArgumentParser(description="Update metadata schema from GBL 1.0 to Aardvark.")
+    parser.add_argument("dir_old_schema", type=Path, help="Directory of JSON files in the old schema")
+    parser.add_argument("dir_new_schema", type=Path, help="Directory for the new schema JSON files")
 
-    # Optional arguments for overwriting required values
-    parser.add_argument(
-        "--dct_publisher_sm", type=str, help="Overwrite dct_publisher_sm"
-    )
+    # Optional arguments
+    parser.add_argument("--dct_publisher_sm", type=str, help="Overwrite dct_publisher_sm")
     parser.add_argument("--dct_spatial_sm", type=str, help="Overwrite dct_spatial_sm")
-    parser.add_argument(
-        "--gbl_resourceClass_sm", type=str, help="Overwrite gbl_resourceClass_sm"
-    )
-    parser.add_argument(
-        "--gbl_resourceType_sm", type=str, help="Overwrite gbl_resourceType_sm"
-    )
+    parser.add_argument("--gbl_resourceClass_sm", type=str, help="Overwrite gbl_resourceClass_sm")
+    parser.add_argument("--gbl_resourceType_sm", type=str, help="Overwrite gbl_resourceType_sm")
     parser.add_argument("--id", type=str, help="Overwrite id")
-    parser.add_argument(
-        "--gbl_mdModified_dt", type=str, help="Overwrite gbl_mdModified_dt"
-    )
-    parser.add_argument(
-        "--schema_provider_s", type=str, help="Overwrite schema_provider_s"
-    )
-    parser.add_argument(
-        "--gbl_displayNote_sm", type=str, help="Overwrite gbl_displayNote_sm"
-    )
+    parser.add_argument("--gbl_mdModified_dt", type=str, help="Overwrite gbl_mdModified_dt")
+    parser.add_argument("--schema_provider_s", type=str, help="Overwrite schema_provider_s")
+    parser.add_argument("--gbl_displayNote_sm", type=str, help="Overwrite gbl_displayNote_sm")
 
     args = parser.parse_args()
 
