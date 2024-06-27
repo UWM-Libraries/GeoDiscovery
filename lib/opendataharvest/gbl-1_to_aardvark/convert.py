@@ -7,17 +7,12 @@ from pathlib import Path
 from typing import Dict, List
 import argparse
 
-logfile = f"gbl-1_to_aardvark/log/gbl-1_to_aardvark.log"
+logfile = 'log/gbl-1_to_aardvark.log'
 
 # Configure the logging module
 logging.basicConfig(
     filename=logfile, filemode="a", level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s'
 )
-
-
-# Default values
-RESOURCE_CLASS_DEFAULT = "Other"
-PLACE_DEFAULT = None
 
 def load_crosswalk(crosswalk_path: Path) -> Dict[str, str]:
     crosswalk = {}
@@ -46,7 +41,7 @@ def check_required(data_dict: Dict, resource_class_default: str, place_default: 
     ]
 
     for req in requirements:
-        if req not in data_dict:
+        if (req not in data_dict) or (data_dict[req] == '') or (data_dict[req] == []):
             logging.warning(f"Requirement {req} is not present...")
             handle_missing_field(data_dict, req, resource_class_default, place_default)
 
@@ -70,7 +65,7 @@ def handle_missing_field(data_dict: Dict, field: str, resource_class_default: st
         else:
             logging.warning(f"There is no dct_spatial_sm")
     elif field == "gbl_mdModified_dt":
-        data_dict["gbl_mdModified_dt"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        data_dict["gbl_mdModified_dt"] = datetime.now().strftime(r"%Y-%m-%dT%H:%M:%SZ")
     elif field == "dct_publisher_sm":
         if "dct_creator_sm" in data_dict and data_dict["dct_creator_sm"]:
             data_dict["dct_publisher_sm"] = data_dict["dct_creator_sm"]
@@ -133,6 +128,9 @@ def list_all_json(rootdir: Path) -> List[Path]:
     return [path for path in sorted(rootdir.rglob("*.json")) if path.name != "layers.json"]
 
 def main_function(dir_old_schema: Path, dir_new_schema: Path, resource_class_default: str, place_default: str) -> None:
+    logging.info(f"Using resource_class_default: {resource_class_default}")
+    logging.info(f"Using place_default: {place_default}")
+
     if not dir_new_schema.exists():
         dir_new_schema.mkdir()
 
@@ -149,5 +147,7 @@ if __name__ == "__main__":
     parser.add_argument('--place_default', type=str, default="United States", help='Default place value')
 
     args = parser.parse_args()
+
+    logging.info(f"Parsed arguments: {args}")
 
     main_function(args.dir_old_schema, args.dir_new_schema, args.resource_class_default, args.place_default)
