@@ -4,7 +4,7 @@ import os
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 import argparse
 
 
@@ -14,7 +14,7 @@ class LoggerConfig:
         logging.basicConfig(
             filename=logfile,
             filemode="a",
-            level=logging.WARNING,
+            level=logging.DEBUG,
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
 
@@ -24,9 +24,11 @@ class SchemaUpdater:
         self,
         overwrite_values: Optional[Dict[str, str]] = None,
         resource_class_default: str = None,
-        place_default: Optional[str] = "Kokamo",
+        resource_type_default: str = None,
+        place_default: Optional[str] = None,
     ):
         self.RESOURCE_CLASS_DEFAULT = resource_class_default
+        self.RESOURCE_TYPE_DEFAULT = resource_type_default
         self.PLACE_DEFAULT = place_default
         self.crosswalk = self.load_crosswalk(self.CROSSWALK_PATH)
         self.overwrite_values = overwrite_values if overwrite_values else {}
@@ -72,6 +74,9 @@ class SchemaUpdater:
 
             data["gbl_mdVersion_s"] = "Aardvark"
             data.pop("geoblacklight_version", None)
+
+            # Handle class and type
+            data["gbl_resourceClass_sm"], data["gbl_resourceType_sm"] = self.determine_resource_class_and_type(data)
 
             # Overwrite specified values
             for key, value in self.overwrite_values.items():
@@ -119,10 +124,9 @@ class SchemaUpdater:
             "dct_spatial_sm",
             "gbl_mdVersion_s",
             "dct_title_s",
-            "gbl_resourceClass_sm",
             "id",
             "gbl_mdModified_dt",
-            "gbl_resourceType_sm",
+            "gbl_resourceClass_sm",
         ]
 
         for req in requirements:
@@ -132,79 +136,78 @@ class SchemaUpdater:
 
     def handle_missing_field(self, data_dict: Dict, field: str) -> None:
         """Handle missing required fields with default values or logic."""
-        if field == "gbl_resourceClass_sm":
-            data_dict["gbl_resourceClass_sm"] = self.determine_resource_class(data_dict)
-        elif field == "dct_spatial_sm":
+        assert field not in ["gbl_mdVersion_s", "gbl_resourceClass_sm", "id"]
+
+        if field == "dct_spatial_sm":
             data_dict["dct_spatial_sm"] = (
                 [self.PLACE_DEFAULT] if self.PLACE_DEFAULT else []
             )
         elif field == "gbl_mdModified_dt":
-            data_dict["gbl_mdModified_dt"] = datetime.utcnow().strftime(
+            data_dict["gbl_mdModified_dt"] = datetime.now(datetime.UTC).strftime(
                 "%Y-%m-%dT%H:%M:%SZ"
             )
         elif field == "dct_publisher_sm":
             data_dict["dct_publisher_sm"] = data_dict.get("dct_creator_sm", [])
-        elif field == "gbl_resourceType_sm":
-            data_dict["gbl_resourceType_sm"] = self.determine_resource_type(data_dict)
 
     @staticmethod
-    def determine_resource_class(data_dict: Dict) -> List[str]:
+    def determine_resource_class_and_type(data_dict: Dict) -> Tuple[List[str], List[str]]:
         """Determine the resource class based on the data dictionary."""
-        if (
-            "stanford-ch237ht4777" in data_dict.get("dct_source_sm", "")
-            or data_dict.get("id") == "stanford-ch237ht4777"
-        ):
-            return ["Maps"]
+        # Assign the main return variables if they exist already, if both exist, return them as is.
+        gbl_resourceClass_sm = data_dict.get("gbl_resourceClass_sm") or []
+        gbl_resourceType_sm = data_dict.get("gbl_resourceType_sm") or []
 
-        format = data_dict.get("dct_format_s", "")
+        if gbl_resourceClass_sm and gbl_resourceType_sm:
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+
+        # This is a particular set of Stanford maps that I want to ensure we catch.
+        # Remove if it can be caught by further analysis.
+        if "stanford-ch237ht4777" in data_dict.get("dct_source_sm", "") or data_dict.get("id") == "stanford-ch237ht4777":
+            gbl_resourceClass_sm = ["Maps"]
+            gbl_resourceType_sm = ["Index maps"]
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+        
+        # Grab some of the info as text right away
+        format = str(data_dict.get("dct_format_s", ""))
+        description = str(data_dict.get("dct_description_sm", ""))
+        subject = str(data_dict.get("dct_subject_sm", ""))
+        publisher = str(data_dict.get("dct_publisher_sm", ""))
+
         if format in ["Shapefile", "ArcGrid", "GeoDatabase", "Arc/Info Binary Grid"]:
-            return ["Datasets"]
-        elif format in ["GeoTIFF", "TIFF"]:
-            description = data_dict.get("dct_description_sm", "")
-            return (
-                ["Maps"]
-                if ("relief" in description.lower())
-                or ("map" in description.lower())
-                or ("parcels" in description.lower())
-                else ["Datasets"]
-            )
-        elif format == "":
-            description = data_dict.get("dct_description_sm", "")
-            return (
-                ["Maps"]
-                if ("relief" in description.lower()) or ("map" in description.lower())
-                else [SchemaUpdater.RESOURCE_CLASS_DEFAULT]
-            )
-        elif (
-            any(
-                "sanborn" in publisher.lower()
-                for publisher in data_dict.get("dct_publisher_sm", [])
-            )
-        ) or (
-            any(
-                "maps" in subject.lower()
-                for subject in data_dict.get("dct_subject_sm", [])
-            )
-        ):
-            return ["Maps"]
-        else:
-            return [SchemaUpdater.RESOURCE_CLASS_DEFAULT]
+            gbl_resourceClass_sm = ["Datasets"]
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+        
+        if "sanborn" in publisher.lower():
+            gbl_resourceClass_sm[0] = "Maps"
+            gbl_resourceType_sm[0] = "Fire insurance maps"
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+        
+        if format in ["GeoTIFF", "TIFF"]:
+            if "relief" in description.lower() or "map" in description.lower() or "maps" in subject.lower():
+                gbl_resourceClass_sm[0] = "Maps"
+                gbl_resourceType_sm[0] = "Fire insurance maps"
+                return gbl_resourceClass_sm, gbl_resourceType_sm
+            gbl_resourceClass_sm = ["Datasets"]
+            return gbl_resourceClass_sm, gbl_resourceType_sm 
+            
+        if format == "":
+            if "relief" in description.lower() or "map" in description.lower() or "maps" in subject.lower():
+                gbl_resourceClass_sm[0] = "Maps"
+                return gbl_resourceClass_sm, gbl_resourceType_sm
+            else:
+                gbl_resourceClass_sm = ["Other"]
+                return gbl_resourceClass_sm, gbl_resourceType_sm
 
-    @staticmethod
-    def determine_resource_type(data_dict: Dict) -> List[str]:
-        """Determine the resource type based on the data dictionary."""
-        if (
-            "stanford-ch237ht4777" in data_dict.get("dct_source_sm", "")
-            or data_dict.get("id") == "stanford-ch237ht4777"
-        ):
-            return ["Index maps"]
-        elif any(
-            "sanborn" in publisher.lower()
-            for publisher in data_dict.get("dct_publisher_sm", [])
-        ):
-            return ["Fire insurance maps", "Atlases"]
-        else:
-            return []
+        if "relief" in description.lower() or "map" in description.lower() or "maps" in subject.lower():
+            gbl_resourceClass_sm = ["Maps"]
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+
+        # If all else fails:
+        gbl_resourceClass_sm = [SchemaUpdater.RESOURCE_CLASS_DEFAULT]
+        gbl_resourceType_sm = [SchemaUpdater.RESOURCE_TYPE_DEFAULT]
+        return gbl_resourceClass_sm, gbl_resourceType_sm
+
+    def handle_class_and_type(self, data_dict: Dict) -> None:
+        data_dict["gbl_resourceClass_sm"], data_dict["gbl_resourceType_sm"] = self.determine_resource_class_and_type(data_dict)
 
     @staticmethod
     def remove_deprecated(data_dict: Dict) -> None:
@@ -254,7 +257,8 @@ if __name__ == "__main__":
     parser.add_argument("--gbl_displayNote_sm", type=str, help="Overwrite gbl_displayNote_sm")
 
     # Optional arguments for setting default values
-    parser.add_argument("--resource_class_default", type=str, default="Maps", help="Set default value for resource class")
+    parser.add_argument("--resource_class_default", type=str, help="Set default value for resource class")
+    parser.add_argument("--resource_type_default", type=str, help="Set default value for resource type")
     parser.add_argument("--place_default", type=str, help="Set default value for place")
 
     args = parser.parse_args()
