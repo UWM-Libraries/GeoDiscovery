@@ -89,6 +89,13 @@ namespace :uwm do
     task :harvest_dcat do
       sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/opendataharvest/DCAT_Harvester.py"
     end
+
+    desc "Run the conversion scripts on GBL 1.0 metadata institutions"
+    task :gbl1_to_aardvark do
+      puts "Running GeoBlacklight 1.0 to OGM Aardvark Metadata Conversion.\nsee gbl-1_to_aardvark.log"
+      sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/gbl-1_to_aardvark/gbl_to_aardvark.py"
+      puts "Run rake geocombine:index to index converted documents"
+    end
   end
 
   namespace :index do

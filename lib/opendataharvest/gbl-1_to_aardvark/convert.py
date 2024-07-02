@@ -14,8 +14,8 @@ class LoggerConfig:
         os.makedirs(os.path.dirname(logfile), exist_ok=True)
         logging.basicConfig(
             filename=logfile,
-            filemode="w",
-            level=logging.DEBUG,
+            filemode="a",
+            level=logging.ERROR,
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
 

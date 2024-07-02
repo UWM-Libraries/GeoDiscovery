@@ -48,8 +48,12 @@ every :monday, at: "4:00 am", roles: [:app] do
   rake "geocombine:pull[edu.rutgers]"
   rake "geocombine:pull[edu.umich]"
   # Metadata We've Converted
-  rake "geocombine:pull[edu.wisc.aardvark]"
-  rake "geocombine:pull[edu.uwm.converted]"
+  # rake "geocombine:pull[edu.wisc]"
+  # rake "geocombine:pull[edu.berkeley]"
+  # rake "geocombine:pull[edu.columbia]"
+  # rake "geocombine:pull[edu.cornell]"
+  # rake "geocombine:pull[edu.princeton.arks]"
+  # rake "geocombine:pull[edu.stanford.purl]"
   # Index
   rake "geocombine:index"
 end
