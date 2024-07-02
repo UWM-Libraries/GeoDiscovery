@@ -56,7 +56,7 @@ gem "vite_rails", "~> 3.0"
 group :production do
   gem "mysql2"
   gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
-  gem "sidekiq", "~> 7.2"
+  gem "sidekiq", "~> 7.3"
 end
 
 group :development, :test do
