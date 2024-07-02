@@ -195,11 +195,12 @@ class SchemaUpdater:
         dct_subject_sm = str(data_dict.get("dct_subject_sm", ""))
         dct_publisher_sm = str(data_dict.get("dct_publisher_sm", ""))
         id = str(data_dict.get("id", ""))
-        dct_references_s = str(data_dict.get("dct_references_s"))
+        dct_references_s = str(data_dict.get("dct_references_s", ""))
+        dct_source_sm = str(data_dict.get("dct_source_sm", ""))
 
         # Open Index Maps
-        if "openindexmaps" in dct_references_s.lower():
-            logging.debug("Stanford map detected, setting resource class and type.")
+        if ("openindexmaps" in dct_references_s.lower()) or (id == "stanford-ch237ht4777") or ("ch237ht4777" in dct_source_sm.lower()):
+            logging.debug("OpenIndexMap detected, setting resource class and type.")
             gbl_resourceClass_sm = ["Maps"]
             gbl_resourceType_sm = ["Index maps"]
             if "aerial" in dct_description_sm.lower():
