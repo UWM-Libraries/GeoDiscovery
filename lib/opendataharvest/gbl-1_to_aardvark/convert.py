@@ -13,7 +13,7 @@ class LoggerConfig:
     def configure_logging(logfile: str) -> None:
         logging.basicConfig(
             filename=logfile,
-            filemode="a",
+            filemode="w",
             level=logging.DEBUG,
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
@@ -30,7 +30,11 @@ class SchemaUpdater:
         self.RESOURCE_CLASS_DEFAULT = resource_class_default
         self.RESOURCE_TYPE_DEFAULT = resource_type_default
         self.PLACE_DEFAULT = place_default
-        self.crosswalk = self.load_crosswalk(self.CROSSWALK_PATH)
+        try:
+            self.crosswalk = self.load_crosswalk(self.CROSSWALK_PATH)
+        except Exception as e:
+            logging.critical(f"Failed to load crosswalk: {e}")
+            self.crosswalk = {}
         self.overwrite_values = overwrite_values if overwrite_values else {}
 
     CROSSWALK_PATH = Path("lib/opendataharvest/gbl-1_to_aardvark/crosswalk.csv")
@@ -39,11 +43,16 @@ class SchemaUpdater:
     def load_crosswalk(crosswalk_path: Path) -> Dict[str, str]:
         """Load crosswalk CSV into a dictionary."""
         crosswalk = {}
-        with open(crosswalk_path, encoding="utf8") as f:
-            reader = csv.reader(f)
-            next(reader)  # Skip header
-            for old, new in reader:
-                crosswalk[old] = new
+        try:
+            with open(crosswalk_path, encoding="utf8") as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header
+                for old, new in reader:
+                    crosswalk[old] = new
+        except FileNotFoundError:
+            logging.critical(f"Crosswalk file not found: {crosswalk_path}")
+        except Exception as e:
+            logging.critical(f"Error loading crosswalk: {e}")
         return crosswalk
 
     def update_all_schemas(self, dir_old_schema: Path, dir_new_schema: Path) -> None:
@@ -76,7 +85,10 @@ class SchemaUpdater:
             data.pop("geoblacklight_version", None)
 
             # Handle class and type
-            data["gbl_resourceClass_sm"], data["gbl_resourceType_sm"] = self.determine_resource_class_and_type(data)
+            (
+                data["gbl_resourceClass_sm"],
+                data["gbl_resourceType_sm"],
+            ) = self.determine_resource_class_and_type(data)
 
             # Overwrite specified values
             for key, value in self.overwrite_values.items():
@@ -98,6 +110,10 @@ class SchemaUpdater:
             )
             with open(new_filepath, "w", encoding="utf8") as fw:
                 json.dump(data, fw, indent=2)
+        except FileNotFoundError:
+            logging.error(f"File not found: {filepath}")
+        except json.JSONDecodeError:
+            logging.error(f"Error decoding JSON in file: {filepath}")
         except Exception as e:
             logging.error(f"Failed to update schema for {filepath.name}: {e}")
 
@@ -130,8 +146,9 @@ class SchemaUpdater:
         ]
 
         for req in requirements:
-            if req not in data_dict:
-                logging.warning(f"Requirement {req} is not present...")
+            value = data_dict.get(req)
+            if not value or (isinstance(value, list) and not any(value)):
+                logging.warning(f"Requirement {req} is either missing or contains empty values...")
                 self.handle_missing_field(data_dict, req)
 
     def handle_missing_field(self, data_dict: Dict, field: str) -> None:
@@ -144,70 +161,199 @@ class SchemaUpdater:
             )
         elif field == "gbl_mdModified_dt":
             data_dict["gbl_mdModified_dt"] = datetime.now(datetime.UTC).strftime(
-                "%Y-%m-%dT%H:%M:%SZ"
+                f"%Y-%m-%dT%H:%M:%SZ"
             )
         elif field == "dct_publisher_sm":
             data_dict["dct_publisher_sm"] = data_dict.get("dct_creator_sm", [])
 
     @staticmethod
-    def determine_resource_class_and_type(data_dict: Dict) -> Tuple[List[str], List[str]]:
+    def determine_resource_class_and_type(
+        data_dict: Dict,
+    ) -> Tuple[List[str], List[str]]:
         """Determine the resource class based on the data dictionary."""
+
+        def append_if_not_exists(lst, item):
+            if item not in lst:
+                lst.append(item)
+
+        logging.debug("Determining resource class and type for data: %s", data_dict)
+
         # Assign the main return variables if they exist already, if both exist, return them as is.
         gbl_resourceClass_sm = data_dict.get("gbl_resourceClass_sm") or []
         gbl_resourceType_sm = data_dict.get("gbl_resourceType_sm") or []
 
-        if gbl_resourceClass_sm and gbl_resourceType_sm:
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+        logging.debug("Initial resource class: %s", gbl_resourceClass_sm)
+        logging.debug("Initial resource type: %s", gbl_resourceType_sm)
 
-        # This is a particular set of Stanford maps that I want to ensure we catch.
-        # Remove if it can be caught by further analysis.
-        if "stanford-ch237ht4777" in data_dict.get("dct_source_sm", "") or data_dict.get("id") == "stanford-ch237ht4777":
+        if gbl_resourceClass_sm and gbl_resourceType_sm:
+            logging.debug("Resource class and type already determined.")
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+        
+        # Grab some more info as text right away
+        dct_title_s = str(data_dict.get("dct_title_s", ""))
+        dct_format_s = str(data_dict.get("dct_format_s", ""))
+        dct_description_sm = str(data_dict.get("dct_description_sm", ""))
+        dct_subject_sm = str(data_dict.get("dct_subject_sm", ""))
+        dct_publisher_sm = str(data_dict.get("dct_publisher_sm", ""))
+        id = str(data_dict.get("id", ""))
+        dct_references_s = str(data_dict.get("dct_references_s"))
+
+        # Open Index Maps
+        if "openindexmaps" in dct_references_s.lower():
+            logging.debug("Stanford map detected, setting resource class and type.")
             gbl_resourceClass_sm = ["Maps"]
             gbl_resourceType_sm = ["Index maps"]
+            if "aerial" in dct_description_sm.lower():
+                gbl_resourceClass_sm = ["Imagery"]
             return gbl_resourceClass_sm, gbl_resourceType_sm
-        
-        # Grab some of the info as text right away
-        format = str(data_dict.get("dct_format_s", ""))
-        description = str(data_dict.get("dct_description_sm", ""))
-        subject = str(data_dict.get("dct_subject_sm", ""))
-        publisher = str(data_dict.get("dct_publisher_sm", ""))
 
-        if format in ["Shapefile", "ArcGrid", "GeoDatabase", "Arc/Info Binary Grid"]:
-            gbl_resourceClass_sm = ["Datasets"]
-            return gbl_resourceClass_sm, gbl_resourceType_sm
-        
-        if "sanborn" in publisher.lower():
-            gbl_resourceClass_sm[0] = "Maps"
-            gbl_resourceType_sm[0] = "Fire insurance maps"
-            return gbl_resourceClass_sm, gbl_resourceType_sm
-        
-        if format in ["GeoTIFF", "TIFF"]:
-            if "relief" in description.lower() or "map" in description.lower() or "maps" in subject.lower():
-                gbl_resourceClass_sm[0] = "Maps"
-                gbl_resourceType_sm[0] = "Fire insurance maps"
+        logging.info("Class and Type determination using keywords...")
+        logging.debug("id: %s", id)
+        logging.debug("Title: %s", dct_title_s)
+        logging.debug("Format: %s", dct_format_s)
+        logging.debug("Description: %s", dct_description_sm)
+        logging.debug("Subject: %s", dct_subject_sm)
+        logging.debug("Publisher: %s", dct_publisher_sm)
+        logging.debug("References: %s", dct_references_s)
+
+        if "aerial photo" in dct_title_s.lower():
+                logging.debug("Aerial photogrpahy detected")
+                gbl_resourceType_sm = ["Aerial photographs"]
+                gbl_resourceClass_sm = ['Imagery']
                 return gbl_resourceClass_sm, gbl_resourceType_sm
-            gbl_resourceClass_sm = ["Datasets"]
-            return gbl_resourceClass_sm, gbl_resourceType_sm 
+
+        if "sanborn" in dct_publisher_sm.lower():
+            logging.debug("Sanborn map detected, setting resource class and type.")
+            append_if_not_exists(gbl_resourceClass_sm, "Maps")
+            append_if_not_exists(gbl_resourceType_sm, "Fire insurance maps")
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+
+        if "topographical map" in dct_title_s.lower():
+            logging.debug(
+                "topographical map detected, setting resource class and type."
+            )
+            append_if_not_exists(gbl_resourceClass_sm, "Maps")
+            append_if_not_exists(gbl_resourceType_sm, "Topographic maps")
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+        
+        if "aeronautical" in dct_title_s.lower():
+            logging.debug(
+                "Aeronautical charts detected, setting resource class and type."
+            )
+            append_if_not_exists(gbl_resourceClass_sm, "Maps")
+            append_if_not_exists(gbl_resourceType_sm, "Aeronautical charts")
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+
+        if "iiif" in dct_references_s.lower():
+            logging.debug("IIIF Map detected, setting resource class and type.")
+            append_if_not_exists(gbl_resourceClass_sm, "Maps")
+            if ("aerial photo" in dct_title_s.lower()) or ("aerial photo" in dct_description_sm.lower()):
+                logging.debug("IIIF Aerial Photography Detected")
+                append_if_not_exists(gbl_resourceType_sm, "Aerial photographs")
+            else:
+                logging.debug("IIIF Map Detected")
+                append_if_not_exists(gbl_resourceType_sm, "Digital maps")
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+
+        if dct_format_s in ["GeoTIFF", "TIFF"]:
+            if (
+                "relief" in dct_description_sm.lower()
+                or "map" in dct_description_sm.lower()
+                or "maps" in dct_subject_sm.lower()
+                or "plan" in dct_title_s.lower()
+                or "map" in dct_title_s.lower()
+                or "topographic" in dct_title_s.lower()
+            ):
+                logging.debug(
+                    "GeoTIFF or TIFF format with map-related description or subject detected."
+                )
+                append_if_not_exists(gbl_resourceClass_sm, "Maps")
+                append_if_not_exists(gbl_resourceType_sm, "Digital maps")
+                return gbl_resourceClass_sm, gbl_resourceType_sm
             
-        if format == "":
-            if "relief" in description.lower() or "map" in description.lower() or "maps" in subject.lower():
-                gbl_resourceClass_sm[0] = "Maps"
+            if ("aerial photo" in dct_title_s.lower()):
+                logging.debug("Aerial Photogrpahy Detected")
+                append_if_not_exists(gbl_resourceType_sm, "Aerial photographs")
+                gbl_resourceClass_sm = ["Imagery"]
+            
+            logging.debug(
+                "GeoTIFF or TIFF format detected, setting resource class to Datasets."
+            )
+            gbl_resourceClass_sm = ["Datasets"]
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+        
+        if (
+            dct_format_s
+            in [
+                "Shapefile",
+                "ArcGrid",
+                "GeoDatabase",
+                "Geodatabase",
+                "Arc/Info Binary Grid",
+            ]
+            or "csdgm" in dct_references_s
+            or "ArcGIS#" in dct_references_s
+        ):
+            logging.debug("Setting resource class to Datasets based on format.")
+            gbl_resourceClass_sm = ["Datasets"]
+            if "aerial photo" in dct_title_s.lower():
+                logging.debug("Aerial photogrpahy detected")
+                gbl_resourceType_sm = ["Aerial photographs"]
+                gbl_resourceClass_sm = ['Imagery']
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+
+        if dct_format_s == "":
+            if (
+                "relief" in dct_description_sm.lower()
+                or "map" in dct_description_sm.lower()
+                or "maps" in dct_subject_sm.lower()
+            ):
+                logging.debug(
+                    "Empty format with map-related description or subject detected."
+                )
+                append_if_not_exists(gbl_resourceClass_sm, "Maps")
                 return gbl_resourceClass_sm, gbl_resourceType_sm
             else:
+                logging.debug("Empty format, setting resource class to Other.")
                 gbl_resourceClass_sm = ["Other"]
                 return gbl_resourceClass_sm, gbl_resourceType_sm
 
-        if "relief" in description.lower() or "map" in description.lower() or "maps" in subject.lower():
+        if (
+            dct_format_s == "ArcGRID"
+            or dct_format_s == "IMG"
+            or "DEM" in dct_description_sm
+            or "DSM" in dct_description_sm
+            or "digital elevation model" in dct_description_sm
+            or "digital terrain model" in dct_description_sm
+            or "digital surface model" in dct_description_sm
+            or "arc-second" in dct_description_sm
+            or "raster dataset" in dct_description_sm.lower()
+        ):
+            logging.debug("Elevation or other non-Imagery Raster Detected.")
+            append_if_not_exists(gbl_resourceClass_sm, "Datasets")
+            append_if_not_exists(gbl_resourceType_sm, "Raster data")
+            return gbl_resourceClass_sm, gbl_resourceType_sm
+        
+        if (
+            "relief" in dct_description_sm.lower()
+            or "map" in dct_description_sm.lower()
+            or "maps" in dct_subject_sm.lower()
+        ):
+            logging.debug("Map-related description or subject detected.")
             gbl_resourceClass_sm = ["Maps"]
             return gbl_resourceClass_sm, gbl_resourceType_sm
 
         # If all else fails:
+        logging.debug("Setting default resource class and type.")
         gbl_resourceClass_sm = [SchemaUpdater.RESOURCE_CLASS_DEFAULT]
         gbl_resourceType_sm = [SchemaUpdater.RESOURCE_TYPE_DEFAULT]
         return gbl_resourceClass_sm, gbl_resourceType_sm
 
     def handle_class_and_type(self, data_dict: Dict) -> None:
-        data_dict["gbl_resourceClass_sm"], data_dict["gbl_resourceType_sm"] = self.determine_resource_class_and_type(data_dict)
+        (
+            data_dict["gbl_resourceClass_sm"],
+            data_dict["gbl_resourceType_sm"],
+        ) = self.determine_resource_class_and_type(data_dict)
 
     @staticmethod
     def remove_deprecated(data_dict: Dict) -> None:
@@ -219,15 +365,21 @@ class SchemaUpdater:
             "uw_supplemental_s",
             "uw_notice_s",
             "uuid",
+            "stanford_rights_metadata_s",
+            "stanford_use_and_reproduction_s",
+            "stanford_copyright_s",
+
         ]
         for field in deprecated_fields:
-            data_dict.pop(field, None)
+            if field in data_dict:
+                logging.debug(f"Removing deprecated field: {field}")
+                data_dict.pop(field, None)
 
     @staticmethod
     def fix_stanford_place_issue(data_dict: Dict) -> None:
         """Fix specific place issues related to Stanford."""
         spatial = data_dict.get("dct_spatial_sm", [])
-        if "Wisconsin" in spatial and "United States" in spatial:
+        if "Wisconsin" in spatial and ("California" in spatial or "Puerto Rico" in spatial):
             data_dict["dct_spatial_sm"] = ["United States"]
 
     @staticmethod
@@ -263,6 +415,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    print(f"Parsed Arguments: {vars(args)}")  # Debug statement
+    logging.debug(f"Parsed Arguments: {vars(args)}")
+
     overwrite_values = {
         k: v
         for k, v in vars(args).items()
@@ -270,5 +425,7 @@ if __name__ == "__main__":
     }
 
     LoggerConfig.configure_logging("log/gbl-1_to_aardvark.log")
-    schema_updater = SchemaUpdater(overwrite_values, args.resource_class_default, args.place_default)
+    print(f"Initializing SchemaUpdater with PLACE_DEFAULT: {args.place_default}")  # Debug statement
+    schema_updater = SchemaUpdater(overwrite_values, args.resource_class_default, args.resource_type_default, args.place_default)
     schema_updater.update_all_schemas(args.dir_old_schema, args.dir_new_schema)
+
