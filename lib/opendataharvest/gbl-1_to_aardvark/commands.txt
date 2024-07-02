@@ -1,0 +1,23 @@
+python3 lib/opendataharvest/gbl-1_to_aardvark/convert.py tmp/opengeometadata/edu.berkeley/ tmp/opengeometadata/edu.berkeley/aardvark
+
+OGM_PATH=tmp/opengeometadata/edu.berkeley/ bundle exec rake geocombine:index
+
+python3 lib/opendataharvest/gbl-1_to_aardvark/convert.py tmp/opengeometadata/edu.princeton.arks/ tmp/opengeometadata/edu.princeton.arks/aardvark
+
+OGM_PATH=tmp/opengeometadata/edu.princeton.arks/ bundle exec rake geocombine:index
+
+python3 lib/opendataharvest/gbl-1_to_aardvark/convert.py tmp/opengeometadata/edu.stanford.purl/ tmp/opengeometadata/edu.stanford.purl/aardvark
+
+OGM_PATH=tmp/opengeometadata/edu.stanford.purl/ bundle exec rake geocombine:index
+
+python3 lib/opendataharvest/gbl-1_to_aardvark/convert.py tmp/opengeometadata/edu.cornell/ tmp/opengeometadata/edu.cornell/aardvark
+
+OGM_PATH=tmp/opengeometadata/edu.cornell/ bundle exec rake geocombine:index
+
+python3 lib/opendataharvest/gbl-1_to_aardvark/convert.py tmp/opengeometadata/edu.columbia/ tmp/opengeometadata/edu.columbia/aardvark
+
+OGM_PATH=tmp/opengeometadata/edu.columbia/ bundle exec rake geocombine:index
+
+python3 lib/opendataharvest/gbl-1_to_aardvark/convert.py tmp/opengeometadata/edu.wisc/ tmp/opengeometadata/edu.wisc/aardvark
+
+OGM_PATH=tmp/opengeometadata/edu.wisc/ bundle exec rake geocombine:index
