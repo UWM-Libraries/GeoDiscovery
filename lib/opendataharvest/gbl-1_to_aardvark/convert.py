@@ -7,17 +7,16 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import argparse
 
-
 class LoggerConfig:
     @staticmethod
     def configure_logging(logfile: str) -> None:
+        os.makedirs(os.path.dirname(logfile), exist_ok=True)
         logging.basicConfig(
             filename=logfile,
             filemode="w",
             level=logging.DEBUG,
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
-
 
 class SchemaUpdater:
     def __init__(
@@ -391,7 +390,6 @@ class SchemaUpdater:
                 data_dict[key] = [data_dict[key]]
         return data_dict
 
-
 if __name__ == "__main__":
     # fmt: off
     parser = argparse.ArgumentParser(description="Update metadata schema from GBL 1.0 to Aardvark.")
@@ -415,7 +413,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    print(f"Parsed Arguments: {vars(args)}")  # Debug statement
+    LoggerConfig.configure_logging("log/gbl-1_to_aardvark.log")
+
     logging.debug(f"Parsed Arguments: {vars(args)}")
 
     overwrite_values = {
@@ -424,8 +423,7 @@ if __name__ == "__main__":
         if v is not None and k not in ["dir_old_schema", "dir_new_schema", "resource_class_default", "place_default"]
     }
 
-    LoggerConfig.configure_logging("log/gbl-1_to_aardvark.log")
-    print(f"Initializing SchemaUpdater with PLACE_DEFAULT: {args.place_default}")  # Debug statement
+    logging.info(f"Initializing SchemaUpdater with PLACE_DEFAULT: {args.place_default}")
+
     schema_updater = SchemaUpdater(overwrite_values, args.resource_class_default, args.resource_type_default, args.place_default)
     schema_updater.update_all_schemas(args.dir_old_schema, args.dir_new_schema)
-
