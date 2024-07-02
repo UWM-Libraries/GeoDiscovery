@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import argparse
 
+
 class LoggerConfig:
     @staticmethod
     def configure_logging(logfile: str) -> None:
@@ -17,6 +18,7 @@ class LoggerConfig:
             level=logging.DEBUG,
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
+
 
 class SchemaUpdater:
     def __init__(
@@ -93,14 +95,13 @@ class SchemaUpdater:
             for key, value in self.overwrite_values.items():
                 data[key] = value
 
+            # Run all the static functions:
             self.check_required(data)
-
-            # Add restricted display note if dc_rights_s is "restricted"
             self.add_restricted_display_notes(data)
-
-            self.remove_deprecated(data)
             self.fix_stanford_place_issue(data)
+            self.fix_wisco_provider_issue(data)
             data = self.string2array(data)
+            self.remove_deprecated(data)
 
             new_filepath = dir_new_schema / (
                 filepath.name
@@ -147,7 +148,9 @@ class SchemaUpdater:
         for req in requirements:
             value = data_dict.get(req)
             if not value or (isinstance(value, list) and not any(value)):
-                logging.warning(f"Requirement {req} is either missing or contains empty values...")
+                logging.warning(
+                    f"Requirement {req} is either missing or contains empty values..."
+                )
                 self.handle_missing_field(data_dict, req)
 
     def handle_missing_field(self, data_dict: Dict, field: str) -> None:
@@ -187,7 +190,7 @@ class SchemaUpdater:
         if gbl_resourceClass_sm and gbl_resourceType_sm:
             logging.debug("Resource class and type already determined.")
             return gbl_resourceClass_sm, gbl_resourceType_sm
-        
+
         # Grab some more info as text right away
         dct_title_s = str(data_dict.get("dct_title_s", ""))
         dct_format_s = str(data_dict.get("dct_format_s", ""))
@@ -199,7 +202,11 @@ class SchemaUpdater:
         dct_source_sm = str(data_dict.get("dct_source_sm", ""))
 
         # Open Index Maps
-        if ("openindexmaps" in dct_references_s.lower()) or (id == "stanford-ch237ht4777") or ("ch237ht4777" in dct_source_sm.lower()):
+        if (
+            ("openindexmaps" in dct_references_s.lower())
+            or (id == "stanford-ch237ht4777")
+            or ("ch237ht4777" in dct_source_sm.lower())
+        ):
             logging.debug("OpenIndexMap detected, setting resource class and type.")
             gbl_resourceClass_sm = ["Maps"]
             gbl_resourceType_sm = ["Index maps"]
@@ -217,10 +224,10 @@ class SchemaUpdater:
         logging.debug("References: %s", dct_references_s)
 
         if "aerial photo" in dct_title_s.lower():
-                logging.debug("Aerial photogrpahy detected")
-                gbl_resourceType_sm = ["Aerial photographs"]
-                gbl_resourceClass_sm = ['Imagery']
-                return gbl_resourceClass_sm, gbl_resourceType_sm
+            logging.debug("Aerial photogrpahy detected")
+            gbl_resourceType_sm = ["Aerial photographs"]
+            gbl_resourceClass_sm = ["Imagery"]
+            return gbl_resourceClass_sm, gbl_resourceType_sm
 
         if "sanborn" in dct_publisher_sm.lower():
             logging.debug("Sanborn map detected, setting resource class and type.")
@@ -235,7 +242,7 @@ class SchemaUpdater:
             append_if_not_exists(gbl_resourceClass_sm, "Maps")
             append_if_not_exists(gbl_resourceType_sm, "Topographic maps")
             return gbl_resourceClass_sm, gbl_resourceType_sm
-        
+
         if "aeronautical" in dct_title_s.lower():
             logging.debug(
                 "Aeronautical charts detected, setting resource class and type."
@@ -247,7 +254,9 @@ class SchemaUpdater:
         if "iiif" in dct_references_s.lower():
             logging.debug("IIIF Map detected, setting resource class and type.")
             append_if_not_exists(gbl_resourceClass_sm, "Maps")
-            if ("aerial photo" in dct_title_s.lower()) or ("aerial photo" in dct_description_sm.lower()):
+            if ("aerial photo" in dct_title_s.lower()) or (
+                "aerial photo" in dct_description_sm.lower()
+            ):
                 logging.debug("IIIF Aerial Photography Detected")
                 append_if_not_exists(gbl_resourceType_sm, "Aerial photographs")
             else:
@@ -270,18 +279,18 @@ class SchemaUpdater:
                 append_if_not_exists(gbl_resourceClass_sm, "Maps")
                 append_if_not_exists(gbl_resourceType_sm, "Digital maps")
                 return gbl_resourceClass_sm, gbl_resourceType_sm
-            
-            if ("aerial photo" in dct_title_s.lower()):
+
+            if "aerial photo" in dct_title_s.lower():
                 logging.debug("Aerial Photogrpahy Detected")
                 append_if_not_exists(gbl_resourceType_sm, "Aerial photographs")
                 gbl_resourceClass_sm = ["Imagery"]
-            
+
             logging.debug(
                 "GeoTIFF or TIFF format detected, setting resource class to Datasets."
             )
             gbl_resourceClass_sm = ["Datasets"]
             return gbl_resourceClass_sm, gbl_resourceType_sm
-        
+
         if (
             dct_format_s
             in [
@@ -299,7 +308,7 @@ class SchemaUpdater:
             if "aerial photo" in dct_title_s.lower():
                 logging.debug("Aerial photogrpahy detected")
                 gbl_resourceType_sm = ["Aerial photographs"]
-                gbl_resourceClass_sm = ['Imagery']
+                gbl_resourceClass_sm = ["Imagery"]
             return gbl_resourceClass_sm, gbl_resourceType_sm
 
         if dct_format_s == "":
@@ -333,7 +342,7 @@ class SchemaUpdater:
             append_if_not_exists(gbl_resourceClass_sm, "Datasets")
             append_if_not_exists(gbl_resourceType_sm, "Raster data")
             return gbl_resourceClass_sm, gbl_resourceType_sm
-        
+
         if (
             "relief" in dct_description_sm.lower()
             or "map" in dct_description_sm.lower()
@@ -368,7 +377,6 @@ class SchemaUpdater:
             "stanford_rights_metadata_s",
             "stanford_use_and_reproduction_s",
             "stanford_copyright_s",
-
         ]
         for field in deprecated_fields:
             if field in data_dict:
@@ -379,8 +387,27 @@ class SchemaUpdater:
     def fix_stanford_place_issue(data_dict: Dict) -> None:
         """Fix specific place issues related to Stanford."""
         spatial = data_dict.get("dct_spatial_sm", [])
-        if "Wisconsin" in spatial and ("California" in spatial or "Puerto Rico" in spatial):
+        if "Wisconsin" in spatial and (
+            "California" in spatial or "Puerto Rico" in spatial
+        ):
             data_dict["dct_spatial_sm"] = ["United States"]
+
+    @staticmethod
+    def fix_wisco_provider_issue(data_dict: Dict) -> None:
+        """Fix specific provider issues related to edu.wisc."""
+        provider = data_dict.get("schema_provider_s", "")
+        wisco_providers = [
+            "UW-Madison Robinson Map Library",
+            "WisconsinView",
+            "UW Digital Collections Center",
+            "Wisconsin State Cartographer's Office",
+        ]
+        if provider in wisco_providers:
+            logging.debug(f"Wisco provider identified: {provider}")
+            data_dict["schema_provider_s"] = ["University of Wisconsin-Madison"]
+            data_dict["dct_description_sm"].insert(
+                0, f"Resource provided by {provider}."
+            )
 
     @staticmethod
     def string2array(data_dict: Dict) -> Dict:
@@ -390,6 +417,7 @@ class SchemaUpdater:
             if suffix in ["sm", "im"] and not isinstance(data_dict[key], list):
                 data_dict[key] = [data_dict[key]]
         return data_dict
+
 
 if __name__ == "__main__":
     # fmt: off
