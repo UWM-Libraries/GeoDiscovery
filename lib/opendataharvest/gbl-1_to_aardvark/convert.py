@@ -96,11 +96,11 @@ class SchemaUpdater:
                 data[key] = value
 
             # Run all the static functions:
+            data = self.string2array(data)
             self.check_required(data)
             self.add_restricted_display_notes(data)
             self.fix_stanford_place_issue(data)
             self.fix_wisco_provider_issue(data)
-            data = self.string2array(data)
             self.remove_deprecated(data)
 
             new_filepath = dir_new_schema / (
@@ -408,6 +408,8 @@ class SchemaUpdater:
             data_dict["dct_description_sm"].insert(
                 0, f"Resource provided by {provider}."
             )
+            description = str(data_dict["dct_description_sm"])
+            logging.debug(f"Wisco Description now reads: {description}")
 
     @staticmethod
     def string2array(data_dict: Dict) -> Dict:
