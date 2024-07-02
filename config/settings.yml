@@ -249,3 +249,21 @@ HELP_TEXT:
       - 'oembed'
       - 'pmtiles'
       - 'cog'
+
+DISPLAY_NOTES_SHOWN:
+  danger:
+    bootstrap_alert_class: alert-danger
+    icon: fire-solid
+    note_prefix: "Danger: "
+  info:
+    bootstrap_alert_class: alert-info
+    icon: circle-info-solid
+    note_prefix: "Info: "
+  tip:
+    bootstrap_alert_class: alert-success
+    icon: lightbulb-solid
+    note_prefix: "Tip: "
+  warning:
+    bootstrap_alert_class: alert-warning
+    icon: triangle-exclamation-solid
+    note_prefix: "Warning: "
