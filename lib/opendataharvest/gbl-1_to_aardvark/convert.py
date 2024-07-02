@@ -119,19 +119,18 @@ class SchemaUpdater:
 
     @staticmethod
     def add_restricted_display_notes(data_dict: Dict) -> None:
-        """Add a restricted display note if dc_rights_s is 'restricted'."""
+        """Add a restricted display note if dct_accessRights_s is 'Restricted'."""
         if data_dict.get("dct_accessRights_s") == "Restricted":
             note = "Warning: This dataset is restricted and you may not be able to access the resource. Contact the dataset provider or the AGSL for assistance."
-            if "gbl_displayNote_sm" in data_dict:
-                if isinstance(data_dict["gbl_displayNote_sm"], list):
-                    data_dict["gbl_displayNote_sm"].append(note)
-                else:
-                    data_dict["gbl_displayNote_sm"] = [
-                        data_dict["gbl_displayNote_sm"],
-                        note,
-                    ]
-            else:
+            display_notes = data_dict.get("gbl_displayNote_sm")
+
+            if display_notes is None:
                 data_dict["gbl_displayNote_sm"] = [note]
+            elif isinstance(display_notes, list):
+                if note not in display_notes:
+                    display_notes.append(note)
+            else:
+                data_dict["gbl_displayNote_sm"] = [display_notes, note]
 
     def check_required(self, data_dict: Dict) -> None:
         """Check for required fields and handle missing ones."""
@@ -387,9 +386,7 @@ class SchemaUpdater:
     def fix_stanford_place_issue(data_dict: Dict) -> None:
         """Fix specific place issues related to Stanford."""
         spatial = data_dict.get("dct_spatial_sm", [])
-        if "Wisconsin" in spatial and (
-            "California" in spatial or "Puerto Rico" in spatial
-        ):
+        if "Wisconsin" in spatial and "New Mexico" in spatial:
             data_dict["dct_spatial_sm"] = ["United States"]
 
     @staticmethod
