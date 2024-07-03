@@ -9,14 +9,15 @@ import argparse
 import yaml
 
 # Load configuration from YAML file
-with open("config/opendataharvest.yaml", 'r') as file:
+with open("config/opendataharvest.yaml", "r") as file:
     config = yaml.safe_load(file)
+
 
 class LoggerConfig:
     @staticmethod
     def configure_logging() -> None:
-        logfile = config['logging']['logfile']
-        level = getattr(logging, config['logging']['level'].upper(), logging.ERROR)
+        logfile = config["logging"]["logfile"]
+        level = getattr(logging, config["logging"]["level"].upper(), logging.ERROR)
         os.makedirs(os.path.dirname(logfile), exist_ok=True)
         logging.basicConfig(
             filename=logfile,
@@ -25,8 +26,9 @@ class LoggerConfig:
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
 
+
 class SchemaUpdater:
-    CROSSWALK_PATH = Path(config['paths']['crosswalk'])
+    CROSSWALK_PATH = Path(config["paths"]["crosswalk"])
 
     def __init__(
         self,
@@ -139,7 +141,7 @@ class SchemaUpdater:
 
     def check_required(self, data_dict: Dict) -> None:
         """Check for required fields and handle missing ones."""
-        requirements = config['requirements']['check_required']
+        requirements = config["requirements"]["check_required"]
 
         for req in requirements:
             value = data_dict.get(req)
@@ -362,7 +364,7 @@ class SchemaUpdater:
 
     def remove_deprecated(self, data_dict: Dict) -> None:
         """Remove deprecated fields from the data dictionary."""
-        deprecated_fields = config['deprecated_fields']['remove_deprecated']
+        deprecated_fields = config["deprecated_fields"]["remove_deprecated"]
         for field in deprecated_fields:
             if field in data_dict:
                 logging.debug(f"Removing deprecated field: {field}")
@@ -377,7 +379,7 @@ class SchemaUpdater:
     def fix_wisco_provider_issue(self, data_dict: Dict) -> None:
         """Fix specific provider issues related to edu.wisc."""
         provider = data_dict.get("schema_provider_s", "")
-        wisco_providers = config['wisco_providers']
+        wisco_providers = config["wisco_providers"]
         if provider in wisco_providers:
             logging.debug(f"Wisco provider identified: {provider}")
             data_dict["schema_provider_s"] = ["University of Wisconsin-Madison"]
@@ -391,7 +393,9 @@ class SchemaUpdater:
         """Convert certain string fields to array if they should be lists."""
         for key in data_dict.keys():
             suffix = key.split("_")[-1]
-            if suffix in config['string2array_suffixes'] and not isinstance(data_dict[key], list):
+            if suffix in config["string2array_suffixes"] and not isinstance(
+                data_dict[key], list
+            ):
                 data_dict[key] = [data_dict[key]]
         return data_dict
 

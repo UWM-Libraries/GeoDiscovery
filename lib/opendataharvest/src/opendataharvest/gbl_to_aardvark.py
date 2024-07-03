@@ -4,15 +4,15 @@ import logging
 import yaml
 
 # Load configuration from YAML file
-with open("config/opendataharvest.yaml", 'r') as file:
+with open("config/opendataharvest.yaml", "r") as file:
     config = yaml.safe_load(file)
 
 # Get the OGM_PATH environment variable or from config
-ogm_path = os.getenv("OGM_PATH", config['paths']['ogm_path'])
+ogm_path = os.getenv("OGM_PATH", config["paths"]["ogm_path"])
 
 # Set up logging to a file
-logfile = config['logging']['logfile']
-level = getattr(logging, config['logging']['level'].upper(), logging.ERROR)
+logfile = config["logging"]["logfile"]
+level = getattr(logging, config["logging"]["level"].upper(), logging.ERROR)
 logging.basicConfig(
     filename=logfile,
     level=level,

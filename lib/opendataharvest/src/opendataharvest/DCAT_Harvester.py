@@ -52,8 +52,8 @@ except FileNotFoundError:
 try:
     CONFIG = config.get("CONFIG")
     OUTPUTDIR = Path(CONFIG.get("OUTPUTDIR"))
-    LOGFILE = config['logging']['logfile']
-    LOGLEVEL = getattr(logging, config['logging']['level'].upper(), logging.ERROR)
+    LOGFILE = config["logging"]["logfile"]
+    LOGLEVEL = getattr(logging, config["logging"]["level"].upper(), logging.ERROR)
     DEFAULTBBOX = Path(CONFIG.get("DEFAULTBBOX"))
     CATALOG_KEY = CONFIG.get("CATALOG", "TestSites")
     CATALOG = config.get(CATALOG_KEY, None)
