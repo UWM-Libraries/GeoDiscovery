@@ -57,7 +57,7 @@ DEFAULT:
     - "AGSLOpenDataHarvest"
   RESOURCECLASS:
     - "Datasets"
-  ACCESSRIGHTS: "public"
+  ACCESSRIGHTS: "Public"
   MDVERSION: "Aardvark"
   LANG:
     - "English"
