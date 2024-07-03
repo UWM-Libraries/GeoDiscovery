@@ -20,12 +20,12 @@ logging.basicConfig(
 )
 
 commands = [
-    [
-        "lib/opendataharvest/venv/bin/python3",
-        "lib/opendataharvest/src/opendataharvest/convert.py",
-        f"{ogm_path}/edu.berkeley/",
-        f"{ogm_path}/edu.berkeley/aardvark",
-    ],
+    # [
+    #     "lib/opendataharvest/venv/bin/python3",
+    #     "lib/opendataharvest/src/opendataharvest/convert.py",
+    #     f"{ogm_path}/edu.berkeley/",
+    #     f"{ogm_path}/edu.berkeley/aardvark",
+    # ],
     [
         "lib/opendataharvest/venv/bin/python3",
         "lib/opendataharvest/src/opendataharvest/convert.py",
