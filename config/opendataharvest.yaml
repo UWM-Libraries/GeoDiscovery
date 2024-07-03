@@ -1,20 +1,50 @@
-# config.yaml
+# General configuration
+logging:
+  level: INFO
+  logfile: "log/opendataharvest.log"
 
-#
-# Check this to identify new sites:
-# https://hub.arcgis.com/search?collection=Site&q=wisconsin
-#
+paths:
+  crosswalk: "lib/opendataharvest/src/opendataharvest/data/crosswalk.csv"
+  ogm_path: "/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata"
+  defaultbbox: "lib/opendataharvest/src/opendataharvest/data/default_bbox.csv"
 
-###########################
-# Harvester Configuration #
-###########################
+requirements:
+  check_required:
+    - dct_publisher_sm
+    - dct_spatial_sm
+    - gbl_mdVersion_s
+    - dct_title_s
+    - id
+    - gbl_mdModified_dt
+    - gbl_resourceClass_sm
 
+deprecated_fields:
+  remove_deprecated:
+    - dc_type_s
+    - layer_geom_type_s
+    - dct_isPartOf_sm
+    - uw_supplemental_s
+    - uw_notice_s
+    - uuid
+    - stanford_rights_metadata_s
+    - stanford_use_and_reproduction_s
+    - stanford_copyright_s
+
+wisco_providers:
+  - UW-Madison Robinson Map Library
+  - WisconsinView
+  - UW Digital Collections Center
+  - Wisconsin State Cartographer's Office
+
+string2array_suffixes:
+  - sm
+  - im
+
+# DCAT Harvester specific configuration
 CONFIG:
   CATALOG: "TestSites" # TestSites, DCAT_Sites, or CKAN_Sites
-  OUTPUTDIR: "tmp/opengeometadata/edu.uwm.opendata.test/"
-  LOGDIR: "log/" 
-  LOGLEVEL: "WARNING" # INFO, WARNING, ERROR, CRITICAL
-  DEFAULTBBOX: "lib/opendataharvest/opendataharvest/default_bbox.csv"
+  OUTPUTDIR: "tmp/opengeometadata/opendataharvest/"
+  DEFAULTBBOX: "lib/opendataharvest/src/opendataharvest/data/default_bbox.csv"
   MAXRETRY: 3
   SLEEPTIME: 2
   SCHEMA: "https://raw.githubusercontent.com/UWM-Libraries/GeoDiscovery/main/schema/geoblacklight-schema-aardvark.json"

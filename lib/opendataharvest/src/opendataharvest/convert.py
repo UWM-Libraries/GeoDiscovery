@@ -6,21 +6,28 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import argparse
+import yaml
 
+# Load configuration from YAML file
+with open("config/opendataharvest.yaml", 'r') as file:
+    config = yaml.safe_load(file)
 
 class LoggerConfig:
     @staticmethod
-    def configure_logging(logfile: str) -> None:
+    def configure_logging() -> None:
+        logfile = config['logging']['logfile']
+        level = getattr(logging, config['logging']['level'].upper(), logging.ERROR)
         os.makedirs(os.path.dirname(logfile), exist_ok=True)
         logging.basicConfig(
             filename=logfile,
             filemode="a",
-            level=logging.ERROR,
+            level=level,
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
 
-
 class SchemaUpdater:
+    CROSSWALK_PATH = Path(config['paths']['crosswalk'])
+
     def __init__(
         self,
         overwrite_values: Optional[Dict[str, str]] = None,
@@ -37,8 +44,6 @@ class SchemaUpdater:
             logging.critical(f"Failed to load crosswalk: {e}")
             self.crosswalk = {}
         self.overwrite_values = overwrite_values if overwrite_values else {}
-
-    CROSSWALK_PATH = Path("lib/opendataharvest/gbl-1_to_aardvark/crosswalk.csv")
 
     @staticmethod
     def load_crosswalk(crosswalk_path: Path) -> Dict[str, str]:
@@ -134,15 +139,7 @@ class SchemaUpdater:
 
     def check_required(self, data_dict: Dict) -> None:
         """Check for required fields and handle missing ones."""
-        requirements = [
-            "dct_publisher_sm",
-            "dct_spatial_sm",
-            "gbl_mdVersion_s",
-            "dct_title_s",
-            "id",
-            "gbl_mdModified_dt",
-            "gbl_resourceClass_sm",
-        ]
+        requirements = config['requirements']['check_required']
 
         for req in requirements:
             value = data_dict.get(req)
@@ -363,42 +360,24 @@ class SchemaUpdater:
             data_dict["gbl_resourceType_sm"],
         ) = self.determine_resource_class_and_type(data_dict)
 
-    @staticmethod
-    def remove_deprecated(data_dict: Dict) -> None:
+    def remove_deprecated(self, data_dict: Dict) -> None:
         """Remove deprecated fields from the data dictionary."""
-        deprecated_fields = [
-            "dc_type_s",
-            "layer_geom_type_s",
-            "dct_isPartOf_sm",
-            "uw_supplemental_s",
-            "uw_notice_s",
-            "uuid",
-            "stanford_rights_metadata_s",
-            "stanford_use_and_reproduction_s",
-            "stanford_copyright_s",
-        ]
+        deprecated_fields = config['deprecated_fields']['remove_deprecated']
         for field in deprecated_fields:
             if field in data_dict:
                 logging.debug(f"Removing deprecated field: {field}")
                 data_dict.pop(field, None)
 
-    @staticmethod
-    def fix_stanford_place_issue(data_dict: Dict) -> None:
+    def fix_stanford_place_issue(self, data_dict: Dict) -> None:
         """Fix specific place issues related to Stanford."""
         spatial = data_dict.get("dct_spatial_sm", [])
         if "Wisconsin" in spatial and "New Mexico" in spatial:
             data_dict["dct_spatial_sm"] = ["United States"]
 
-    @staticmethod
-    def fix_wisco_provider_issue(data_dict: Dict) -> None:
+    def fix_wisco_provider_issue(self, data_dict: Dict) -> None:
         """Fix specific provider issues related to edu.wisc."""
         provider = data_dict.get("schema_provider_s", "")
-        wisco_providers = [
-            "UW-Madison Robinson Map Library",
-            "WisconsinView",
-            "UW Digital Collections Center",
-            "Wisconsin State Cartographer's Office",
-        ]
+        wisco_providers = config['wisco_providers']
         if provider in wisco_providers:
             logging.debug(f"Wisco provider identified: {provider}")
             data_dict["schema_provider_s"] = ["University of Wisconsin-Madison"]
@@ -408,12 +387,11 @@ class SchemaUpdater:
             description = str(data_dict["dct_description_sm"])
             logging.debug(f"Wisco Description now reads: {description}")
 
-    @staticmethod
-    def string2array(data_dict: Dict) -> Dict:
+    def string2array(self, data_dict: Dict) -> Dict:
         """Convert certain string fields to array if they should be lists."""
         for key in data_dict.keys():
             suffix = key.split("_")[-1]
-            if suffix in ["sm", "im"] and not isinstance(data_dict[key], list):
+            if suffix in config['string2array_suffixes'] and not isinstance(data_dict[key], list):
                 data_dict[key] = [data_dict[key]]
         return data_dict
 
@@ -441,7 +419,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    LoggerConfig.configure_logging("log/gbl-1_to_aardvark.log")
+    LoggerConfig.configure_logging()
 
     logging.debug(f"Parsed Arguments: {vars(args)}")
 
@@ -451,7 +429,8 @@ if __name__ == "__main__":
         if v is not None and k not in ["dir_old_schema", "dir_new_schema", "resource_class_default", "place_default"]
     }
 
-    logging.info(f"Initializing SchemaUpdater with PLACE_DEFAULT: {args.place_default}")
+    logging.debug(f"Initializing SchemaUpdater with PLACE_DEFAULT: {args.place_default}")
 
     schema_updater = SchemaUpdater(overwrite_values, args.resource_class_default, args.resource_type_default, args.place_default)
     schema_updater.update_all_schemas(args.dir_old_schema, args.dir_new_schema)
+    logging.info(f"Conversion complete for {args.dir_old_schema}")

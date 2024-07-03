@@ -9,14 +9,14 @@ Description: This script is used to harvest open data from data portals who
 expose a DCAT JSON. It reads configuration options from a YAML file, including 
 output directory, default bounding box, which portals to scan (catalog), maximum
 retry attempts, and sleep time for requests.
-A Site object is crated for each website in the defined catalog. Datasets not 
+A Site object is created for each website in the defined catalog. Datasets not 
 in the skip list for the Site will be looped over and a JSON File generated for
 each. The Aardvark class is dictionary-like and defines the structure of a 
-single dataset description. We  dump the Aardvark object to JSON when 
-crosswalking is completeo and write it to a file. A timestamped log file is 
+single dataset description. We dump the Aardvark object to JSON when 
+crosswalking is complete and write it to a file. A timestamped log file is 
 created on each run and contains verbose output for debugging and for maintaining
 the config.yaml file such as datasets to add to the skip list, etc.
-Code is formated according to PEP8 using Black.
+Code is formatted according to PEP8 using Black.
 Care is taken to use functionality from the Python standard library.
 AI was utilized in authoring this script.
 """
@@ -40,7 +40,7 @@ from dateutil import parser
 import jsonschema
 from jsonschema import validate
 
-config_file = r"lib/opendataharvest/opendataharvest/config.yaml"
+config_file = r"config/opendataharvest.yaml"
 
 try:
     with open(config_file, "r", encoding="utf-8") as file:
@@ -52,8 +52,8 @@ except FileNotFoundError:
 try:
     CONFIG = config.get("CONFIG")
     OUTPUTDIR = Path(CONFIG.get("OUTPUTDIR"))
-    LOGDIR = Path(CONFIG.get("LOGDIR"))
-    LOGLEVEL = CONFIG.get("LOGLEVEL")
+    LOGFILE = config['logging']['logfile']
+    LOGLEVEL = getattr(logging, config['logging']['level'].upper(), logging.ERROR)
     DEFAULTBBOX = Path(CONFIG.get("DEFAULTBBOX"))
     CATALOG_KEY = CONFIG.get("CATALOG", "TestSites")
     CATALOG = config.get(CATALOG_KEY, None)
@@ -82,16 +82,9 @@ except AttributeError as e:
     print(e)
     sys.exit()
 
-# Get the logging level from the configuration
-logfile_name = f"opendataharvest.log"
-logfile = LOGDIR / logfile_name
-
-# Convert the logging level from string to logging module's level
-logging_level = getattr(logging, LOGLEVEL, logging.WARNING)
-
 # Configure the logging module
 logging.basicConfig(
-    filename=logfile, filemode="a", level=logging_level, format="%(message)s"
+    filename=LOGFILE, filemode="a", level=LOGLEVEL, format="%(message)s"
 )
 
 dt = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
