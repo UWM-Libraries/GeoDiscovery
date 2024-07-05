@@ -24,11 +24,12 @@ every :day, at: "2:30am", roles: [:app] do
 end
 
 # Runs the OpenDataHarvest DCAT script
-every :monday, at: "3:30am", roles: [:app] do
+every :day, at: "10:20am", roles: [:app] do
   rake "uwm:opendataharvest"
 end
 
 # Updates the UWM OpenGeoMetadata directory (git pull) and re-index
-every :monday, at: "4:00 am", roles: [:app] do
+every :day, at: "10:30 am", roles: [:app] do
+  rake "uwm:index:delete_all"
   command "bin/geocombine_pull_and_index.sh"
 end
