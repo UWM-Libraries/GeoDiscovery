@@ -1,30 +1,27 @@
 # bin/geocombine_pull.sh
 #!/bin/bash
+# This will only work in production!
 
-if [ "$RAILS_ENV" == "production" ]; then
-  source .env.production
-else
-  source .env.development
-fi
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.uwm]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.uchicago]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.illinois]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.indiana]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.uiowa]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.umd]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.msu]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.umn]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.unl]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.nyu]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.osu]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.psu]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.purdue]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.rutgers]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.umich]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.wisc]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.berkeley]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.columbia]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.cornell]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.princeton.arks]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.stanford.purl]
 
-bundle exec rake geocombine:pull[edu.uwm]
-bundle exec rake geocombine:pull[edu.uchicago]
-bundle exec rake geocombine:pull[edu.illinois]
-bundle exec rake geocombine:pull[edu.indiana]
-bundle exec rake geocombine:pull[edu.uiowa]
-bundle exec rake geocombine:pull[edu.umd]
-bundle exec rake geocombine:pull[edu.msu]
-bundle exec rake geocombine:pull[edu.umn]
-bundle exec rake geocombine:pull[edu.unl]
-bundle exec rake geocombine:pull[edu.nyu]
-bundle exec rake geocombine:pull[edu.osu]
-bundle exec rake geocombine:pull[edu.psu]
-bundle exec rake geocombine:pull[edu.purdue]
-bundle exec rake geocombine:pull[edu.rutgers]
-bundle exec rake geocombine:pull[edu.umich]
-bundle exec rake geocombine:pull[edu.wisc]
-bundle exec rake geocombine:pull[edu.berkeley]
-bundle exec rake geocombine:pull[edu.columbia]
-bundle exec rake geocombine:pull[edu.cornell]
-bundle exec rake geocombine:pull[edu.princeton.arks]
-bundle exec rake geocombine:pull[edu.stanford.purl]
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:index
