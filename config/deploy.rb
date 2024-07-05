@@ -65,7 +65,7 @@ namespace :deploy do
   task :copy_env_file do
     on roles(:app) do
       within release_path do
-        execute :cp, "config/.example.env.production", ".env.production"
+        execute :cp, ".example.env.production", ".env.production"
       end
     end
   end
