@@ -1,6 +1,6 @@
 # General configuration
 logging:
-  level: INFO
+  level: WARNING
   logfile: "log/opendataharvest.log"
 
 paths:
@@ -42,7 +42,7 @@ string2array_suffixes:
 
 # DCAT Harvester specific configuration
 CONFIG:
-  CATALOG: "TestSites" # TestSites, DCAT_Sites, or CKAN_Sites
+  CATALOG: "DCAT_Sites" # TestSites, DCAT_Sites, or CKAN_Sites
   OUTPUTDIR: "/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/opendataharvest/"
   DEFAULTBBOX: "lib/opendataharvest/src/opendataharvest/data/default_bbox.csv"
   MAXRETRY: 3
