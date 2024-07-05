@@ -78,10 +78,9 @@ namespace :deploy do
     on roles(:app) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          execute :rake, 'uwm:opendataharvest:setup_python_env'
+          execute :rake, "uwm:opendataharvest:setup_python_env"
         end
       end
     end
   end
 end
-
