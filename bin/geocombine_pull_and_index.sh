@@ -17,11 +17,15 @@ OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle 
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.purdue]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.rutgers]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.umich]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.wisc]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.berkeley]
+# GBL 1.0 institutions:
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.wisc]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.columbia]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.cornell]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.princeton.arks]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.stanford.purl]
-
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:index
+# GBL 1.0 to Aardvark Convert:
+OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake uwm:opendataharvest:gbl1_to_aardvark
+# GBL 1.0 to Aardvark Convert:
+bundle exec rake uwm:index:delete_all
+RAILS_ENV=production bundle exec rake geocombine:index
