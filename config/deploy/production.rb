@@ -62,3 +62,14 @@ set :rails_env, "production"
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+namespace :deploy do
+  after :finished, :setup_python_env do
+    on roles(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, "uwm:opendataharvest:setup_python_env"
+        end
+      end
+    end
+  end
+end

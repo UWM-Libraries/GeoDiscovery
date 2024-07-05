@@ -79,6 +79,25 @@ namespace :uwm do
     end
   end
 
+  namespace :opendataharvest do
+    desc "Set up Python venv environment for opendataharvest"
+    task :setup_python_env do
+      sh "lib/opendataharvest/src/setup_python_env.sh"
+    end
+
+    desc "Run the DCAT_Harvester.py Python script"
+    task :harvest_dcat do
+      sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/DCAT_Harvester.py"
+    end
+
+    desc "Run the conversion scripts on GBL 1.0 metadata institutions"
+    task :gbl1_to_aardvark do
+      puts "Running GeoBlacklight 1.0 to OGM Aardvark Metadata Conversion.\nsee gbl_to_aardvark.log"
+      sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/gbl_to_aardvark.py"
+      puts "Run rake geocombine:index to index converted documents"
+    end
+  end
+
   namespace :index do
     desc "Put all sample data into solr"
     task seed: :environment do

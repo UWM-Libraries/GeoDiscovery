@@ -59,3 +59,28 @@ set :keep_releases, 5
 namespace :deploy do
   after :updated, :compile_assets
 end
+
+namespace :deploy do
+  # Define custom task to copy .example.env.production to .env.production
+  task :copy_env_file do
+    on roles(:app) do
+      within release_path do
+        execute :cp, ".example.env.production", ".env.production"
+      end
+    end
+  end
+
+  # Hook the custom task into the deploy process
+  after :updated, :copy_env_file
+
+  # Hook to run the Python environment setup after deployment is finished
+  after :finished, :setup_python_env do
+    on roles(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, "uwm:opendataharvest:setup_python_env"
+        end
+      end
+    end
+  end
+end

@@ -134,7 +134,7 @@ gem "ed25519", ">=1.2", "< 2.0"
 # ExceptionNotification
 gem "exception_notification", "~> 4.5"
 
-gem "base64", "~> 0.1.1"
+gem "base64", "~> 0.2.0"
 
 # Blackligiht::Allmaps
 gem "blacklight_allmaps"
