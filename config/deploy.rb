@@ -59,3 +59,16 @@ set :keep_releases, 5
 namespace :deploy do
   after :updated, :compile_assets
 end
+
+namespace :deploy do
+  after :finished, :setup_python_env do
+    on roles(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, 'uwm:opendataharvest:setup_python_env'
+        end
+      end
+    end
+  end
+end
+

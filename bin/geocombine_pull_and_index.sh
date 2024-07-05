@@ -1,7 +1,6 @@
 # bin/geocombine_pull.sh
 #!/bin/bash
 # This will only work in production!
-
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.uwm]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.uchicago]
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.illinois]
@@ -27,5 +26,5 @@ OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle 
 # GBL 1.0 to Aardvark Convert:
 OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake uwm:opendataharvest:gbl1_to_aardvark
 # GBL 1.0 to Aardvark Convert:
-bundle exec rake uwm:index:delete_all
-RAILS_ENV=production bundle exec rake geocombine:index
+RAILS_ENV=production bundle exec rake uwm:index:delete_all
+SCHEMA_VERSION=Aardvark RAILS_ENV=production OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:index
