@@ -28,5 +28,3 @@ bundle exec rake geocombine:pull[edu.columbia]
 bundle exec rake geocombine:pull[edu.cornell]
 bundle exec rake geocombine:pull[edu.princeton.arks]
 bundle exec rake geocombine:pull[edu.stanford.purl]
-
-bundle exec rake geocombine:index
