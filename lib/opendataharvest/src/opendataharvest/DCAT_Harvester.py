@@ -73,6 +73,7 @@ try:
     RESOURCETYPE = default_config.get("RESOURCETYPE", [])
     FORMAT = default_config.get("FORMAT")
     DESCRIPTION = default_config.get("DESCRIPTION")
+    DISPLAYNOTE = default_config.get("DISPLAYNOTE")
 
     ## Get the JSON schema:
     SCHEMA = CONFIG.get("SCHEMA")
@@ -460,6 +461,7 @@ class Aardvark:
         self.schema_provider_s = PROVIDER
         self.gbl_suppressed_b = SUPPRESSED
         self.dct_rights_sm = RIGHTS
+        self.gbl_displayNote_sm = DISPLAYNOTE
 
     def _process_id(self, dataset_dict, website):
         uuid, sublayer = AardvarkDataProcessor.extract_id_sublayer(
@@ -703,7 +705,6 @@ def main():
                 new_aardvark_objects.append(new_aardvark_object)
                 newfile = f"{new_aardvark_object.id}.json"
                 newfilePath = OUTPUTDIR / newfile
-                json_data = new_aardvark_object.toJSON()
                 with open(newfilePath, "w", encoding="utf-8") as f:
                     f.write(new_aardvark_object.toJSON())
             except InitializationError as e:

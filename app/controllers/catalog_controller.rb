@@ -125,7 +125,7 @@ class CatalogController < ApplicationController
     config.add_facet_field Settings.FIELDS.THEME, label: "Theme", limit: 10
     config.add_facet_field Settings.FIELDS.CREATOR, label: "Creator", limit: 10
     config.add_facet_field Settings.FIELDS.PUBLISHER, label: "Publisher", limit: 10
-    # config.add_facet_field Settings.FIELDS.GEOREFERENCED, label: "Georeferenced", limit: 3
+    config.add_facet_field Settings.FIELDS.GEOREFERENCED, label: "Georeferenced", limit: 3
 
     # GEOBLACKLIGHT APPLICATION FACETS
 
@@ -162,6 +162,7 @@ class CatalogController < ApplicationController
     # config.add_index_field Settings.FIELDS.RIGHTS, :label => 'Access:'
     # # config.add_index_field 'Area', :label => 'Area:'
     # config.add_index_field Settings.FIELDS.SUBJECT, :label => 'Keywords:'
+    config.add_index_field Settings.FIELDS.ACCESS_RIGHTS
     config.add_index_field Settings.FIELDS.INDEX_YEAR
     config.add_index_field Settings.FIELDS.CREATOR
     config.add_index_field Settings.FIELDS.DESCRIPTION, helper_method: :snippit
@@ -179,14 +180,21 @@ class CatalogController < ApplicationController
     # The following fields all feature string values. If there is a value present in the metadata, they fields will show up on the item show page.
     # The labels and order can be customed. Comment out fields to hide them.
 
+    config.add_show_field(
+      Settings.FIELDS.REFERENCES,
+      label: "More details at",
+      accessor: [:external_url],
+      if: proc { |_, _, doc| doc.external_url },
+      helper_method: :render_references_url
+    )
     config.add_show_field Settings.FIELDS.ALTERNATIVE_TITLE, label: "Alternative Title", itemprop: "alt_title"
     config.add_show_field Settings.FIELDS.DESCRIPTION, label: "Description", itemprop: "description",
       helper_method: :render_value_as_truncate_abstract
     config.add_show_field Settings.FIELDS.CREATOR, label: "Creator", itemprop: "creator"
     config.add_show_field Settings.FIELDS.PUBLISHER, label: "Publisher", itemprop: "publisher"
     config.add_show_field Settings.FIELDS.PROVIDER, label: "Provider", link_to_facet: true
-    config.add_show_field Settings.FIELDS.RESOURCE_CLASS, label: "Resource Class", itemprop: "class"
-    config.add_show_field Settings.FIELDS.RESOURCE_TYPE, label: "Resource Type", itemprop: "type"
+    config.add_show_field Settings.FIELDS.RESOURCE_CLASS, label: "Resource Class", itemprop: "class", link_to_facet: true
+    config.add_show_field Settings.FIELDS.RESOURCE_TYPE, label: "Resource Type", itemprop: "type", link_to_facet: true
     config.add_show_field Settings.FIELDS.SUBJECT, label: "Subject", itemprop: "keywords", link_to_facet: true
     config.add_show_field Settings.FIELDS.THEME, label: "Theme", itemprop: "theme"
     config.add_show_field Settings.FIELDS.TEMPORAL_COVERAGE, label: "Temporal Coverage", itemprop: "temporal"
@@ -200,13 +208,6 @@ class CatalogController < ApplicationController
     config.add_show_field Settings.FIELDS.FORMAT, label: "Format", itemprop: "format"
     config.add_show_field Settings.FIELDS.FILE_SIZE, label: "File Size", itemprop: "file_size"
     config.add_show_field Settings.FIELDS.GEOREFERENCED, label: "Georeferenced", itemprop: "georeferenced"
-    config.add_show_field(
-      Settings.FIELDS.REFERENCES,
-      label: "More details at",
-      accessor: [:external_url],
-      if: proc { |_, _, doc| doc.external_url },
-      helper_method: :render_references_url
-    )
 
     # ADDITIONAL FIELDS
     # The following fields are not user friendly and are not set to appear on the item show page. They contain non-literal values, codes, URIs, or are otherwise designed to power features in the interface.

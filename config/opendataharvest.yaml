@@ -69,6 +69,7 @@ DEFAULT:
     - "Digital maps"
   FORMAT: None
   DESCRIPTION: This dataset was automatically cataloged from the creator's Open Data Portal. In some cases, publication year and bounding coordinates shown here may be incorrect. Additional download formats may be available on the author's website. Please check the 'More details at' link for additional information.
+  DISPLAYNOTE: This dataset was automatically cataloged from the creator's Open Data Portal. See the "More details at" link to view the original resource.
 
 ##############
 # Test Sites #
