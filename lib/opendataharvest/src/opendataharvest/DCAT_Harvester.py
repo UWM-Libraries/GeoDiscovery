@@ -288,7 +288,44 @@ class AardvarkDataProcessor:
         return id_value, sublayer_value
 
     @staticmethod
-    def process_dcat_spatial(spatial_string):
+    def default_bbox(website):
+        if "DefaultBbox" not in website.site_details:
+            return {
+                "envelope": None,
+                "west": None,
+                "east": None,
+                "north": None,
+                "south": None,
+            }
+
+        defaultBox = website.site_details["DefaultBbox"]
+        with open(DEFAULTBBOX) as default_csv:
+            bboxreader = csv.DictReader(default_csv)
+            for row in bboxreader:
+                if row["name"] == defaultBox:
+                    west = row["west"]
+                    east = row["east"]
+                    north = row["north"]
+                    south = row["south"]
+                    envelope = f"ENVELOPE({west},{east},{north},{south})"
+                    return {
+                        "envelope": envelope,
+                        "west": float(west),
+                        "east": float(east),
+                        "north": float(north),
+                        "south": float(south),
+                    }
+
+        return {
+            "envelope": None,
+            "west": None,
+            "east": None,
+            "north": None,
+            "south": None,
+        }
+
+    @staticmethod
+    def process_dcat_spatial(spatial_string, defaultBbox):
         def is_in_range(value, range_min, range_max):
             return range_min <= value <= range_max
 
@@ -297,7 +334,7 @@ class AardvarkDataProcessor:
         matches = re.findall(pattern, spatial_string)
 
         if len(matches) != 4:
-            raise ValueError("Non-conforming spatial bounding box")
+            raise ValueError(f"Non-conforming spatial bounding box:\n{spatial_string}")
 
         # Convert to floats and validate coordinates
         coordinates = [float(coord) for coord in matches]
@@ -305,30 +342,42 @@ class AardvarkDataProcessor:
         latitudes = coordinates[1::2]
 
         if not all(is_in_range(lon, -180, 180) for lon in longitudes):
-            raise ValueError("Longitude coordinates must be between -180 and 180")
+            raise ValueError(
+                f"Longitude coordinates must be between -180 and 180:\n{spatial_string}"
+            )
 
         if not all(is_in_range(lat, -90, 90) for lat in latitudes):
-            raise ValueError("Latitude coordinates must be between -90 and 90")
+            raise ValueError(
+                f"Latitude coordinates must be between -90 and 90:\n{spatial_string}"
+            )
 
         # Ensure North is greater than South and East is greater than West
         coordinates[1], coordinates[3] = sorted(latitudes, reverse=True)
         coordinates[0], coordinates[2] = sorted(longitudes)
 
+        # Ensure West and East OR North and South are not the same:
+        if (coordinates[1] == coordinates[3]) or (coordinates[0] == coordinates[2]):
+            raise ValueError(
+                f"The bounding box has matching NS or EW coordinates:\n{spatial_string}"
+            )
+
+        # Check to see if it's within the site's default bbox plus a 1 degree buffer
+        defaultBbox = defaultBbox
+        if any(
+            [
+                coordinates[0] < defaultBbox["west"] - 1.0,
+                coordinates[2] > defaultBbox["east"] + 1.0,
+                coordinates[1] > defaultBbox["north"] + 1.0,
+                coordinates[3] < defaultBbox["south"] - 1.0,
+            ]
+        ):
+            raise ValueError(
+                f"Bounding box falls outside of default bounding box:\n{spatial_string}"
+            )
+
         # Convert to ENVELOPE format
         envelope = f"ENVELOPE({coordinates[0]},{coordinates[2]},{coordinates[1]},{coordinates[3]})"
 
-        return envelope
-
-    @staticmethod
-    def defaultBbox(website):
-        envelope = None
-        if "DefaultBbox" in website.site_details:
-            default_bbox = website.site_details["DefaultBbox"]
-            with open(DEFAULTBBOX) as default_csv:
-                bboxreader = csv.DictReader(default_csv)
-                for row in bboxreader:
-                    if row["name"] == default_bbox:
-                        envelope = f"ENVELOPE({row['west']},{row['east']},{row['north']},{row['south']})"
         return envelope
 
     @staticmethod
@@ -554,9 +603,11 @@ class Aardvark:
             logging.warning(f"No spatial information found for: {self.id}")
             return
 
+        defaultBbox = AardvarkDataProcessor.default_bbox(website)
+
         try:
             processed_spatial = AardvarkDataProcessor.process_dcat_spatial(
-                dataset_dict["spatial"]
+                dataset_dict["spatial"], defaultBbox
             )
             self.locn_geometry = self.dcat_bbox = processed_spatial
         except ValueError as e:
@@ -565,9 +616,8 @@ class Aardvark:
                 f"\t - at {dataset_dict['landingPage']}\n"
                 f"\t Warning: {e}\n"
             )
-            default_bbox = AardvarkDataProcessor.defaultBbox(website)
-            if default_bbox is not None:
-                self.locn_geometry = self.dcat_bbox = default_bbox
+            if defaultBbox is not None:
+                self.locn_geometry = self.dcat_bbox = defaultBbox["envelope"]
                 logging.warning("Using default envelope for the website.\n")
             else:
                 logging.warning(f"No default bounding box set for {website}")
