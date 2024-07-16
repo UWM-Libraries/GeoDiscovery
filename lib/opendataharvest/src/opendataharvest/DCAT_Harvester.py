@@ -737,8 +737,7 @@ class Aardvark:
 
 # Main Function
 def main():
-    list_of_sites = harvest_sites()
-
+    
     # Create output dir if it doesn't exist:
     if not OUTPUTDIR.is_dir():
         try:
@@ -747,6 +746,8 @@ def main():
         except Exception as e:
             logging.warning("Unable to create output directory")
             return
+        
+    list_of_sites = harvest_sites()
 
     for website in list_of_sites:
         new_aardvark_objects = []
