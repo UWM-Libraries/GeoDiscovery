@@ -344,6 +344,7 @@ class CatalogController < ApplicationController
     config.add_show_tools_partial :data_dictionary, partial: "data_dictionary", if: proc { |_context, _config, options|
                                                                                       options[:document] && options[:document].data_dictionary_download.present?
                                                                                     }
+    config.add_show_tools_partial :more_details, partial: "more_details", if: proc { |_context, _config, options| options[:document] && (!options[:document].references.nil? & !options[:document].references.url.nil?) }                                                                               
 
     # Configure basemap provider for GeoBlacklight maps (uses https only basemap
     # providers with open licenses)
