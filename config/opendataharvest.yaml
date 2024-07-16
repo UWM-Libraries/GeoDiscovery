@@ -271,7 +271,6 @@ DCAT_Sites:
     AppList:
       - UUID: "fb7388fef8974f068f74c71db5f33f59"
       - UUID: "5b1f0e2b911b45c68abbd81a4cf493f7"
-      - UUID: "04d526725a1e4f13bc5fb734028adc37"
     SkipList:
       - UUID: "6489bbea63cc4b5192de3f8d5b043c0c"
       - UUID: "e9a6aad1be31421e901b0224ca763336"

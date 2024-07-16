@@ -386,12 +386,13 @@ class AardvarkDataProcessor:
         if url is None:
             logging.info("There is no accessURL, looking for downloadURL instead.")
             url = distribution.get("downloadURL", None)
+            return None
         return quote(url, safe=":/?=")
 
     @staticmethod
     def process_distribution(distribution):
         url = AardvarkDataProcessor.getURL(distribution)
-        if "format" not in distribution or url == "invalid":
+        if "format" not in distribution or url is None:
             return None
 
         format_to_reference = {
