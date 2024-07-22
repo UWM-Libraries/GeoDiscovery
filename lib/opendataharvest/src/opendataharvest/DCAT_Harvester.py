@@ -432,7 +432,7 @@ class AardvarkDataProcessor:
                 result["gbl_resourceType_sm"] = ["Digital maps"]
                 shapefile_found = True
 
-        if not shapefile_found:
+        if shapefile_found == False:
             title = dataset.get("title", "").lower()
             logging.info(
                 f"Processing title: {title} ({dataset.get('identifier', 'no id')})\n"
