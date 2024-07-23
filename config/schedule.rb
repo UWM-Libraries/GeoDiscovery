@@ -32,3 +32,12 @@ end
 every :day, at: "3:00am", roles: [:app] do
   command ". /var/www/rubyapps/uwm-geoblacklight/current/bin/geocombine_pull_and_index.sh"
 end
+
+# Harvest Allmaps IIIF Annotation Data
+every :day, at: "3:30am", roles: [:app] do
+  rake "blacklight_allmaps:sidecars:harvest:allmaps"
+  rake "blacklight_allmaps:index:georeferenced_facet"
+end
+
+# Run "whenever" to write this schedule to crontab.
+# use crontab -l to inspect the crontab
