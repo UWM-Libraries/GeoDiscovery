@@ -1,30 +1,54 @@
-# bin/geocombine_pull.sh
 #!/bin/bash
-# This will only work in production!
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.uwm]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.uchicago]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.illinois]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.indiana]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.uiowa]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.umd]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.msu]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.umn]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.unl]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.nyu]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.osu]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.psu]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.purdue]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.rutgers]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.umich]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.berkeley]
-# GBL 1.0 institutions:
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.wisc]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.columbia]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.cornell]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.princeton.arks]
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:pull[edu.stanford.purl]
-# GBL 1.0 to Aardvark Convert:
-OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake uwm:opendataharvest:gbl1_to_aardvark
-# GBL 1.0 to Aardvark Convert:
-RAILS_ENV=production bundle exec rake uwm:index:delete_all
-SCHEMA_VERSION=Aardvark RAILS_ENV=production OGM_PATH=/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/ bundle exec rake geocombine:index
+
+LOG_FILE="/var/www/rubyapps/uwm-geoblacklight/current/log/geocombine_pull_and_index.log"
+current_time=$(date "+%Y.%m.%d-%H.%M.%S")
+echo "Geocombine Pull and Index script running at: $current_time" >> $LOG_FILE
+
+export OGM_PATH="/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/"
+export RAILS_ENV=production
+export SCHEMA_VERSION=Aardvark
+
+run_rake_task() {
+    local task=$1
+    echo "Running task: $task at: $(date)" >> $LOG_FILE
+    bundle exec rake $task >> $LOG_FILE 2>&1
+    if [ $? -ne 0 ]; then
+        echo "Error running task: $task at: $(date)" >> $LOG_FILE
+    else
+        echo "Successfully ran task: $task at: $(date)" >> $LOG_FILE
+    fi
+}
+
+tasks=(
+    "geocombine:pull[edu.uwm]"
+    "geocombine:pull[edu.uchicago]"
+    "geocombine:pull[edu.illinois]"
+    "geocombine:pull[edu.indiana]"
+    "geocombine:pull[edu.uiowa]"
+    "geocombine:pull[edu.umd]"
+    "geocombine:pull[edu.msu]"
+    "geocombine:pull[edu.umn]"
+    "geocombine:pull[edu.unl]"
+    "geocombine:pull[edu.nyu]"
+    "geocombine:pull[edu.osu]"
+    "geocombine:pull[edu.psu]"
+    "geocombine:pull[edu.purdue]"
+    "geocombine:pull[edu.rutgers]"
+    "geocombine:pull[edu.umich]"
+    "geocombine:pull[edu.berkeley]"
+    "geocombine:pull[edu.wisc]"
+    "geocombine:pull[edu.columbia]"
+    "geocombine:pull[edu.cornell]"
+    "geocombine:pull[edu.princeton.purl]"
+    "geocombine:pull[edu.stanford.arks]"
+    "uwm:opendataharvest:gbl1_to_aardvark"
+    "uwm:index:delete_all"
+    "geocombine:index"
+)
+
+for task in "${tasks[@]}"; do
+    run_rake_task $task
+done
+
+current_time=$(date "+%Y.%m.%d-%H.%M.%S")
+echo "Geocombine Pull and Index script finished at: $current_time" >> $LOG_FILE
