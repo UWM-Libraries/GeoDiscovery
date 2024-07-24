@@ -8,6 +8,10 @@ export OGM_PATH="/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/
 export RAILS_ENV=production
 export SCHEMA_VERSION=Aardvark
 
+# Set the working directory
+WORK_DIR="/var/www/rubyapps/uwm-geoblacklight/current"
+cd $WORK_DIR || { echo "Failed to change directory to $WORK_DIR"; exit 1; }
+
 run_rake_task() {
     local task=$1
     echo "Running task: $task at: $(date)" >> $LOG_FILE
