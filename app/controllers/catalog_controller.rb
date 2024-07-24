@@ -116,6 +116,7 @@ class CatalogController < ApplicationController
       item_component: Geoblacklight::IconFacetItemComponent
     config.add_facet_field Settings.FIELDS.SPATIAL_COVERAGE, label: "Place", limit: 5, collapse: false
     config.add_facet_field Settings.FIELDS.RESOURCE_CLASS, label: "Resource Class", limit: 5, collapse: false
+    config.add_facet_field Settings.FIELDS.CREATOR, label: "Creator", limit: 10, collapse: false
     config.add_facet_field Settings.FIELDS.PROVIDER, label: "Provider", limit: 8, collapse: false,
       item_component: Geoblacklight::IconFacetItemComponent
     config.add_facet_field Settings.FIELDS.RESOURCE_TYPE, label: "Resource Type", limit: 10
@@ -123,7 +124,6 @@ class CatalogController < ApplicationController
     config.add_facet_field Settings.FIELDS.FORMAT, label: "Format", limit: 10
     config.add_facet_field Settings.FIELDS.SUBJECT, label: "Subject", limit: 10
     config.add_facet_field Settings.FIELDS.THEME, label: "Theme", limit: 10
-    config.add_facet_field Settings.FIELDS.CREATOR, label: "Creator", limit: 10
     config.add_facet_field Settings.FIELDS.PUBLISHER, label: "Publisher", limit: 10
     config.add_facet_field Settings.FIELDS.GEOREFERENCED, label: "Georeferenced", limit: 3
 
