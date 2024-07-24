@@ -2,7 +2,7 @@ import json
 import csv
 import os
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import argparse
@@ -160,9 +160,9 @@ class SchemaUpdater:
                 [self.PLACE_DEFAULT] if self.PLACE_DEFAULT else []
             )
         elif field == "gbl_mdModified_dt":
-            data_dict["gbl_mdModified_dt"] = datetime.now(datetime.UTC).strftime(
-                f"%Y-%m-%dT%H:%M:%SZ"
-            )
+            data_dict["gbl_mdModified_dt"] = datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
         elif field == "dct_publisher_sm":
             data_dict["dct_publisher_sm"] = data_dict.get("dct_creator_sm", [])
 
