@@ -38,6 +38,3 @@ every :day, at: "3:30am", roles: [:app] do
   rake "blacklight_allmaps:sidecars:harvest:allmaps"
   rake "blacklight_allmaps:index:georeferenced_facet"
 end
-
-# Run "whenever" to write this schedule to crontab.
-# use crontab -l to inspect the crontab
