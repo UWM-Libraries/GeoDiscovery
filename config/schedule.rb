@@ -40,7 +40,7 @@ every :sunday, at: "2:30am", roles: [:app] do
 end
 
 # Run uwm:index:delete_all on the 15th of every month (3:00AM)
-every "0 3 15 * *", roles: [:app] do
-  rake "uwm:index:delete_all"
-  command "export RAILS_ENV='production' && export OGM_PATH='/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/' && bundle exec rake geocombine:index"
-end
+# every "0 3 15 * *", roles: [:app] do
+#   rake "uwm:index:delete_all"
+#   command "export RAILS_ENV='production' && export OGM_PATH='/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/' && bundle exec rake geocombine:index"
+# end
