@@ -14,12 +14,12 @@ every :day, at: "12:30am", roles: [:app] do
 end
 
 # Cleans up anonymous user accounts created by search sessions
-every :tuesday, at: "1:30am", roles: [:app] do
+every :day, at: "1:30am", roles: [:app] do
   rake "devise_guests:delete_old_guest_users[2]"
 end
 
 # Cleans up recent anonymous search records
-every :tuesday, at: "2:00am", roles: [:app] do
+every :day, at: "2:00am", roles: [:app] do
   rake "blacklight:delete_old_searches[7]"
 end
 
