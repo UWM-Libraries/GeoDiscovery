@@ -16,6 +16,16 @@ task :ci do
   exit!(1) unless success
 end
 
+namespace :sidekiq do
+  desc "Clear all Sidekiq queues"
+  task clear_all: :environment do
+    Sidekiq::Queue.all.each(&:clear)
+    Sidekiq::ScheduledSet.new.clear
+    Sidekiq::RetrySet.new.clear
+    puts "All Sidekiq queues, scheduled jobs, and retries have been cleared."
+  end
+end
+
 namespace :uwm do
   desc "Run Solr and GeoBlacklight for interactive development"
   task :server, [:rails_server_args] do
