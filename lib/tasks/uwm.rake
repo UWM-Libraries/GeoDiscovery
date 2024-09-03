@@ -26,6 +26,15 @@ namespace :sidekiq do
   end
 end
 
+namespace :redis do
+  desc "Clear all Redis cache"
+  task clear_cache: :environment do
+    redis = Redis.new
+    redis.flushdb
+    puts "Redis cache has been cleared."
+  end
+end
+
 namespace :uwm do
   desc "Run Solr and GeoBlacklight for interactive development"
   task :server, [:rails_server_args] do
