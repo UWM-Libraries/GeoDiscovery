@@ -46,7 +46,7 @@ tasks=(
     "geocombine:pull[edu.princeton.arks]"
     "geocombine:pull[edu.stanford.purl]"
     "uwm:opendataharvest:gbl1_to_aardvark"
-    "uwm:index:delete_all"
+    # "uwm:index:delete_all"
     "geocombine:index"
 )
 

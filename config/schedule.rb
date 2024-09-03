@@ -38,3 +38,8 @@ every :sunday, at: "2:30am", roles: [:app] do
   rake "blacklight_allmaps:sidecars:harvest:allmaps"
   rake "blacklight_allmaps:index:georeferenced_facet"
 end
+
+# Run uwm:index:delete_all on the 15th of every month
+every '0 3 15 * *', roles: [:app] do
+  rake "uwm:index:delete_all"
+end
