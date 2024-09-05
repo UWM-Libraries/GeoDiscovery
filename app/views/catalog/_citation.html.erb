@@ -5,7 +5,8 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="modal-body" data-clipboard-target="source">
+  
+  <div class="modal-body">
     <div class="alert alert-info d-none" role="alert">
       <%= t('geoblacklight.clipboard.citation') %>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -13,23 +14,27 @@
       </button>
     </div>
 
-    <% @documents&.each do |document| %>
-      <%= document.geoblacklight_citation(solr_document_url(document)) %>
-    <% end %>
+    <div data-clipboard-target="citation-source">
+      <% @documents&.each do |document| %>
+        <%= document.geoblacklight_citation(solr_document_url(document)) %>
+      <% end %>
+    </div>
   </div>
+  
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" data-action="copyToClipboard"><%= t('blacklight.modal.copy-citation') %></button>
     <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= t('blacklight.modal.close') %></button>
   </div>
 </div>
 
+
 <script>
     $('[data-action="copyToClipboard"]').on('click', function() {
-        let text = $('[data-clipboard-target="source"]').text().trim()
-        navigator.clipboard.writeText(text)
-            .then(() => {
-                $('.alert').removeClass('d-none');
-            })
+      let text = $('[data-clipboard-target="citation-source"]').text().trim();
+      navigator.clipboard.writeText(text)
+          .then(() => {
+              $('.alert').removeClass('d-none');
+          })
     });
 </script>
 
