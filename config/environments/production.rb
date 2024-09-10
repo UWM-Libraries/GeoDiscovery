@@ -94,6 +94,10 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  Sidekiq.configure_server do |config|
+    config.logger.level = Logger::ERROR
+  end
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
