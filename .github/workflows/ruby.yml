@@ -9,7 +9,7 @@ jobs:
   linter:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -80,7 +80,7 @@ jobs:
         ENGINE_CART_RAILS_OPTIONS: '--skip-git --skip-listen --skip-spring --skip-keeps --skip-action-cable --skip-coffee --skip-test'
         SOLR_URL: http://solr:SolrRocks@localhost:8983/solr/blacklight-core
     - name: Upload coverage artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: always()
       with:
         name: coverage
