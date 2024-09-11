@@ -95,10 +95,12 @@ Rails.application.configure do
   end
 
   Sidekiq.configure_server do |config|
+    config.logger = Rails.logger
     config.logger.level = Logger::ERROR
   end
-
+  
   Sidekiq.configure_client do |config|
+    config.logger = Rails.logger
     config.logger.level = Logger::ERROR
   end
 
