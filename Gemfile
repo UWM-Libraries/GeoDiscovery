@@ -142,3 +142,6 @@ gem "capistrano-yarn"
 
 # Rackup
 gem "rackup", "~> 2.0"
+
+# logger
+gem 'logger', '1.6.0'
