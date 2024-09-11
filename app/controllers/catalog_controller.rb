@@ -5,6 +5,8 @@ require "blacklight/catalog"
 class CatalogController < ApplicationController
   include BlacklightAdvancedSearch::Controller
   include Blacklight::Catalog
+  include Blacklight::Configurable
+  include Blacklight::SearchContext
 
   configure_blacklight do |config|
     # Advanced config values
