@@ -76,3 +76,9 @@ lib/opendataharvest/venv/
 
 # Ignore DS_Store
 .DS_Store
+
+# Vite cache and output directories
+/public/vite-dev/
+/public/vite-ssr/
+/tmp/cache/vite/
+/node_modules/.vite
