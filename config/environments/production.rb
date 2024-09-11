@@ -110,7 +110,4 @@ Rails.application.configure do
 
   # Background jobs
   config.active_job.queue_adapter = :sidekiq
-
-  # Active Job Log Level
-  config.active_job.logger.level = Logger::ERROR
 end
