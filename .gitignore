@@ -82,3 +82,7 @@ lib/opendataharvest/venv/
 /public/vite-ssr/
 /tmp/cache/vite/
 /node_modules/.vite
+
+# SQL test files
+db/test.sqlite3-shm
+db/test.sqlite3-wal
