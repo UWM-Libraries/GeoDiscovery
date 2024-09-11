@@ -6,7 +6,7 @@ class ApplicationJob < ActiveJob::Base
 
   # Most jobs are safe to ignore if the underlying records are no longer available
   discard_on ActiveJob::DeserializationError
-  
+
   # This error is being spammed in logs and it needs to stop.
   discard_on NoMethodError
 end
