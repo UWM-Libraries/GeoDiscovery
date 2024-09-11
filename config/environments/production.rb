@@ -53,7 +53,7 @@ Rails.application.configure do
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
-  config.log_level = :warn
+  config.log_level = :error
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -95,6 +95,10 @@ Rails.application.configure do
   end
 
   Sidekiq.configure_server do |config|
+    config.logger.level = Logger::ERROR
+  end
+
+  Sidekiq.configure_client do |config|
     config.logger.level = Logger::ERROR
   end
 
