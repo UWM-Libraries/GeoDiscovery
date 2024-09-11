@@ -17,6 +17,10 @@
 // UWM
 //= require uwm
 
+// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+import "@hotwired/turbo-rails"
+import "controllers"
+
 // @CUSTOMIZED
 // - set initial bbox
 // following was borrowed from BTAA with slight modifications
