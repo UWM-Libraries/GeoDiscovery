@@ -610,6 +610,7 @@ DEPENDENCIES
   mysql2
   passenger (>= 5.0.25)
   puma (~> 6.4)
+  rackup (~> 1.0)
   rails (~> 7.2.1)
   redis (~> 5.0)
   rsolr (>= 1.0, < 3)

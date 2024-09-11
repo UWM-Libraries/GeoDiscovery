@@ -139,3 +139,7 @@ gem "base64", "~> 0.2.0"
 # Blackligiht::Allmaps
 gem "blacklight_allmaps"
 gem "capistrano-yarn"
+
+# Rackup
+gem 'rackup', '~> 1.0'
+
