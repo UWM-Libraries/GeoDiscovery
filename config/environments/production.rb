@@ -98,7 +98,7 @@ Rails.application.configure do
     config.logger = Rails.logger
     config.logger.level = Logger::ERROR
   end
-  
+
   Sidekiq.configure_client do |config|
     config.logger = Rails.logger
     config.logger.level = Logger::ERROR
