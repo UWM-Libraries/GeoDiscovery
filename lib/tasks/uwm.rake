@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sidekiq/api'
+
 desc "Run test suite"
 task :ci do
   shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
