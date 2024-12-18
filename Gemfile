@@ -66,6 +66,7 @@ end
 
 group :development do
   gem "capistrano", "~> 3.17.1", require: false
+  gem "capistrano-git", "0.0.2"
   gem "capistrano-bundler", "~> 2.1.0"
   gem "capistrano-passenger", "~> 0.2"
   gem "capistrano-rails", "~> 1.6", require: false

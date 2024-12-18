@@ -123,6 +123,8 @@ GEM
       sshkit (>= 1.9.0)
     capistrano-bundler (2.1.1)
       capistrano (~> 3.1)
+    capistrano-git (0.0.2)
+      capistrano_colors (= 0.5.5)
     capistrano-passenger (0.2.1)
       capistrano (~> 3.0)
     capistrano-rails (1.6.3)
@@ -130,6 +132,7 @@ GEM
       capistrano-bundler (>= 1.1, < 3)
     capistrano-yarn (2.0.2)
       capistrano (~> 3.0)
+    capistrano_colors (0.5.5)
     capybara (3.40.0)
       addressable
       matrix
@@ -582,6 +585,7 @@ DEPENDENCIES
   bootstrap (~> 4.0)
   capistrano (~> 3.17.1)
   capistrano-bundler (~> 2.1.0)
+  capistrano-git (= 0.0.2)
   capistrano-passenger (~> 0.2)
   capistrano-rails (~> 1.6)
   capistrano-yarn
