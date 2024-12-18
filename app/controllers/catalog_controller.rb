@@ -192,6 +192,7 @@ class CatalogController < ApplicationController
     config.add_show_field Settings.FIELDS.ALTERNATIVE_TITLE, label: "Alternative Title", itemprop: "alt_title"
     config.add_show_field Settings.FIELDS.DESCRIPTION, label: "Description", itemprop: "description",
       helper_method: :truncate_render_html_value
+    config.add_show_field Settings.FIELDS.IDENTIFIER, label: "Identifier", itemprop: "identifier"
     config.add_show_field Settings.FIELDS.CREATOR, label: "Creator", itemprop: "creator", link_to_facet: true
     config.add_show_field Settings.FIELDS.PUBLISHER, label: "Publisher", itemprop: "publisher", link_to_facet: true
     config.add_show_field Settings.FIELDS.PROVIDER, label: "Provider", link_to_facet: true
