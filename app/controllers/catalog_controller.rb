@@ -191,14 +191,15 @@ class CatalogController < ApplicationController
     )
     config.add_show_field Settings.FIELDS.ALTERNATIVE_TITLE, label: "Alternative Title", itemprop: "alt_title"
     config.add_show_field Settings.FIELDS.DESCRIPTION, label: "Description", itemprop: "description",
-      helper_method: :render_value_as_truncate_abstract
-    config.add_show_field Settings.FIELDS.CREATOR, label: "Creator", itemprop: "creator"
-    config.add_show_field Settings.FIELDS.PUBLISHER, label: "Publisher", itemprop: "publisher"
+      helper_method: :truncate_render_html_value
+    config.add_show_field Settings.FIELDS.IDENTIFIER, label: "Identifier", itemprop: "identifier"
+    config.add_show_field Settings.FIELDS.CREATOR, label: "Creator", itemprop: "creator", link_to_facet: true
+    config.add_show_field Settings.FIELDS.PUBLISHER, label: "Publisher", itemprop: "publisher", link_to_facet: true
     config.add_show_field Settings.FIELDS.PROVIDER, label: "Provider", link_to_facet: true
     config.add_show_field Settings.FIELDS.RESOURCE_CLASS, label: "Resource Class", itemprop: "class", link_to_facet: true
     config.add_show_field Settings.FIELDS.RESOURCE_TYPE, label: "Resource Type", itemprop: "type", link_to_facet: true
     config.add_show_field Settings.FIELDS.SUBJECT, label: "Subject", itemprop: "keywords", link_to_facet: true
-    config.add_show_field Settings.FIELDS.THEME, label: "Theme", itemprop: "theme"
+    config.add_show_field Settings.FIELDS.THEME, label: "Theme", itemprop: "theme", link_to_facet: true
     config.add_show_field Settings.FIELDS.TEMPORAL_COVERAGE, label: "Temporal Coverage", itemprop: "temporal"
     config.add_show_field Settings.FIELDS.DATE_ISSUED, label: "Date Issued", itemprop: "issued"
     config.add_show_field Settings.FIELDS.SPATIAL_COVERAGE, label: "Spatial Coverage", itemprop: "spatial",
