@@ -137,7 +137,7 @@ RELATIONSHIPS_SHOWN:
   MEMBER_OF_ANCESTORS:
     field: pcdm_memberOf_sm
     query_type: ancestors
-    icon: nil
+    icon: parent-item
     label: geoblacklight.relations.member_of_ancestors
   MEMBER_OF_DESCENDANTS:
     field: pcdm_memberOf_sm
@@ -147,7 +147,7 @@ RELATIONSHIPS_SHOWN:
   PART_OF_ANCESTORS:
     field: dct_isPartOf_sm
     query_type: ancestors
-    icon: nil
+    icon: parent-item
     label: geoblacklight.relations.part_of_ancestors
   PART_OF_DESCENDANTS:
     field: dct_isPartOf_sm
@@ -157,17 +157,17 @@ RELATIONSHIPS_SHOWN:
   RELATION:
     field: dct_relation_sm
     query_type: ancestors
-    icon: nil
+    icon: parent-item
     label: geoblacklight.relations.relation
   REPLACES:
     field: dct_replaces_sm
     query_type: ancestors
-    icon: nil
+    icon: parent-item
     label: geoblacklight.relations.replaces
   REPLACED_BY:
     field: dct_isReplacedBy_sm
     query_type: descendants
-    icon: nil
+    icon: child-item
     label: geoblacklight.relations.replaced_by
   SOURCE_ANCESTORS:
     field: dct_source_sm
@@ -182,7 +182,7 @@ RELATIONSHIPS_SHOWN:
   VERSION_OF:
     field: dct_isVersionOf_sm
     query_type: descendants
-    icon: nil
+    icon: child-item
     label: geoblacklight.relations.version_of
 
 # WMS Parameters
