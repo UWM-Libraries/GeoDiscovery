@@ -7,7 +7,7 @@ module ApplicationHelper
 
   def truncate_render_html_value(args)
     tag.div class: "truncate-abstract" do
-      simple_format(Array(args[:value]).flatten.join(" "))
+      render_html_value(args)
     end
   end
 end
