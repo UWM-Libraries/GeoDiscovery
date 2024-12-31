@@ -127,7 +127,7 @@ GEM
       capistrano_colors (= 0.5.5)
     capistrano-passenger (0.2.1)
       capistrano (~> 3.0)
-    capistrano-rails (1.6.3)
+    capistrano-rails (1.7.0)
       capistrano (~> 3.1)
       capistrano-bundler (>= 1.1, < 3)
     capistrano-yarn (2.0.2)
@@ -587,7 +587,7 @@ DEPENDENCIES
   capistrano-bundler (~> 2.1.0)
   capistrano-git (= 0.0.2)
   capistrano-passenger (~> 0.2)
-  capistrano-rails (~> 1.6)
+  capistrano-rails (~> 1.7)
   capistrano-yarn
   capybara
   capybara-screenshot
