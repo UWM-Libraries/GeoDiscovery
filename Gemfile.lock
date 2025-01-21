@@ -153,7 +153,7 @@ GEM
     config (5.5.2)
       deep_merge (~> 1.2, >= 1.2.1)
       ostruct
-    connection_pool (2.4.1)
+    connection_pool (2.5.0)
     crass (1.0.6)
     csv (3.3.2)
     date (3.4.1)
@@ -412,7 +412,7 @@ GEM
       psych (>= 4.0.0)
     redis (5.3.0)
       redis-client (>= 0.22.0)
-    redis-client (0.23.0)
+    redis-client (0.23.2)
       connection_pool
     regexp_parser (2.10.0)
     reline (0.6.0)
@@ -465,7 +465,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sidekiq (7.3.7)
+    sidekiq (7.3.8)
+      base64
       connection_pool (>= 2.3.0)
       logger
       rack (>= 2.2.4)
@@ -617,7 +618,7 @@ DEPENDENCIES
   rsolr (>= 1.0, < 3)
   sassc-rails (~> 2.1)
   selenium-webdriver
-  sidekiq (~> 7.2)
+  sidekiq (~> 7.3)
   simplecov
   sitemap_generator (~> 6.3)
   solr_wrapper (>= 0.3)
