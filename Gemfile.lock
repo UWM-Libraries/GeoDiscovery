@@ -354,7 +354,7 @@ GEM
       ast (~> 2.4.1)
       racc
     parslet (2.0.0)
-    passenger (6.0.24)
+    passenger (6.0.26)
       rack (>= 1.6.13)
       rackup (>= 2.0.0)
       rake (>= 12.3.3)
@@ -367,7 +367,7 @@ GEM
     puma (6.5.0)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.8)
+    rack (3.1.10)
     rack-proxy (0.7.7)
       rack
     rack-session (2.0.0)
