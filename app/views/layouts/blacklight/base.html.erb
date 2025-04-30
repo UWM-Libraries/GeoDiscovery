@@ -64,6 +64,42 @@
       </div>
     </main>
 
+    <% if controller_name == 'catalog' && action_name == 'index' %>
+    <div id="turnstile-container"
+        class="cf-turnstile"
+        data-sitekey="<%= ENV['TURNSTILE_SITE_KEY'] %>"
+        data-action="challenge"
+        style="display:none;">
+    </div>
+
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=turnstileOnLoadCallback" async defer></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var form = document.querySelector('form.search-query-form');
+        var container = document.getElementById("turnstile-container");
+
+        if (!form || !container) { return; }
+
+        var widgetId = null;
+
+        window.turnstileOnLoadCallback = function () {
+          widgetId = turnstile.render(container, {
+            sitekey: "<%= ENV['TURNSTILE_SITE_KEY'] %>",
+            action: "challenge"
+          });
+        };
+
+        form.addEventListener("submit", function(event) {
+          if (!document.querySelector('[name="cf-turnstile-response"]')) {
+            event.preventDefault();
+            turnstile.execute(widgetId);
+          }
+        });
+      });
+    </script>
+  <% end %>
+
     <%= render partial: 'shared/footer' %>
     <%= render partial: 'shared/modal' %>
   </body>
