@@ -119,5 +119,4 @@ Rails.application.configure do
 
   # Rack::Attack
   config.middleware.use Rack::Attack
- 
 end
