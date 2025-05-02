@@ -4,6 +4,8 @@ require_relative "boot"
 
 require "rails/all"
 
+require "rack/attack"
+
 require "blacklight/allmaps/engine"
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
