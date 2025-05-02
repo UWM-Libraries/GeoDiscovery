@@ -149,3 +149,6 @@ gem "logger", "1.6.0"
 
 # Nokogiri
 gem "nokogiri", "~> 1.17.0"
+
+# Bot Challenge Page
+gem 'bot_challenge_page', '~> 0.4'
