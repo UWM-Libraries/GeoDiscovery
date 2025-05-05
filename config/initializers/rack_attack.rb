@@ -6,9 +6,9 @@ class Rack::Attack
   # Ensure Rack::Attack uses the same cache as Rails (Redis)
   Rack::Attack.cache.store = Rails.cache
 
-  ### Throttle: Catalog hammering (2 requests every 20 seconds per IP)
-  throttle("req/ip/catalog", limit: 2, period: 20.seconds) do |req|
-    req.ip if req.get? && req.params["q"].present?
+  ### Throttle: Searches with query parameters
+  throttle("req/ip/search", limit: 5, period: 20.seconds) do |req|
+    if req.get? && req.path == "/" && req.params["q"].present?
       Rails.logger.warn "[Rack::Attack] Evaluating throttle for IP #{req.ip} on #{req.path}"
       req.ip
     end
