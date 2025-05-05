@@ -8,6 +8,8 @@ class CatalogController < ApplicationController
   include Blacklight::Configurable
   include Blacklight::SearchContext
 
+  before_action :validate_cloudflare_turnstile, only: [:index]
+
   configure_blacklight do |config|
     # Advanced config values
     config.advanced_search[:enabled] = true
