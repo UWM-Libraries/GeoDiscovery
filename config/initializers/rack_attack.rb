@@ -8,7 +8,7 @@ class Rack::Attack
 
   ### Throttle: Catalog hammering (2 requests every 20 seconds per IP)
   throttle("req/ip/catalog", limit: 2, period: 20.seconds) do |req|
-    if req.path.start_with?("/catalog") && req.get?
+    req.ip if req.get? && req.params["q"].present?
       Rails.logger.warn "[Rack::Attack] Evaluating throttle for IP #{req.ip} on #{req.path}"
       req.ip
     end
