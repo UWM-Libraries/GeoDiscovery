@@ -151,4 +151,4 @@ gem "logger", "1.6.0"
 gem "nokogiri", "~> 1.17.0"
 
 # RailsCloudflareTurnstile
-gem 'rails_cloudflare_turnstile'
+gem "rails_cloudflare_turnstile"
