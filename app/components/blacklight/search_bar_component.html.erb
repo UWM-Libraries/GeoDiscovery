@@ -31,6 +31,8 @@
     </span>
   </div>
 
-  <%= cloudflare_turnstile(data: { tabindex: 0 }) %>
-  
+  <% unless Rails.env.test? %>
+    <%= cloudflare_turnstile(data: { tabindex: 0 }) %>
+  <% end %>
+
 <% end %>

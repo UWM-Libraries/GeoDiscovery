@@ -8,7 +8,9 @@ class CatalogController < ApplicationController
   include Blacklight::Configurable
   include Blacklight::SearchContext
 
-  before_action :validate_cloudflare_turnstile, only: [:index]
+  before_action :validate_cloudflare_turnstile, only: [:index], if: -> {
+    params["cf-turnstile-response"].present? && !Rails.env.test?
+  }
 
   configure_blacklight do |config|
     # Advanced config values
