@@ -5,7 +5,7 @@ Rails.application.config.to_prepare do
   # Set turnstile keys:
   BotChallengePage::BotChallengePageController.bot_challenge_config.cf_turnstile_sitekey = ENV["TURNSTILE_SITE_KEY"]
   BotChallengePage::BotChallengePageController.bot_challenge_config.cf_turnstile_secret_key = ENV["TURNSTILE_SECRET_KEY"]
-  
+
   # Bot challenge configuration:
   BotChallengePage::BotChallengePageController.bot_challenge_config.redirect_for_challenge = true
 
