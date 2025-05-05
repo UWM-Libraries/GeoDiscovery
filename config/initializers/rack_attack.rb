@@ -1,27 +1,22 @@
-class Rack::Attack
-  # Throttle GET requests to /catalog per IP, unless bot challenge was passed
-  throttle("req/ip/catalog", limit: 2, period: 20.seconds) do |req|
-    session = req.env["rack.session"]
-    passed = session && (session["bot_challenge_page_passed"] || session["bot_detection-passed"])
+# config/initializers/rack_attack.rb
 
-    unless passed
-      req.ip if req.path.start_with?("/catalog") && req.get?
+Rails.logger.warn "[Rack::Attack] 🚨 Initializer file loaded"
+
+class Rack::Attack
+  # Ensure Rack::Attack uses the same cache as Rails (Redis)
+  Rack::Attack.cache.store = Rails.cache
+
+  ### Throttle: Catalog hammering (2 requests every 20 seconds per IP)
+  throttle("req/ip/catalog", limit: 2, period: 20.seconds) do |req|
+    if req.path.start_with?("/catalog") && req.get?
+      Rails.logger.warn "[Rack::Attack] Evaluating throttle for IP #{req.ip} on #{req.path}"
+      req.ip
     end
   end
 
-  # Customize the response for throttled requests
-  self.throttled_response = lambda do |env|
-    request = Rack::Request.new(env)
-    session = env["rack.session"]
-    passed = session && (session["bot_challenge_page_passed"] || session["bot_detection-passed"])
-
-    if Rails.env.development? || Rails.env.test?
-      Rails.logger.debug { "[Rack::Attack] Throttled request from IP: #{request.ip}" }
-      Rails.logger.debug { "[Rack::Attack] Session: #{session.inspect}" }
-      Rails.logger.debug { "[Rack::Attack] Challenge passed? #{passed.inspect}" }
-    end
-
-    # Redirect to bot challenge page
+  ### Custom throttled response: redirect to bot challenge
+  self.throttled_responder = lambda do |request|
+    Rails.logger.warn "[Rack::Attack] 🚫 Throttled IP #{request.ip} on #{request.path}"
     dest = request.fullpath
     [
       302,
