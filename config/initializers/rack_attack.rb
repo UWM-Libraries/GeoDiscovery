@@ -41,7 +41,7 @@ class Rack::Attack
   self.throttled_response = lambda do |env|
     [
       503,
-      { 'Content-Type' => 'text/plain' },
+      {"Content-Type" => "text/plain"},
       ["Service temporarily unavailable. Please try again later.\n"]
     ]
   end
