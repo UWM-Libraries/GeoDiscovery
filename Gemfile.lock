@@ -127,7 +127,7 @@ GEM
       capistrano_colors (= 0.5.5)
     capistrano-passenger (0.2.1)
       capistrano (~> 3.0)
-    capistrano-rails (1.6.3)
+    capistrano-rails (1.7.0)
       capistrano (~> 3.1)
       capistrano-bundler (>= 1.1, < 3)
     capistrano-yarn (2.0.2)
@@ -364,7 +364,7 @@ GEM
       date
       stringio
     public_suffix (6.0.1)
-    puma (6.5.0)
+    puma (6.6.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.8)
@@ -587,7 +587,7 @@ DEPENDENCIES
   capistrano-bundler (~> 2.1.0)
   capistrano-git (= 0.0.2)
   capistrano-passenger (~> 0.2)
-  capistrano-rails (~> 1.6)
+  capistrano-rails (~> 1.7)
   capistrano-yarn
   capybara
   capybara-screenshot
@@ -610,14 +610,14 @@ DEPENDENCIES
   mysql2
   nokogiri (~> 1.17.0)
   passenger (>= 5.0.25)
-  puma (~> 6.4)
+  puma (~> 6.6)
   rackup (~> 2.0)
   rails (~> 7.2.1)
   redis (~> 5.0)
   rsolr (>= 1.0, < 3)
   sassc-rails (~> 2.1)
   selenium-webdriver
-  sidekiq (~> 7.2)
+  sidekiq (~> 7.3)
   simplecov
   sitemap_generator (~> 6.3)
   solr_wrapper (>= 0.3)
