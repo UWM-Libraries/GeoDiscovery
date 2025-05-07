@@ -614,7 +614,8 @@ DEPENDENCIES
   mysql2
   nokogiri (~> 1.17.0)
   passenger (>= 5.0.25)
-  puma (~> 6.4)
+  puma (~> 6.6)
+  rack-attack
   rackup (~> 2.0)
   rails (~> 7.2.1)
   redis (~> 5.4)
