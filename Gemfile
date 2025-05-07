@@ -15,7 +15,7 @@ gem "sprockets-rails"
 gem "sqlite3", "~> 1.7"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4"
+gem "puma", "~> 6.6"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
@@ -56,7 +56,7 @@ gem "vite_rails", "~> 3.0"
 group :production do
   gem "mysql2"
   gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
-  gem "sidekiq", "~> 7.2"
+  gem "sidekiq", "~> 7.3"
 end
 
 group :development, :test do
@@ -69,7 +69,7 @@ group :development do
   gem "capistrano-git", "0.0.2"
   gem "capistrano-bundler", "~> 2.1.0"
   gem "capistrano-passenger", "~> 0.2"
-  gem "capistrano-rails", "~> 1.6", require: false
+  gem "capistrano-rails", "~> 1.7", require: false
 
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
