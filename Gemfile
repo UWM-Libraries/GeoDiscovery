@@ -133,7 +133,7 @@ gem "bcrypt_pbkdf", "~> 1.0", "< 2.0"
 gem "ed25519", ">=1.2", "< 2.0"
 
 # ExceptionNotification
-gem "exception_notification", "~> 4.5"
+gem "exception_notification", "~> 5.0"
 
 gem "base64", "~> 0.2.0"
 
