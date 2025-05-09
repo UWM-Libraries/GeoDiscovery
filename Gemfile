@@ -149,3 +149,6 @@ gem "logger", "1.6.0"
 
 # Nokogiri
 gem "nokogiri", "~> 1.17.0"
+
+# Rack Attack
+gem "rack-attack"
