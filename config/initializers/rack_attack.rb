@@ -31,7 +31,7 @@ class Rack::Attack
   end
 
   # Set up custom logger for Rack::Attack
-  RACK_ATTACK_LOGGER ||= Logger.new(
+  RACK_ATTACK_LOGGER = Logger.new(
     Rails.root.join("log/rack_attack.log"),
     10,                         # keep 10 rotated files
     5 * 1024 * 1024             # 5 MB each
