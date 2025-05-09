@@ -30,6 +30,18 @@ class Rack::Attack
     req.ip # unless req.path.start_with?('/assets')
   end
 
+  # Set up custom logger for Rack::Attack
+  RACK_ATTACK_LOGGER ||= Logger.new(
+    Rails.root.join("log/rack_attack.log"),
+    10,                         # keep 10 rotated files
+    5 * 1024 * 1024             # 5 MB each
+  )
+  RACK_ATTACK_LOGGER.level = Logger::WARN
+
+  RACK_ATTACK_LOGGER.formatter = proc do |severity, datetime, progname, msg|
+    "[#{datetime.utc.iso8601}] #{severity}: #{msg}\n"
+  end
+
   ### Custom Throttle Response ###
 
   # By default, Rack::Attack returns an HTTP 429 for throttled responses,
@@ -39,6 +51,14 @@ class Rack::Attack
   # believing that they've successfully broken your app (or you just want to
   # customize the response), then uncomment these lines.
   self.throttled_response = lambda do |env|
+    req = Rack::Request.new(env)
+    cache_key = "rack::attack:logged:#{req.ip}"
+
+    unless Rails.cache.exist?(cache_key)
+      RACK_ATTACK_LOGGER.warn "Throttled IP #{req.ip} on path #{req.path}"
+      Rails.cache.write(cache_key, true, expires_in: 5.minutes)
+    end
+
     [
       503,
       {"Content-Type" => "text/plain"},
