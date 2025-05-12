@@ -61,7 +61,7 @@ Rails.application.configure do
   # Use a different cache store in production.
   config.cache_store = :redis_cache_store, {
     url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
-    namespace: "geo_discovery"
+    namespace: "geodiscovery"
   }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).

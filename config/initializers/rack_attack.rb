@@ -8,10 +8,7 @@ class Rack::Attack
   # safelisting). It must implement .increment and .write like
   # ActiveSupport::Cache::Store
 
-  Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
-    url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
-    namespace: "rack::attack"
-  )
+  Rack::Attack.cache.store = Rails.cache
 
   ### Throttle Spammy Clients ###
 
