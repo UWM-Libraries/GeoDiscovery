@@ -368,6 +368,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.14)
+    rack-attack (6.7.0)
+      rack (>= 1.0, < 4)
     rack-proxy (0.7.7)
       rack
     rack-session (2.1.1)
@@ -613,6 +615,7 @@ DEPENDENCIES
   nokogiri (~> 1.17.0)
   passenger (>= 5.0.25)
   puma (~> 6.6)
+  rack-attack
   rackup (~> 2.0)
   rails (~> 7.2.1)
   redis (~> 5.4)
