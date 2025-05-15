@@ -51,9 +51,9 @@ class Rack::Attack
     req = Rack::Request.new(env)
     cache_key = "rack::attack:logged:#{req.ip}"
 
-    unless Rails.cache.exist?(cache_key)
+    unless Rack::Attack.cache.store.exist?(cache_key)
       RACK_ATTACK_LOGGER.warn "Throttled IP #{req.ip} on path #{req.path}"
-      Rails.cache.write(cache_key, true, expires_in: 5.minutes)
+      Rack::Attack.cache.store.write(cache_key, true, expires_in: 5.minutes)
     end
 
     [
