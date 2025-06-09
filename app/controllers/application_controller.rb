@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# See config/initializers/bot_challenge_page.rb to control this behavior
 class ApplicationController < ActionController::Base
   before_action do |controller|
     BotChallengePage::BotChallengePageController.bot_challenge_enforce_filter(controller)
