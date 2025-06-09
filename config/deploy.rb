@@ -63,9 +63,6 @@ namespace :deploy do
 end
 
 namespace :deploy do
-  # Hook the custom task into the deploy process
-  after :updated, :copy_env_file
-
   # Hook to run the Python environment setup after deployment is finished
   after :finished, :setup_python_env do
     on roles(:app) do
