@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  before_action do |controller|
+    BotChallengePage::BotChallengePageController.bot_challenge_enforce_filter(controller)
+  end
+
   # Adds a few additional behaviors into the application controller
   include Blacklight::Controller
   layout :determine_layout if respond_to? :layout
