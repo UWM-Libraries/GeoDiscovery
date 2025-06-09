@@ -23,13 +23,13 @@ Rails.application.config.to_prepare do
   config.rate_limit_count = 3
 
   # Exemption logic: allow facet fetches and safelisted IPs
+  ip_safelist = ENV.fetch("TURNSTILE_IP_SAFELIST", "").split(",").map(&:strip)
+
   config.allow_exempt = lambda do |controller, _|
     (controller.is_a?(CatalogController) &&
-      controller.params[:action].in?(%w[facet]) &&
-      controller.request.headers["sec-fetch-dest"] == "empty") ||
-      (Settings.turnstile.ip_safelist || []).map { |cidr| IPAddr.new(cidr) }.any? do |range|
-        range.include?(controller.request.remote_ip)
-      end
+    controller.params[:action].in?(%w[facet]) &&
+    controller.request.headers["sec-fetch-dest"] == "empty") ||
+      ip_safelist.map { |cidr| IPAddr.new(cidr) }.any? { |range| range.include?(controller.request.remote_ip) }
   end
 
   # Load Rack::Attack rules last
