@@ -40,6 +40,7 @@ Rails.application.config.to_prepare do
   # This is low because some bots rotate IPs, so we want to catch them quickly
   config.rate_limit_period = 24.hours
   config.rate_limit_count = 3
+  config.rate_limit_discriminator = ->(req, _) { req.ip }
 
   # How long will a challenge success exempt a session from further challenges? (36 is default)
   # config.session_passed_good_for = 36.hours
@@ -49,12 +50,17 @@ Rails.application.config.to_prepare do
   ip_safelist = ENV.fetch("TURNSTILE_IP_SAFELIST", "").split(",").map(&:strip)
 
   config.allow_exempt = lambda do |controller, _|
-    (controller.is_a?(CatalogController) &&
-    controller.params[:action].in?(%w[facet]) &&
-    controller.request.headers["sec-fetch-dest"] == "empty") ||
+    exempt = (controller.is_a?(CatalogController) &&
+              controller.params[:action].in?(%w[facet]) &&
+              controller.request.headers["sec-fetch-dest"] == "empty") ||
       ip_safelist.map { |cidr| IPAddr.new(cidr) }.any? { |range| range.include?(controller.request.remote_ip) }
+
+    Rails.logger.warn "[Turnstile‑EXEMPT] IP: #{controller.request.remote_ip}, Exempt: #{exempt}"
+    Rails.logger.warn "[Turnstile‑SESSION] Passed: #{controller.session[:bot_challenge_passed]}"
+    exempt
   end
 
   # This gets called last; we use rack_attack to do the rate limiting part
   BotChallengePage::BotChallengePageController.rack_attack_init
+  Rails.logger.warn "[Turnstile‑INIT] throttles: #{Rack::Attack.throttles.keys.inspect}"
 end
