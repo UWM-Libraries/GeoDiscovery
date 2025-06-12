@@ -1,0 +1,10 @@
+<!-- app/views/bot_challenge_page/_turnstile_widget_placeholder.html.erb -->
+
+<%# locals: (bot_challenge_config:) -%>
+<div
+  class="cf-turnstile"
+  data-sitekey="<%= bot_challenge_config.cf_turnstile_sitekey %>"
+  data-theme="light"
+  data-language="en"
+  data-callback="turnstileCallback"
+></div>

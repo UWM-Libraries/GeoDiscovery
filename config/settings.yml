@@ -272,3 +272,29 @@ DISPLAY_NOTES_SHOWN:
     bootstrap_alert_class: alert-warning
     icon: triangle-exclamation-solid
     note_prefix: "Warning: "
+
+# Bot Challenge Page
+turnstile:
+  enabled: true
+  sitekey: <%= ENV["TURNSTILE_SITE_KEY"] %>
+  secret: <%= ENV["TURNSTILE_SECRET_KEY"] %>
+  ip_safelist:
+    - 137.28.0.0/16   # UW-Eau Claire
+    - 143.200.0.0/16  # UW-Green Bay
+    - 138.49.0.0/16   # UW-La Crosse
+    - 129.89.0.0/16   # UW-Milwaukee
+    - 141.233.0.0/16  # UW-Oshkosh
+    - 131.210.0.0/16  # UW-Parkside
+    - 137.104.0.0/16  # UW-Platteville
+    - 139.225.0.0/16  # UW-River Falls
+    - 143.236.0.0/16  # UW-Stevens Point
+    - 144.13.0.0/16   # UW-Stout
+    - 137.81.0.0/16   # UW-Superior
+    - 140.146.0.0/16  # UW-Whitewater
+    - 72.33.0.0/16    # Madison...
+    - 128.104.0.0/15  # Madison...
+    - 128.105.0.0/16  # Madison...
+    - 144.92.0.0/16   # Madison...
+    - 146.151.0.0/16  # Madison...
+    - 10.0.0.0/8      # Internal private network (RFC1918)
+    - 127.0.0.1/32    # Localhost for development testing
