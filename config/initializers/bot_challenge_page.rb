@@ -2,7 +2,7 @@
 
 # Dedicated logger for Turnstile events
 logger = Logger.new(Rails.root.join("log", "turnstile.log")).tap do |log|
-  log.level = Logger.const_get(ENV.fetch("TURNSTILE_LOG_LEVEL", "INFO").upcase)
+  log.level = Logger::INFO
   log.formatter = Logger::Formatter.new
 end
 
@@ -64,8 +64,8 @@ Rails.application.config.to_prepare do
       ip_safelist.map { |cidr| IPAddr.new(cidr) }.any? { |range| range.include?(controller.request.remote_ip) }
 
     TURNSTILE_LOGGER.tagged("Turnstile") do
-      TURNSTILE_LOGGER.debug("EXEMPT IP: #{controller.request.remote_ip}, Exempt: #{exempt}")
-      TURNSTILE_LOGGER.debug("SESSION Passed: #{controller.session[:bot_challenge_passed]}")
+      TURNSTILE_LOGGER.info("EXEMPT IP: #{controller.request.remote_ip}, Exempt: #{exempt}")
+      TURNSTILE_LOGGER.info("SESSION Passed: #{controller.session[:bot_challenge_passed]}")
     end
 
     exempt
