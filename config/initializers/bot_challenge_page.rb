@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-# Dedicated logger for Turnstile events
-logger = Logger.new(Rails.root.join("log", "turnstile.log")).tap do |log|
-  log.level = Logger::INFO
-  log.formatter = Logger::Formatter.new
-end
-
-TURNSTILE_LOGGER = ActiveSupport::TaggedLogging.new(logger)
-
 # Configure bot_challenge_page behavior
 # More configuration is available; see:
 # https://github.com/samvera-labs/bot_challenge_page/blob/main/app/models/bot_challenge_page/config.rb
@@ -63,18 +55,12 @@ Rails.application.config.to_prepare do
               controller.request.headers["sec-fetch-dest"] == "empty") ||
       ip_safelist.map { |cidr| IPAddr.new(cidr) }.any? { |range| range.include?(controller.request.remote_ip) }
 
-    TURNSTILE_LOGGER.tagged("Turnstile") do
-      TURNSTILE_LOGGER.info("EXEMPT IP: #{controller.request.remote_ip}, Exempt: #{exempt}")
-      TURNSTILE_LOGGER.info("SESSION Passed: #{controller.session[:bot_challenge_passed]}")
-    end
-
+    Rails.logger.warn "[Turnstile‑EXEMPT] IP: #{controller.request.remote_ip}, Exempt: #{exempt}"
+    Rails.logger.warn "[Turnstile‑SESSION] Passed: #{controller.session[:bot_challenge_passed]}"
     exempt
   end
 
   # This gets called last; we use rack_attack to do the rate limiting part
   BotChallengePage::BotChallengePageController.rack_attack_init
-
-  TURNSTILE_LOGGER.tagged("Turnstile") do
-    TURNSTILE_LOGGER.info("Initialized bot_challenge_page with Rack::Attack throttles: #{Rack::Attack.throttles.keys.inspect}")
-  end
+  Rails.logger.warn "[Turnstile‑INIT] throttles: #{Rack::Attack.throttles.keys.inspect}"
 end
