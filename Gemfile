@@ -56,7 +56,7 @@ gem "vite_rails", "~> 3.0"
 group :production do
   gem "mysql2"
   gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
-  gem "sidekiq", "~> 7.3"
+  gem "sidekiq", "~> 8.0"
 end
 
 group :development, :test do
@@ -145,7 +145,7 @@ gem "capistrano-yarn"
 gem "rackup", "~> 2.0"
 
 # logger
-gem "logger", "1.6.0"
+gem "logger", "1.7.0"
 
 # Nokogiri
 gem "nokogiri", "~> 1.17.0"
