@@ -3,6 +3,9 @@
 # Use this file to easily define all of your cron jobs.
 # Learn more: http://github.com/javan/whenever
 
+# Explicitly set path to 'current' to avoid hardcoding to timestamped release
+set :path, "/var/www/rubyapps/uwm-geoblacklight/current"
+
 # Harvest thumbnail images for search results
 every :sunday, at: "12:05am", roles: [:app] do
   rake "gblsci:images:harvest_retry"
