@@ -74,3 +74,10 @@ namespace :deploy do
     end
   end
 end
+
+# Ensure crontab is managed cleanly with Whenever
+set :whenever_roles, [:app]
+set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
+
+before "deploy:updated", "whenever:clear_crontab"
+after "deploy:updated", "whenever:update_crontab"
