@@ -32,11 +32,7 @@ Rails.application.config.to_prepare do
   # Note that we can only protect GET paths, and also think about making sure you DON'T protect
   # any path your front-end needs JS `fetch` access to, as this would block it
   # Apply rate limiting to catalog#index (home/search page)
-  config.rate_limited_locations = [
-    {controller: "catalog", action: "index"},
-    {controller: "catalog", action: "facet"},
-    {controller: "catalog", action: "show"}
-  ]
+  config.rate_limited_locations = []
 
   # Allow rate_limit_count requests in rate_limit_period, before issuing challenge
   # This is low because some bots rotate IPs, so we want to catch them quickly
@@ -52,9 +48,10 @@ Rails.application.config.to_prepare do
   ip_safelist = ENV.fetch("TURNSTILE_IP_SAFELIST", "").split(",").map(&:strip)
 
   config.allow_exempt = lambda do |controller, _|
-    exempt = (controller.is_a?(CatalogController) &&
-              controller.params[:action].in?(%w[facet]) &&
-              controller.request.headers["sec-fetch-dest"] == "empty") ||
+    exempt = controller.session[:bot_challenge_passed] ||
+      (controller.is_a?(CatalogController) &&
+       controller.params[:action].in?(%w[facet]) &&
+       controller.request.headers["sec-fetch-dest"] == "empty") ||
       ip_safelist.map { |cidr| IPAddr.new(cidr) }.any? { |range| range.include?(controller.request.remote_ip) }
 
     Rails.logger.warn "[Turnstile‑EXEMPT] IP: #{controller.request.remote_ip}, Exempt: #{exempt}"
