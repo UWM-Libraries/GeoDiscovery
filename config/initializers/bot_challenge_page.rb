@@ -33,7 +33,9 @@ Rails.application.config.to_prepare do
   # any path your front-end needs JS `fetch` access to, as this would block it
   # Apply rate limiting to catalog#index (home/search page)
   config.rate_limited_locations = [
-    {controller: "catalog", action: "index"}
+    {controller: "catalog", action: "index"},
+    {controller: "catalog", action: "facet"},
+    {controller: "catalog", action: "show"}
   ]
 
   # Allow rate_limit_count requests in rate_limit_period, before issuing challenge
