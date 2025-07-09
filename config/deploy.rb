@@ -80,5 +80,10 @@ end
 set :whenever_roles, [:app]
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 
+set :passenger_restart_with_touch, false
+set :passenger_restart_command, -> {
+  "passenger-config restart-app #{fetch(:deploy_to)} --ignore-app-not-running --instance VulBwh2L"
+}
+
 before "deploy:updated", "whenever:clear_crontab"
 after "deploy:updated", "whenever:update_crontab"
