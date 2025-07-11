@@ -118,4 +118,7 @@ Rails.application.configure do
 
   # Background jobs
   config.active_job.queue_adapter = :sidekiq
+
+  # Don't log any deprecations.
+  config.active_support.report_deprecations = false
 end
