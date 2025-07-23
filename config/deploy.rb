@@ -9,6 +9,10 @@ lock "~> 3.17.1"
 set :application, "geodiscovery"
 set :repo_url, "git@github.com:UWM-Libraries/GeoDiscovery.git"
 
+set :default_env, {
+  'NODE_OPTIONS' => '--max-old-space-size=2048'
+}
+
 # Default branch is :main
 # Prompt to choose a tag (or name a branch), default to last listed tag
 # unless an environment variable was passed on the command line as in:
