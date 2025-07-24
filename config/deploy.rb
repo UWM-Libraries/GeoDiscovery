@@ -10,7 +10,7 @@ set :application, "geodiscovery"
 set :repo_url, "git@github.com:UWM-Libraries/GeoDiscovery.git"
 
 set :default_env, {
-  'NODE_OPTIONS' => '--max-old-space-size=2048'
+  "NODE_OPTIONS" => "--max-old-space-size=2048"
 }
 
 # Default branch is :main
