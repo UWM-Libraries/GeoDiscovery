@@ -647,7 +647,7 @@ DEPENDENCIES
   ed25519 (>= 1.2, < 2.0)
   exception_notification (~> 5.0)
   geo_combine (>= 0.9)
-  geoblacklight (~> 4.4)
+  geoblacklight (~> 4.5)
   geoblacklight_sidecar_images (~> 1.0)
   haml
   importmap-rails
