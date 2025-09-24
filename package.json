@@ -4,7 +4,7 @@
     "blacklight-allmaps": "^0.3.1"
   },
   "devDependencies": {
-    "vite": "^5.4.19",
+    "vite": "^5.4.20",
     "vite-plugin-rails": "^0.5.0",
     "vite-plugin-ruby": "^5.1.0"
   }
