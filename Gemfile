@@ -15,7 +15,7 @@ gem "sprockets-rails"
 gem "sqlite3", "~> 1.7"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.6"
+gem "puma", "~> 7.0"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
@@ -95,7 +95,7 @@ gem "blacklight", "~> 7.35"
 # See: https://github.com/projectblacklight/blacklight_advanced_search/issues/127
 gem "blacklight_advanced_search", git: "https://github.com/ewlarson/blacklight_advanced_search.git",
   branch: "bl7-fix-gentle-hands"
-gem "geoblacklight", "~> 4.4"
+gem "geoblacklight", "~> 4.5"
 gem "geoblacklight_sidecar_images", "~> 1.0"
 gem "mini_magick", "~> 4.0"
 gem "sprockets", "~> 4.2"
@@ -148,7 +148,7 @@ gem "rackup", "~> 2.0"
 gem "logger", "1.7.0"
 
 # Nokogiri
-gem "nokogiri", "~> 1.17.0"
+gem "nokogiri", "~> 1.18.0"
 
 # Bot Challenge Page
 gem "bot_challenge_page", "~> 0.4.0"
