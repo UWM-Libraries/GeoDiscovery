@@ -151,5 +151,5 @@ gem "logger", "1.7.0"
 gem "nokogiri", "~> 1.18.0"
 
 # Bot Challenge Page
-gem "bot_challenge_page", "~> 0.4.0"
+gem "bot_challenge_page", "~> 0.11.0"
 gem "rack-attack", "~> 6.7"
