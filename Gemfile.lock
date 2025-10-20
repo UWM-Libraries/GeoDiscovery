@@ -397,7 +397,7 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
-    puma (7.0.4)
+    puma (7.1.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.18)
@@ -659,7 +659,7 @@ DEPENDENCIES
   mysql2
   nokogiri (~> 1.18.0)
   passenger (>= 5.0.25)
-  puma (~> 7.0)
+  puma (~> 7.1)
   rack-attack (~> 6.8)
   rackup (~> 2.0)
   rails (~> 7.2.1)
