@@ -125,7 +125,7 @@ GEM
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
-    capistrano-bundler (2.1.1)
+    capistrano-bundler (2.2.0)
       capistrano (~> 3.1)
     capistrano-git (0.0.2)
       capistrano_colors (= 0.5.5)
@@ -442,7 +442,7 @@ GEM
       thor (~> 1.0, >= 1.2.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.3.0)
+    rake (13.3.1)
     rchardet (1.10.0)
     rdoc (6.15.0)
       erb
@@ -635,7 +635,7 @@ DEPENDENCIES
   bootstrap (~> 4.0)
   bot_challenge_page (~> 0.4.0)
   capistrano (~> 3.17.1)
-  capistrano-bundler (~> 2.1.0)
+  capistrano-bundler (~> 2.2.0)
   capistrano-git (= 0.0.2)
   capistrano-passenger (~> 0.2)
   capistrano-rails (~> 1.7)
