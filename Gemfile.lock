@@ -665,7 +665,7 @@ DEPENDENCIES
   logger (= 1.7.0)
   mini_magick (~> 4.0)
   mysql2
-  nokogiri (~> 1.18.0)
+  nokogiri (~> 1.18)
   passenger (>= 5.0.25)
   puma (~> 7.1)
   rack-attack (~> 6.8)

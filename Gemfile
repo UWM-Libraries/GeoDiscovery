@@ -148,8 +148,9 @@ gem "rackup", "~> 2.0"
 gem "logger", "1.7.0"
 
 # Nokogiri
-gem "nokogiri", "~> 1.18.0"
 
 # Bot Challenge Page
 gem "bot_challenge_page", "~> 0.4.0"
 gem "rack-attack", "~> 6.8"
+
+gem "nokogiri", "~> 1.18"
