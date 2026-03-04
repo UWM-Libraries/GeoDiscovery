@@ -39,3 +39,24 @@
   text-decoration: underline;
 }
 
+// Facet contrast fix for active facet header
+.facet-limit.facet-limit-active {
+  border-color: #000 !important;
+
+  .collapse-toggle {
+    background-color: $uwm-gold;
+    color: $uwm-text;
+
+    &:hover,
+    &:focus {
+      color: $uwm-text;
+      text-decoration: underline;
+    }
+  }
+
+  .selected,
+  .selected a {
+    color: $uwm-text !important;
+  }
+}
+
