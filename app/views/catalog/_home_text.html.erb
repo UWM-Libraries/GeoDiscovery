@@ -37,12 +37,12 @@
       </div>
 
       <div class='row mb-4'>
+        <h2 class="sr-only">Browse by facet</h2>
+        
         <div class='col-sm order-1'>
-          <h2 class='sr-only'>Place</h2>
           <%= render_facet_partials [Settings.FIELDS.SPATIAL_COVERAGE], {class:'active'} %>
         </div>
         <div class='col-sm order-2'>
-          <h2 class='sr-only'>Resource Class</h2>
           <%= render_facet_partials [Settings.FIELDS.RESOURCE_CLASS] %>
         </div>
       </div>
