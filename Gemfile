@@ -32,6 +32,9 @@ gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 5.4"
 
+# Rails 7.2 RedisCacheStore isn't compatible with connection_pool 3.x (keyword-args change)
+gem "connection_pool", "< 3"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 gem "kredis"
 
@@ -88,6 +91,7 @@ group :test do
   gem "selenium-webdriver"
   gem "simplecov", require: false
   gem "webdrivers"
+  gem "minitest", "< 6"
 end
 gem "blacklight", "~> 7.35"
 
