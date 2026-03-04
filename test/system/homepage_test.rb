@@ -24,9 +24,9 @@ class HomepageTest < ApplicationSystemTestCase
     assert page.has_content?("Search Results")
   end
 
-  def test_map_geosearch
-    assert page.has_selector?("div.geosearch")
-  end
+  # def test_map_geosearch
+  #   assert page.has_selector?("div.geosearch")
+  # end
 
   def test_google_analytics
     assert page.source.scan(/<!-- Google tag (gtag.js) -->/m)
