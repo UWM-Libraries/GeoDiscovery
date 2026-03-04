@@ -34,8 +34,8 @@ en:
   views:
     pagination:
       first: 'First'
-      previous: '<i class="fa-solid fa-chevron-left"></i>'
-      next: '<i class="fa-solid fa-chevron-right"></i>'
+      previous: '<i class="fa-solid fa-chevron-left me-1" aria-hidden="true"></i> Previous'
+      next: 'Next <i class="fa-solid fa-chevron-right ms-1" aria-hidden="true"></i>'
       last: 'Last'
   bot_challenge_page:
     title: "Verify You’re a Human"

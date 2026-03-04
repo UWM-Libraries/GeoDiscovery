@@ -30,10 +30,6 @@
       <%= vite_javascript_tag 'clover' %>
     <% end %>
 
-    <!-- GeoSearch -->
-    <link  href="https://unpkg.com/leaflet-geosearch@latest/assets/css/leaflet.css" rel="stylesheet" />
-    <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
-
     <%= csrf_meta_tags %>
     <%= content_for(:head) %>
   </head>
@@ -56,6 +52,12 @@
 
     <main id="main-container" class="container-fluid" role="main" aria-label="<%= t('blacklight.main.aria.main_container') %>">
       <%= content_for(:container_header) %>
+
+      <% if controller_name == 'catalog' && action_name == 'index' && !has_search_parameters? %>
+        <h1 class="screen-reader-text top-content-title">AGSL GeoDiscovery</h1>
+      <% elsif controller_name == 'catalog' && action_name == 'show' %>
+        <h1 class="screen-reader-text top-content-title">AGSL GeoDiscovery</h1>
+      <% end %>
 
       <%= render partial: 'shared/flash_msg', layout: 'shared/flash_messages' %>
 

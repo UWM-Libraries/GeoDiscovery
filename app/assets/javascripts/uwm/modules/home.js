@@ -13,14 +13,5 @@ Blacklight.onLoad(function() {
       },
       staticButton: '<a class="btn btn-primary">Search here</a>'
     }));
-
-    // leaflet-geosearch
-    var GeoSearchControl = window.GeoSearch.GeoSearchControl;
-    var OpenStreetMapProvider = window.GeoSearch.OpenStreetMapProvider;
-    var provider = new OpenStreetMapProvider();
-    var searchControl = new GeoSearchControl({
-      provider: provider
-    });
-    geoblacklight.map.addControl(searchControl);
   });
 });
