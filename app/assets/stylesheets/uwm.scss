@@ -60,3 +60,15 @@
   }
 }
 
+// Results pagniation contrast fix for active page
+
+.pagination .page-item.active .page-link {
+  background-color: $uwm-gold;
+  color: $uwm-text;
+  border-color: $uwm-gold;
+}
+.pagination .page-item.active .page-link:hover,
+.pagination .page-item.active .page-link:focus {
+  color: $uwm-text;
+}
+
