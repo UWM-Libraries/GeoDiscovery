@@ -1,0 +1,16 @@
+<% content_for(:sidebar) do %>
+  <% if has_search_parameters? %>
+    <%= render 'search_sidebar' %>
+  <% end %>
+<% end %>
+
+<% unless has_search_parameters? %>
+  <%# if there are no input/search related params, display the "home" partial -%>
+  <%= render 'home' %>
+  <%= render 'shared/sitelinks_search_box' %>
+<% else %>
+  <%# Prevent the layout fallback H1; Blacklight/GBL already provides the Search page H1 %>
+  <% content_for :page_title do %><% end %>
+
+  <%= render 'search_results' %>
+<% end %>
