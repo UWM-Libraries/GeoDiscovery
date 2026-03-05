@@ -91,7 +91,7 @@ group :test do
   gem "selenium-webdriver"
   gem "simplecov", require: false
   gem "webdrivers"
-  gem "minitest", "< 6"
+  gem "minitest", "< 7"
 end
 gem "blacklight", "~> 7.35"
 
