@@ -33,7 +33,7 @@ gem "jbuilder"
 gem "redis", "~> 5.4"
 
 # Rails 7.2 RedisCacheStore isn't compatible with connection_pool 3.x (keyword-args change)
-gem "connection_pool", "< 3"
+gem "connection_pool", "< 4"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 gem "kredis"
