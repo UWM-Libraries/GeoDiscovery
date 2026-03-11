@@ -20,6 +20,7 @@
 - Do not edit vendored, generated, or environment-specific files unless the task clearly requires it.
 - Before changing deployment-related code or configuration, review the existing deployment setup and call out any operational risk.
 - If a required verification step cannot run, say so clearly and explain why.
+- If it's possible that errors are related to the production environment, consider that a possiblity and ask for follow up information from the server (e.g. logs, versions, locations, permissions, etc.)
 
 ## Repository-specific preferences
 

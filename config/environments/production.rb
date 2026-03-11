@@ -74,8 +74,12 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :sendmail
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default_options = {from: %("GeoDiscovery" <notifier@#{`hostname`.strip}>)}
-  config.action_mailer.default_url_options = {host: "geodiscovery.uwm.edu"}
+  config.action_mailer.default_options = {
+    from: ENV.fetch("ACTION_MAILER_FROM", %("GeoDiscovery" <noreply@wwwmail.uwm.edu>))
+  }
+  config.action_mailer.default_url_options = {
+    host: ENV.fetch("ACTION_MAILER_HOST", "geodiscovery.uwm.edu")
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
