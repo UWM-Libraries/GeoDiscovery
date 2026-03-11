@@ -2,6 +2,7 @@
 
 ## Working agreements
 
+- Do not edit files until I explicitly approve the change, even if the likely fix seems obvious. Prefer diagnosis first, then propose the exact edit.
 - Whenever reasonable, reference available documentation:
   - AGSL GeoDiscovery Documentation site: https://uwm-libraries.github.io/GeoDiscovery-Documentation/
   - GeoBlacklight Documentation Site for 4.x: https://geoblacklight.org/4.x/docs/
@@ -20,7 +21,11 @@
 - Do not edit vendored, generated, or environment-specific files unless the task clearly requires it.
 - Before changing deployment-related code or configuration, review the existing deployment setup and call out any operational risk.
 - If a required verification step cannot run, say so clearly and explain why.
-- If it's possible that errors are related to the production environment, consider that a possiblity and ask for follow up information from the server (e.g. logs, versions, locations, permissions, etc.)
+- When I say “local,” I usually mean Ubuntu via WSL on a work machine. Sometimes I may be working on macOS, but usually local work means WSL Ubuntu. This is where I use `RAILS_ENV=development` and `RAILS_ENV=test`.
+- The Development and Production servers both run on RHEL 8 and both use `RAILS_ENV=production`. Do not assume the Development server behaves like a local Rails development environment.
+- If an error may be environment-specific, ask for follow-up information from the relevant server before proposing code changes (e.g. logs, versions, locations, permissions, and environment variables).
+- On server-like environments for this project, confirm the actual `RAILS_ENV` in use before troubleshooting. Some hosts that function as “development” infrastructure may still run with `RAILS_ENV=production`.
+- For sitemap issues, remember this app serves the sitemap from generated static files in `public/`, not from a Rails route. Check for `public/sitemap.xml.gz` and the Whenever schedule before proposing route changes.
 
 ## Repository-specific preferences
 
@@ -40,8 +45,8 @@
 - Do not remove or simplify AGSL-specific behavior merely because upstream GeoBlacklight handles the same area differently; first confirm the local reason for the customization.
 - When unsure why a customization exists, inspect git history and nearby code before replacing it with a cleaner-looking upstream-style implementation.
 - Prefer small, reviewable changes that preserve current behavior unless the task explicitly asks for refactoring.
+- Flag any change that may impact WCAG compliance or web accessibility.
 - For view-layer changes, check for existing partials, helpers, and Stimulus/JavaScript hooks before restructuring templates.
 - For indexing or metadata normalization changes, document sample input and expected Solr output in notes or the final summary when possible.
 - When adding configuration, prefer patterns already used in the repository so deployment and local setup remain predictable.
 - Flag any change that may require reindexing, cache clearing, restart, or redeploy.
-- Flag any change that may impact WCAG compliance or web accessibility
