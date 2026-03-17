@@ -6,12 +6,13 @@ desc "Run test suite"
 task :ci do
   shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
   shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
+  test_solr_url = "http://127.0.0.1:8985/solr/blacklight-core"
 
   success = true
   SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
     solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-      system "RAILS_ENV=test bundle exec rake uwm:index:seed"
-      success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
+      system "SOLR_URL=#{test_solr_url} RAILS_ENV=test bundle exec rake uwm:index:seed"
+      success = system "SOLR_URL=#{test_solr_url} RUBYOPT=W0 RAILS_ENV=test TESTOPTS=\"-v\" bundle exec rails test:system test"
     end
   end
 

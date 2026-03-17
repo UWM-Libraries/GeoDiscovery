@@ -5,6 +5,7 @@
     <field name="_version_" type="long"   stored="true" indexed="true"/>
     <field name="timestamp" type="date"   stored="true" indexed="true" default="NOW"/>
     <field name="id"        type="string" stored="true" indexed="true" required="true"/>
+    <field name="dct_title_latin_first_sort" type="text_latin_first_sort" stored="false" indexed="true"/>
 
     <!-- core generated fields -->
     <field name="text" type="text_en" stored="false" indexed="true" multiValued="true"
@@ -117,6 +118,18 @@
       </analyzer>
     </fieldType>
 
+    <fieldType name="text_latin_first_sort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory" />
+        <filter class="solr.TrimFilterFactory" />
+        <filter class="solr.ASCIIFoldingFilterFactory" />
+        <filter class="solr.PatternReplaceFilterFactory" pattern="^[^\p{L}\p{Nd}]+" replacement="" replace="first"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="^([^a-z0-9].*)$" replacement="zzzz $1" replace="first"/>
+        <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z0-9 ])" replacement="" replace="all"/>
+      </analyzer>
+    </fieldType>
+
     <!-- for spell checking -->
     <fieldType name="textSpell" class="solr.TextField" positionIncrementGap="100" >
       <analyzer>
@@ -176,6 +189,7 @@
   <!-- for sorting text fields -->
   <copyField source="schema_provider_s"   dest="schema_provider_sort"/>
   <copyField source="dct_title_s"         dest="dct_title_sort"/>
+  <copyField source="dct_title_s"         dest="dct_title_latin_first_sort"/>
 
   <!-- for spell checking -->
   <copyField source="dct_title_s" dest="spell"/>
