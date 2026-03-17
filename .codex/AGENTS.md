@@ -14,6 +14,7 @@
 - Local development depends on Ruby and Java. Solr is required for normal application behavior.
 - Prefer the documented local startup task: `bundle exec rake uwm:server`.
 - After modifying any Ruby file or Ruby-based config, run `bundle exec standardrb --fix`.
+- Before wrapping up a task that changed Ruby code, verify whether `bundle exec standardrb --fix` is needed and run it if formatting or style drift is possible.
 - After modifying application code, tests, database code, routes, initializers, or environment/configuration that could affect runtime behavior, run `RAILS_ENV=test bundle exec rake ci`.
 - For documentation-only or clearly isolated non-runtime changes, skip the full test suite unless I explicitly ask you to test the app.
 - If full verification is too expensive during iteration, run the narrowest relevant check first, then run broader verification before finishing when the change affects runtime behavior.

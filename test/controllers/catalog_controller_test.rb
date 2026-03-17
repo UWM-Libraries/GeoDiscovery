@@ -4,7 +4,7 @@ require "test_helper"
 require "json"
 
 class CatalogControllerTest < ActionDispatch::IntegrationTest
-  SORT_TEST_TAG = "sort-script-test".freeze
+  SORT_TEST_TAG = "sort-script-test"
 
   setup do
     @sort_test_ids = %w[sort-test-latin sort-test-chinese]
@@ -18,7 +18,7 @@ class CatalogControllerTest < ActionDispatch::IntegrationTest
   end
 
   teardown do
-    Blacklight.default_index.connection.delete_by_query("id:(#{@sort_test_ids.join(' ')})")
+    Blacklight.default_index.connection.delete_by_query("id:(#{@sort_test_ids.join(" ")})")
     Blacklight.default_index.connection.commit
   end
 
@@ -28,7 +28,7 @@ class CatalogControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "title sort deprioritizes non latin script titles" do
-    get "/", params: { q: SORT_TEST_TAG, search_field: "all_fields", sort: "#{Settings.FIELDS.TITLE_SORT} asc" }
+    get "/", params: {q: SORT_TEST_TAG, search_field: "all_fields", sort: "#{Settings.FIELDS.TITLE_SORT} asc"}
 
     assert_response :success
     assert_includes response.body, "Alpha sort script test"
