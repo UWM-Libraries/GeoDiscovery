@@ -87,6 +87,7 @@ FIELDS:
   :SUPPRESSED: 'gbl_suppressed_b'
   :TEMPORAL_COVERAGE: 'dct_temporal_sm'
   :TITLE: 'dct_title_s'
+  :TITLE_SORT: 'dct_title_latin_first_sort'
   :VERSION: 'dct_isVersionOf_sm'
   :WXS_IDENTIFIER: 'gbl_wxsIdentifier_s'
 
