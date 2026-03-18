@@ -38,6 +38,16 @@ If the `Gemfile` has changed recently, you might need to run an additional comma
 bundle update
 ```
 
+### Install JavaScript dependencies
+
+This project uses Vite for frontend assets, so you also need the Node packages from `package.json`:
+
+```bash
+yarn install
+```
+
+If `node_modules` is missing, Rails can still boot but page rendering will fail once Vite tries to resolve the frontend entrypoints.
+
 ### Database initialization
 
 You'll need a local database for development and test modes. Both can just use sqlite.
