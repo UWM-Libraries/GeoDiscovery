@@ -6,6 +6,8 @@ To run GeoDiscovery locally, you'll need to be able to run Ruby and Java. GoRail
 
 Make sure you have Java installed. On a Mac with homebrew, that can be as simple as: `brew install java`.
 
+The transliterated-title prototype also depends on ICU's `uconv` command-line tool being available on `PATH`. GeoDiscovery uses it during indexing to populate a readable romanized companion title field. If `uconv` is missing, indexing still runs, but transliterated display titles will not be generated.
+
 ### Clone the GeoDiscovery repository, and cd into it
 
 ```bash

@@ -38,6 +38,12 @@ namespace :redis do
 end
 
 namespace :uwm do
+  def transliterated_docs_from(paths)
+    Dir[paths].map { |f| JSON.parse File.read(f) }.flatten.map do |document|
+      TitleTransliterator.add_to_document(document)
+    end
+  end
+
   desc "Run Solr and GeoBlacklight for interactive development"
   task :server, [:rails_server_args] do
     require "solr_wrapper"
@@ -122,14 +128,14 @@ namespace :uwm do
   namespace :index do
     desc "Put all sample data into solr"
     task seed: :environment do
-      docs = Dir["test/fixtures/files/**/*.json"].map { |f| JSON.parse File.read(f) }.flatten
+      docs = transliterated_docs_from("test/fixtures/files/**/*.json")
       Blacklight.default_index.connection.add docs
       Blacklight.default_index.connection.commit
     end
 
     desc "Put uwm sample data into solr"
     task uwm: :environment do
-      docs = Dir["test/fixtures/files/uwm_documents/*.json"].map { |f| JSON.parse File.read(f) }.flatten
+      docs = transliterated_docs_from("test/fixtures/files/uwm_documents/*.json")
       Blacklight.default_index.connection.add docs
       Blacklight.default_index.connection.commit
     end

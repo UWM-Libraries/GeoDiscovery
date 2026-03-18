@@ -25,8 +25,11 @@
           <span class="document-counter">
             <%= t('blacklight.search.documents.counter', :counter => counter) if counter %>
           </span>
-          <%= link_to_document document, counter: counter, itemprop: "name" %>
+          <%= link_to_document document, document.preferred_index_title, counter: counter, itemprop: "name" %>
         </h3>
+        <% if document.show_original_title_companion? %>
+          <p class="text-muted mb-2"><%= document.title %></p>
+        <% end %>
         <small>
           <div class='status-icons'>
             <%= render partial: 'header_icons', locals: { document: document } %>

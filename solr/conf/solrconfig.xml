@@ -29,8 +29,7 @@
   -->
   <luceneMatchVersion>7.6</luceneMatchVersion>
 
-  <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lib" />
-  <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lucene-libs" />
+  <lib dir="${solr.install.dir:../../../..}/modules/analysis-extras/lib" />
 
   <directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}"/>
 
@@ -113,7 +112,7 @@
       <int name="ps">0</int>
       <float name="tie">0.01</float>
       <str name="fl">*,score</str>
-      <str name="sort">score desc, dct_title_sort asc</str>
+      <str name="sort">score desc, dct_title_transliterated_sort asc</str>
       <str name="q.alt">*:*</str>
       <str name="qf">
         text^1
