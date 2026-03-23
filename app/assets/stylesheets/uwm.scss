@@ -12,14 +12,14 @@
 // Button primary
 .btn-primary {
   @include button-variant($uwm-gold, darken($uwm-gold, 7.5%), darken($uwm-gold, 10%), lighten($uwm-gold, 5%), lighten($uwm-gold, 10%), darken($uwm-gold,30%));
-  color: $uwm-text;
+  color: $black;
 }
 
 .btn-primary:hover {
   background: #ffd14c;
   border-color: #ffd14c;
   text-decoration: none;
-  color: #404040;
+  color: $black;
 }
 
 .screen-reader-text {
@@ -60,6 +60,18 @@
   }
 }
 
+.facet-limit .facet-select,
+.facet-limit .more_facets a {
+  color: $uwm-blue-accessible !important;
+}
+
+.facet-limit .facet-select:hover,
+.facet-limit .facet-select:focus,
+.facet-limit .more_facets a:hover,
+.facet-limit .more_facets a:focus {
+  color: $black !important;
+}
+
 // Results pagniation contrast fix for active page
 
 .pagination .page-item.active .page-link {
@@ -82,6 +94,23 @@
 
 .home-about-copy a:hover,
 .home-about-copy a:focus {
+  color: darken($uwm-blue-accessible, 12%);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+
+.document-metadata dd a {
+  color: $uwm-blue-accessible;
+  text-decoration: underline;
+  text-decoration-color: rgba($uwm-blue-accessible, 0.65);
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.12em;
+}
+
+.document-metadata dd a:hover,
+.document-metadata dd a:focus {
   color: darken($uwm-blue-accessible, 12%);
   text-decoration: underline;
   text-decoration-color: currentColor;
