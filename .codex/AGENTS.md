@@ -16,6 +16,7 @@
 - Prefer the documented local startup task: `bundle exec rake uwm:server`.
 - After modifying any Ruby file or Ruby-based config, run `bundle exec standardrb --fix`.
 - After modifying application code, tests, database code, routes, initializers, or environment/configuration that could affect runtime behavior, run `RAILS_ENV=test bundle exec rake ci`.
+- When running CI-like commands locally, explicitly use `RAILS_ENV=test`.
 - For documentation-only or clearly isolated non-runtime changes, skip the full test suite unless I explicitly ask you to test the app.
 - If full verification is too expensive during iteration, run the narrowest relevant check first, then run broader verification before finishing when the change affects runtime behavior.
 - Do not edit vendored, generated, or environment-specific files unless the task clearly requires it.
@@ -46,6 +47,10 @@
 - When unsure why a customization exists, inspect git history and nearby code before replacing it with a cleaner-looking upstream-style implementation.
 - Prefer small, reviewable changes that preserve current behavior unless the task explicitly asks for refactoring.
 - Flag any change that may impact WCAG compliance or web accessibility.
+- Keep custom SCSS rules in `app/assets/stylesheets/uwm.scss`. Reserve `app/assets/stylesheets/_customizations.scss` for Bootstrap variables and related theme configuration unless I explicitly ask otherwise.
+- For accessibility testing with Axe, keep the default smoke-test target at WCAG A/AA (`wcag2a`, `wcag2aa`, `wcag21aa`) unless I explicitly ask to test AAA.
+- For link accessibility fixes, prefer scoped, brand-consistent styling that preserves the UWM look while meeting AA. Avoid broad site-wide overrides when a narrower selector will do.
+- For public error pages (`public/404.html`, `public/422.html`, `public/500.html`), prefer simple on-brand static pages over complex custom layouts so they remain readable, maintainable, and production-safe.
 - For view-layer changes, check for existing partials, helpers, and Stimulus/JavaScript hooks before restructuring templates.
 - For indexing or metadata normalization changes, document sample input and expected Solr output in notes or the final summary when possible.
 - When adding configuration, prefer patterns already used in the repository so deployment and local setup remain predictable.
