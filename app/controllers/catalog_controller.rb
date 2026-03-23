@@ -343,10 +343,10 @@ class CatalogController < ApplicationController
     # config.add_show_tools_partial(:bookmark, partial: "bookmark_control", if: :render_bookmarks_control?)
     config.add_show_tools_partial(:citation)
     config.email.title_field = Settings.FIELDS.TITLE
-    config.add_email_field Settings.FIELDS.TITLE, label: "Title:"
-    config.add_email_field Settings.FIELDS.PROVIDER, label: "Provider:"
-    config.add_email_field Settings.FIELDS.ACCESS_RIGHTS, label: "Access:"
-    config.add_email_field Settings.FIELDS.DESCRIPTION, label: "Description:"
+    config.add_email_field Settings.FIELDS.TITLE, label: "Title:\n"
+    config.add_email_field Settings.FIELDS.PROVIDER, label: "Provider:\n"
+    config.add_email_field Settings.FIELDS.ACCESS_RIGHTS, label: "Access:\n"
+    config.add_email_field Settings.FIELDS.DESCRIPTION, label: "Description:\n"
     config.add_show_tools_partial(:email, callback: :email_action, validator: :validate_email_params)
     # config.add_show_tools_partial(:sms, if: :render_sms_action?, callback: :sms_action, validator: :validate_sms_params)
 
