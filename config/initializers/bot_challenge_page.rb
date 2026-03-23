@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # Configure bot_challenge_page behavior
-# More configuration is available; see:
-# https://github.com/samvera-labs/bot_challenge_page/blob/main/app/models/bot_challenge_page/config.rb
+# More configuration is available in the gem's Config class and README.
 Rails.application.config.to_prepare do
   config = BotChallengePage::BotChallengePageController.bot_challenge_config
 
@@ -20,40 +19,27 @@ Rails.application.config.to_prepare do
   # Render challenge in place instead of redirect
   config.redirect_for_challenge = false
 
-  # What paths do you want to protect?
-  #
-  # You can use path prefixes: "/catalog" or even "/"
-  #
-  # Or hashes with controller and/or action:
-  #
-  #   { controller: "catalog" }
-  #   { controller: "catalog", action: "index" }
-  #
-  # Note that we can only protect GET paths, and also think about making sure you DON'T protect
-  # any path your front-end needs JS `fetch` access to, as this would block it
-  # Apply rate limiting to catalog#index (home/search page)
-  config.rate_limited_locations = []
-
-  # Remove these — we’re not using rate-limiting anymore
-  # config.rate_limit_period = 24.hours
-  # config.rate_limit_count = 3
-  # config.rate_limit_discriminator = ->(req, _) { req.ip }
-
   # How long will a challenge success exempt a session from further challenges? (36 is default)
   # config.session_passed_good_for = 36.hours
 
-  # Exemption logic: allow facet fetches and safelisted IPs
-  # Modified from Stanford's implementation to use .env variable for safelisting
+  # Exemption logic: allow facet fetches and safelisted IPs.
+  # In bot_challenge_page 1.x this is configured with skip_when, which runs in
+  # the controller instance context.
   ip_safelist = ENV.fetch("TURNSTILE_IP_SAFELIST", "").split(",").map(&:strip)
+  safelisted_ranges = ip_safelist.filter_map do |cidr|
+    IPAddr.new(cidr)
+  rescue IPAddr::InvalidAddressError
+    nil
+  end
 
-  config.allow_exempt = lambda do |controller, _|
+  config.skip_when = lambda do |_config|
     exempt =
-      (controller.is_a?(CatalogController) &&
-       controller.params[:action].in?(%w[facet]) &&
-       controller.request.headers["sec-fetch-dest"] == "empty") ||
-      ip_safelist.map { |cidr| IPAddr.new(cidr) }.any? { |range| range.include?(controller.request.remote_ip) }
+      (is_a?(CatalogController) &&
+       params[:action].in?(%w[facet]) &&
+       request.headers["sec-fetch-dest"] == "empty") ||
+      safelisted_ranges.any? { |range| range.include?(request.remote_ip) }
 
-    Rails.logger.warn "[Turnstile‑EXEMPT] IP: #{controller.request.remote_ip}, Exempt: #{exempt}"
+    Rails.logger.warn "[Turnstile-EXEMPT] IP: #{request.remote_ip}, Exempt: #{exempt}"
     exempt
   end
 

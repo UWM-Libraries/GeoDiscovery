@@ -117,10 +117,9 @@ GEM
     bootstrap (4.6.2.1)
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 1.16.1, < 2)
-    bot_challenge_page (0.4.0)
+    bot_challenge_page (1.1.0)
       http (~> 5.2)
-      rack-attack (~> 6.7)
-      rails (>= 7.1, < 8.1)
+      rails (>= 7.1, < 8.2)
     builder (3.3.0)
     capistrano (3.17.3)
       airbrussh (>= 1.0.0)
@@ -641,7 +640,7 @@ DEPENDENCIES
   blacklight_allmaps
   bootsnap
   bootstrap (~> 4.0)
-  bot_challenge_page (~> 0.4.0)
+  bot_challenge_page (~> 1.1.0)
   capistrano (~> 3.17.1)
   capistrano-bundler (~> 2.2.0)
   capistrano-git (= 0.0.2)
