@@ -53,8 +53,9 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-# vite rails
-gem "vite_rails", "~> 3.0"
+# Keep the Ruby and JS Vite plugins on a compatible line.
+gem "vite_rails", "~> 3.0.20"
+gem "vite_ruby", "~> 3.9.3"
 
 group :production do
   gem "mysql2"
@@ -100,7 +101,7 @@ gem "blacklight", "~> 7.35"
 gem "blacklight_advanced_search", git: "https://github.com/ewlarson/blacklight_advanced_search.git",
   branch: "bl7-fix-gentle-hands"
 gem "geoblacklight", "~> 4.5"
-gem "geoblacklight_sidecar_images", "~> 1.0"
+gem "geoblacklight_sidecar_images", "~> 1.1"
 gem "mini_magick", "~> 4.0"
 gem "sprockets", "~> 4.2"
 
