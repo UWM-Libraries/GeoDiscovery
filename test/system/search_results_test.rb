@@ -20,10 +20,12 @@ class SearchResultsTest < ApplicationSystemTestCase
     within("#documents") do
       assert page.has_selector?("article.document")       # Search Result
       assert page.has_selector?("article.document")       # Search Result
-      assert page.has_selector?("div.thumbnail")          # Thumbnail
+      assert page.has_selector?("div.documentHeader")     # Result Header
       assert page.has_selector?("h3.index_title")         # Title
       assert page.has_selector?("span.document-counter")  # Doc Counter
-      assert page.has_selector?("div.status-icons")       # Status Icons
+      assert page.has_selector?("span.status-icons")      # Status Icons
+      assert page.has_selector?("div.more-info-area", visible: :all) # Summary Area
+      assert page.has_selector?("div.collapse", visible: :all)       # Collapsible Summary
     end
   end
 end

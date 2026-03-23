@@ -2,6 +2,7 @@
 
 require "test_helper"
 require "capybara-screenshot/minitest"
+require_relative "support/axe_helper"
 
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new
@@ -22,5 +23,7 @@ Capybara::Screenshot.register_driver(:selenium_chrome_headless) do |driver, path
 end
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  include AxeHelper
+
   driven_by :selenium_chrome_headless
 end

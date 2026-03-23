@@ -72,6 +72,31 @@
   color: $uwm-text;
 }
 
+.home-about-copy a {
+  color: $uwm-blue-accessible;
+  text-decoration: underline;
+  text-decoration-color: rgba($uwm-blue-accessible, 0.65);
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.12em;
+}
+
+.home-about-copy a:hover,
+.home-about-copy a:focus {
+  color: darken($uwm-blue-accessible, 12%);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+
+.uwm-navbar .navbar-nav .nav-link:hover,
+.uwm-navbar .navbar-nav .nav-link:focus {
+  color: $black !important;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+
 /* Fix: OEmbed viewers (Stanford) can collapse the map container height */
 #map[data-protocol="Oembed"] {
   min-height: 500px;
