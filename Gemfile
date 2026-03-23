@@ -54,7 +54,7 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 # Keep the Ruby and JS Vite plugins on a compatible line.
-gem "vite_rails", "~> 3.0.20"
+gem "vite_rails", "~> 3.10.0"
 gem "vite_ruby", "~> 3.9.3"
 
 group :production do
