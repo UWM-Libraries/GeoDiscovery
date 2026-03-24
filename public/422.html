@@ -1,67 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>The change you wanted was rejected (422)</title>
+  <meta charset="utf-8">
+  <title>Request Rejected (422) | AGSL GeoDiscovery</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-  .rails-default-error-page {
-    background-color: #EFEFEF;
-    color: #2E2F30;
-    text-align: center;
-    font-family: arial, sans-serif;
-    margin: 0;
-  }
+    :root {
+      --uwm-gold: #ffbd00;
+      --uwm-gold-light: #ffd14c;
+      --uwm-black: #000000;
+      --uwm-text: #404040;
+      --uwm-muted: #6a6a6a;
+      --uwm-surface: #ffffff;
+      --uwm-bg: #f5f5f5;
+      --uwm-border: #e5e5e5;
+      --uwm-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+    }
 
-  .rails-default-error-page div.dialog {
-    width: 95%;
-    max-width: 33em;
-    margin: 4em auto 0;
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  .rails-default-error-page div.dialog > div {
-    border: 1px solid #CCC;
-    border-right-color: #999;
-    border-left-color: #999;
-    border-bottom-color: #BBB;
-    border-top: #B00100 solid 4px;
-    border-top-left-radius: 9px;
-    border-top-right-radius: 9px;
-    background-color: white;
-    padding: 7px 12% 0;
-    box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-  }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Avenir Next", "Segoe UI", Arial, sans-serif;
+      color: var(--uwm-text);
+      background:
+        linear-gradient(180deg, rgba(255, 189, 0, 0.16), rgba(255, 189, 0, 0) 180px),
+        var(--uwm-bg);
+    }
 
-  .rails-default-error-page h1 {
-    font-size: 100%;
-    color: #730E15;
-    line-height: 1.5em;
-  }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
 
-  .rails-default-error-page div.dialog > p {
-    margin: 0 0 1em;
-    padding: 1em;
-    background-color: #F7F7F7;
-    border: 1px solid #CCC;
-    border-right-color: #999;
-    border-left-color: #999;
-    border-bottom-color: #999;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-top-color: #DADADA;
-    color: #666;
-    box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-  }
+    .card {
+      width: min(720px, 100%);
+      background: var(--uwm-surface);
+      border: 1px solid var(--uwm-border);
+      border-radius: 20px;
+      box-shadow: var(--uwm-shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 20px 28px;
+      background: var(--uwm-gold);
+      color: var(--uwm-black);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-body {
+      padding: 36px 28px 32px;
+    }
+
+    .status {
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--uwm-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--uwm-black);
+      font-size: clamp(2rem, 5vw, 3.1rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .lede {
+      margin: 18px 0 0;
+      max-width: 38rem;
+      font-size: 1.06rem;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .button-primary {
+      background: var(--uwm-gold);
+      color: var(--uwm-black);
+    }
+
+    .button-primary:hover,
+    .button-primary:focus {
+      background: var(--uwm-gold-light);
+    }
+
+    .button-secondary {
+      background: transparent;
+      color: var(--uwm-text);
+      border-color: var(--uwm-border);
+    }
+
+    .button-secondary:hover,
+    .button-secondary:focus {
+      background: #fafafa;
+    }
+
+    .help {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--uwm-border);
+      font-size: 0.96rem;
+      color: var(--uwm-muted);
+    }
+
+    .help a {
+      color: inherit;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 16px;
+      }
+
+      .card-header,
+      .card-body {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
+<body>
+  <main class="page">
+    <section class="card" aria-labelledby="page-title" aria-describedby="page-description">
+      <div class="card-header">AGSL GeoDiscovery</div>
 
-<body class="rails-default-error-page">
-  <!-- This file lives in public/422.html -->
-  <div class="dialog">
-    <div>
-      <h1>The change you wanted was rejected.</h1>
-      <p>Maybe you tried to change something you didn't have access to.</p>
-    </div>
-    <p>If you are the application owner check the logs for more information.</p>
-  </div>
+      <div class="card-body">
+        <p class="status">Error 422</p>
+        <h1 id="page-title">We couldn't process that request.</h1>
+        <p class="lede" id="page-description">
+          The change you tried to make was rejected. You may need to go back and try again, or return to the homepage to start over.
+        </p>
+
+        <nav class="actions" aria-label="Helpful links">
+          <a class="button button-primary" href="/">Go to homepage</a>
+          <a class="button button-secondary" href="https://uwm.edu/libraries/agsl/">
+            Visit the AGSL website
+            <span class="sr-only"> (external site)</span>
+          </a>
+        </nav>
+
+        <p class="help">
+          Need help finding GIS data or AGSL resources?
+          <a href="https://guides.library.uwm.edu/findgisdata">
+            Visit the GIS data guide
+            <span class="sr-only"> (external site)</span>
+          </a>.
+        </p>
+      </div>
+    </section>
+  </main>
 </body>
 </html>

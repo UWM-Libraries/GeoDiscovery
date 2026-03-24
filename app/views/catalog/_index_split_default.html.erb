@@ -5,7 +5,7 @@
       <div class='col-2 thumbnail'>
         <% if document.sidecar.image.attached? %>
           <% if document.sidecar.image.variable? %>
-            <%= image_tag document.sidecar.image.variant(resize: "200"),
+            <%= image_tag document.sidecar.image.variant(resize_to_fit: [200, 200]),
                           alt: "",
                           role: "presentation" %>
           <% else %>
@@ -23,7 +23,7 @@
         <h3 class="index_title text-span">
           <% counter = document_counter_with_offset(document_counter) %>
           <span class="document-counter">
-            <%= t('blacklight.search.documents.counter', :counter => counter) if counter %>
+            <%= t('blacklight.search.documents.counter', counter: counter) if counter %>
           </span>
           <%= link_to_document document, document.preferred_index_title, counter: counter, itemprop: "name" %>
         </h3>

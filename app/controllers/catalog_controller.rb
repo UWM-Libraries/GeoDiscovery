@@ -8,15 +8,10 @@ class CatalogController < ApplicationController
   include Blacklight::Configurable
   include Blacklight::SearchContext
 
-  # Protect searches with bot_challenge_page & turnstile
-  # See: https://github.com/samvera-labs/bot_challenge_page
-  #
-  # We protect requests for searches, but not for show pages, so we can still
-  # crawl ourselves and let well-behaved search engines index our content via
-  # the sitemap.
-  before_action only: :index do |controller|
-    BotChallengePage::BotChallengePageController.bot_challenge_enforce_filter(controller, immediate: true)
-  end
+  # Protect searches with bot_challenge_page & turnstile.
+  # We protect search/index requests, but not show pages, so crawlers can still
+  # index item pages and the sitemap.
+  bot_challenge only: :index
 
   configure_blacklight do |config|
     # Advanced config values
@@ -342,8 +337,13 @@ class CatalogController < ApplicationController
     config.add_results_collection_tool(:per_page_widget)
     # config.add_show_tools_partial(:bookmark, partial: "bookmark_control", if: :render_bookmarks_control?)
     config.add_show_tools_partial(:citation)
+    config.email.title_field = Settings.FIELDS.TITLE
+    config.add_email_field Settings.FIELDS.TITLE, label: "Title:\n"
+    config.add_email_field Settings.FIELDS.PROVIDER, label: "Provider:\n"
+    config.add_email_field Settings.FIELDS.ACCESS_RIGHTS, label: "Access:\n"
+    config.add_email_field Settings.FIELDS.DESCRIPTION, label: "Description:\n"
     config.add_show_tools_partial(:email, callback: :email_action, validator: :validate_email_params)
-    config.add_show_tools_partial(:sms, if: :render_sms_action?, callback: :sms_action, validator: :validate_sms_params)
+    # config.add_show_tools_partial(:sms, if: :render_sms_action?, callback: :sms_action, validator: :validate_sms_params)
 
     # Custom tools for GeoBlacklight
     config.add_show_tools_partial :metadata, if: proc { |_context, _config, options|
