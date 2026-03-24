@@ -55,7 +55,7 @@ gem "bootsnap", require: false
 
 # Keep the Ruby and JS Vite plugins on a compatible line.
 gem "vite_rails", "~> 3.0.20"
-gem "vite_ruby", "~> 3.9.3"
+gem "vite_ruby", "~> 3.10.0"
 
 group :production do
   gem "mysql2"
