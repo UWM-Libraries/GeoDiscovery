@@ -1,17 +1,26 @@
 # frozen_string_literal: true
 
 require "sidekiq/api"
+require "timeout"
 
 desc "Run test suite"
 task :ci do
-  shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
-  shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
-
   success = true
-  SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
-    solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-      system "RAILS_ENV=test bundle exec rake uwm:index:seed"
-      success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
+
+  if ENV["SOLR_URL"].present?
+    wait_for_solr!
+    system "RAILS_ENV=test bundle exec rake uwm:index:seed"
+    success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
+  else
+    shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
+    shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
+
+    SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+        wait_for_solr!
+        system "RAILS_ENV=test bundle exec rake uwm:index:seed"
+        success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
+      end
     end
   end
 
@@ -38,6 +47,19 @@ namespace :redis do
 end
 
 namespace :uwm do
+  def wait_for_solr!(timeout: 30)
+    Timeout.timeout(timeout) do
+      loop do
+        response = Blacklight.default_index.connection.get("select", params: {q: "*:*", rows: 0})
+        break if response["response"]
+      rescue RSolr::Error::Http, RSolr::Error::ConnectionRefused, Errno::ECONNREFUSED
+        sleep 0.25
+      end
+    end
+  rescue Timeout::Error
+    raise "Timed out waiting for Solr at #{Blacklight.default_index.connection.options[:url]}"
+  end
+
   def transliterated_docs_from(paths)
     Dir[paths].map { |f| JSON.parse File.read(f) }.flatten.map do |document|
       TitleTransliterator.add_to_document(document)
