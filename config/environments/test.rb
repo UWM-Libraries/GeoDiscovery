@@ -45,8 +45,11 @@ Rails.application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
-  # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :stderr
+  # Keep test output readable; track framework deprecations separately from CI noise.
+  config.active_support.report_deprecations = false
+  config.after_initialize do
+    ActiveSupport::Deprecation._instance.behavior = :silence
+  end
 
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise

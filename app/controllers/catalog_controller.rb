@@ -5,8 +5,6 @@ require "blacklight/catalog"
 class CatalogController < ApplicationController
   include BlacklightAdvancedSearch::Controller
   include Blacklight::Catalog
-  include Blacklight::Configurable
-  include Blacklight::SearchContext
 
   # Protect searches with bot_challenge_page & turnstile.
   # We protect search/index requests, but not show pages, so crawlers can still
@@ -264,7 +262,9 @@ class CatalogController < ApplicationController
     # solr request handler? The one set in config[:default_solr_parameters][:qt],
     # since we aren't specifying it otherwise.
 
-    config.add_search_field "all_fields", label: "All Fields"
+    config.add_search_field("all_fields", label: "All Fields") do |field|
+      field.default = true
+    end
     # config.add_search_field 'dct_title_ti', :label => 'Title'
     # config.add_search_field 'dct_description_ti', :label => 'Description'
 

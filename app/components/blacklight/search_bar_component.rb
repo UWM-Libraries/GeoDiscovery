@@ -77,12 +77,6 @@ module Blacklight
       helpers.blacklight_config
     end
 
-    def render_hash_as_hidden_fields(*)
-      Deprecation.silence(Blacklight::HashAsHiddenFieldsHelperBehavior) do
-        helpers.render_hash_as_hidden_fields(*)
-      end
-    end
-
     def scoped_t(key, **)
       t(key, default: t(key, scope: "blacklight.search.form"), **@i18n, **)
     end
