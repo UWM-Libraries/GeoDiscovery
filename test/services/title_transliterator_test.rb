@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "json"
 
 class TitleTransliteratorTest < ActiveSupport::TestCase
   setup do
@@ -15,6 +16,12 @@ class TitleTransliteratorTest < ActiveSupport::TestCase
 
   test "adds transliterated title field to documents" do
     document = TitleTransliterator.add_to_document({"dct_title_s" => "北京市城区街道图"})
+
+    assert_equal "bei jing shi cheng qu jie dao tu", document["dct_title_transliterated_s"]
+  end
+
+  test "adds transliterated title field to uwm fixture documents used for indexing" do
+    document = TitleTransliterator.add_to_document(uwm_fixture_document("transliterated_sort_test_BL_Aardvark.json"))
 
     assert_equal "bei jing shi cheng qu jie dao tu", document["dct_title_transliterated_s"]
   end
@@ -50,5 +57,9 @@ class TitleTransliteratorTest < ActiveSupport::TestCase
     yield
   ensure
     Open3.singleton_class.send(:define_method, :capture3, original)
+  end
+
+  def uwm_fixture_document(filename)
+    JSON.parse(Rails.root.join("test/fixtures/files/uwm_documents", filename).read)
   end
 end
