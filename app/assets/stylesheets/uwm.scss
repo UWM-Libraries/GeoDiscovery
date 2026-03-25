@@ -22,6 +22,15 @@
   color: $black;
 }
 
+.downloads-sidebar .btn-primary,
+.downloads-sidebar .btn-primary:hover,
+.downloads-sidebar .btn-primary:focus,
+.downloads-sidebar .btn-primary:not(:disabled):not(.disabled):active,
+.downloads-sidebar .btn-primary:not(:disabled):not(.disabled).active,
+.downloads-sidebar .show > .btn-primary.dropdown-toggle {
+  color: $black;
+}
+
 .screen-reader-text {
   @include sr-only;
 }
