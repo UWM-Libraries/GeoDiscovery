@@ -9,24 +9,24 @@ jobs:
   linter:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.2.1
-    - name: Install dependencies
-      run: bundle install
+        bundler-cache: true
     - name: Run linter
       run: bundle exec standardrb
 
   aardvark-fixture-linter:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.2.1
+        bundler-cache: true
     - name: Install json schema validator
       run: gem install json_schemer
     - name: Run json_schemer against aarkvark fixtures
@@ -43,28 +43,28 @@ jobs:
 
     name: test ruby ${{ matrix.ruby_version }} / rails ${{ matrix.rails_version }} / faraday ${{ matrix.faraday_version }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby_version }}
+        bundler-cache: true
     - name: Set up Node
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'
+        cache: yarn
     - name: Create Solr container
       run: docker run -d -p 8983:8983 geoblacklight/solr:8.9-v1.0.0 server/scripts/ci-start.sh
-    - name: Install bundler
-      run: gem install bundler -v ${{ matrix.bundler_version }}
     - name: Force platform
       run: bundle config set force_ruby_platform true
     - name: Install dependencies
-      run: bundle _${{ matrix.bundler_version }}_ install
+      run: bundle install
       env:
         RAILS_VERSION: ${{ matrix.rails_version }}
         FARADAY_VERSION: ${{ matrix.faraday_version }}
-    - name: Setup Yarn
-      run: exec "yarnpkg"
+    - name: Install JavaScript dependencies
+      run: yarn install --frozen-lockfile
     - name: Load config into solr
       run: |
           cd solr/conf
@@ -78,6 +78,7 @@ jobs:
         RAILS_VERSION: ${{ matrix.rails_version }}
         FARADAY_VERSION: ${{ matrix.faraday_version }}
         ENGINE_CART_RAILS_OPTIONS: '--skip-git --skip-listen --skip-spring --skip-keeps --skip-action-cable --skip-coffee --skip-test'
+        USE_EXISTING_SOLR: 1
         SOLR_URL: http://solr:SolrRocks@localhost:8983/solr/blacklight-core
     - name: Upload coverage artifacts
       uses: actions/upload-artifact@v4
