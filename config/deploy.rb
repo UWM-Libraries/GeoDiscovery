@@ -9,7 +9,8 @@ set :application, "geodiscovery"
 set :repo_url, "git@github.com:UWM-Libraries/GeoDiscovery.git"
 
 set :default_env, {
-  "NODE_OPTIONS" => "--max-old-space-size=2048"
+  "NODE_OPTIONS" => "--max-old-space-size=2048",
+  "VITE_RUBY_SKIP_ASSETS_PRECOMPILE_INSTALL" => "true"
 }
 
 # Default branch is :main
