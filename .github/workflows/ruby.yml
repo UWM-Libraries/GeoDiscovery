@@ -58,6 +58,14 @@ jobs:
         cache: yarn
     - name: Create Solr container
       run: docker run -d -p 8983:8983 geoblacklight/solr:8.9-v1.0.0 server/scripts/ci-start.sh
+    - name: Wait for Solr
+      run: |
+          for i in {1..60}; do
+            curl -fsS http://solr:SolrRocks@127.0.0.1:8983/solr/admin/info/system > /dev/null && exit 0
+            sleep 2
+          done
+          echo "Solr did not become ready in time"
+          exit 1
     - name: Install JavaScript dependencies
       run: yarn install --frozen-lockfile
     - name: Load config into solr
