@@ -510,7 +510,7 @@ class Aardvark:
         self.schema_provider_s = PROVIDER
         self.gbl_suppressed_b = SUPPRESSED
         self.dct_rights_sm = RIGHTS
-        self.gbl_displayNote_sm = DISPLAYNOTE
+        self.gbl_displayNote_sm = [DISPLAYNOTE] if DISPLAYNOTE else []
 
     def _process_id(self, dataset_dict, website):
         uuid, sublayer = AardvarkDataProcessor.extract_id_sublayer(
@@ -546,7 +546,7 @@ class Aardvark:
         if "{{description}}" not in description:
             cleaned_description = re.sub("<[^<]+?>", "", description)
             unescaped_description = html.unescape(cleaned_description)
-            self.dct_description_sm = [unescaped_description, DESCRIPTION]
+            self.dct_description_sm = [DESCRIPTION, unescaped_description]
         else:
             self.dct_description_sm = [DESCRIPTION]
 
@@ -682,6 +682,7 @@ class Aardvark:
             "dct_language_sm",
             "schema_provider_s",
             "gbl_suppressed_b",
+            "gbl_displayNote_sm",
             "dct_spatial_sm",
             "dct_description_sm",
             "dct_issued_s",
