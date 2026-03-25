@@ -1,0 +1,17 @@
+<%# Local override of blacklight_advanced_search to avoid the deprecated
+    render_facet_partials helper while preserving the advanced-search
+    checkbox facet UI. %>
+
+<div class="advanced-facet-limits panel-group">
+  <% facet_field_names_for_advanced_search.each do |field_name| %>
+    <% field_config = facet_configuration_for_field(field_name) %>
+    <% display_facet = @response.aggregations[field_config.field] %>
+    <% next if display_facet.blank? || display_facet.items.blank? %>
+    <% presenter = (field_config.presenter || Blacklight::FacetFieldPresenter).new(field_config, display_facet, self) %>
+
+    <%= render Blacklight::FacetFieldCheckboxesComponent.new(
+      facet_field: presenter,
+      layout: false
+    ) %>
+  <% end %>
+</div>

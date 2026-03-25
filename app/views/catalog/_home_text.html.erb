@@ -40,10 +40,20 @@
         <h2 class="sr-only">Browse by facet</h2>
 
         <div class='col-sm order-1'>
-          <%= render_facet_partials [Settings.FIELDS.SPATIAL_COVERAGE], {class:'active'} %>
+          <%= render Blacklight::FacetComponent.new(
+            field_config: blacklight_config.facet_configuration_for_field(Settings.FIELDS.SPATIAL_COVERAGE),
+            response: @response,
+            blacklight_config: blacklight_config,
+            component: Blacklight::FacetFieldListComponent
+          ) %>
         </div>
         <div class='col-sm order-2'>
-          <%= render_facet_partials [Settings.FIELDS.RESOURCE_CLASS] %>
+          <%= render Blacklight::FacetComponent.new(
+            field_config: blacklight_config.facet_configuration_for_field(Settings.FIELDS.RESOURCE_CLASS),
+            response: @response,
+            blacklight_config: blacklight_config,
+            component: Blacklight::FacetFieldListComponent
+          ) %>
         </div>
       </div>
 
