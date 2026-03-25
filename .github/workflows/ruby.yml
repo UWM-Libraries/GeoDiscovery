@@ -34,6 +34,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      BUNDLE_FORCE_RUBY_PLATFORM: true
     strategy:
       matrix:
         ruby_version: ['3.2.1']
@@ -56,13 +58,6 @@ jobs:
         cache: yarn
     - name: Create Solr container
       run: docker run -d -p 8983:8983 geoblacklight/solr:8.9-v1.0.0 server/scripts/ci-start.sh
-    - name: Force platform
-      run: bundle config set force_ruby_platform true
-    - name: Install dependencies
-      run: bundle install
-      env:
-        RAILS_VERSION: ${{ matrix.rails_version }}
-        FARADAY_VERSION: ${{ matrix.faraday_version }}
     - name: Install JavaScript dependencies
       run: yarn install --frozen-lockfile
     - name: Load config into solr
