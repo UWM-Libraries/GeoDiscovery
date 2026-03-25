@@ -136,3 +136,18 @@
 #map[data-protocol="Oembed"] {
   min-height: 500px;
 }
+
+/* Keep harvested thumbnails inside their 100x100 result slot */
+#documents .thumbnail {
+  overflow: hidden;
+
+  img {
+    display: block;
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+}
