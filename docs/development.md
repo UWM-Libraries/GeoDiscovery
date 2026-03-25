@@ -26,6 +26,13 @@ cp .example.env.development .env.development
 
 After you copy the files, update them to include your database and solr connections.
 
+For local Solr, GeoDiscovery expects development and test to use different ports by default:
+
+- development: `http://127.0.0.1:8983/solr/blacklight-core`
+- test: `http://127.0.0.1:8985/solr/blacklight-core`
+
+The provided `.env.development` and `.env.test` files should match those defaults. `RAILS_ENV=test bundle exec rake ci` will normally manage its own test Solr on `8985`. If you want to point CI-style runs at an already-running Solr, set `USE_EXISTING_SOLR=1` and make sure `SOLR_URL` points at the test core.
+
 ### Bundle dependencies
 
 The application's [RubyGem](https://rubygems.org/) dependencies are listed in the project `Gemfile`. Bundle the gems via this command:
