@@ -39,6 +39,12 @@
   text-decoration: underline;
 }
 
+.page-links a {
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+
 // Facet contrast fix for active facet header
 .facet-limit.facet-limit-active {
   border-color: #000 !important;
