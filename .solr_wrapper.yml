@@ -1,5 +1,5 @@
 version: <%= ENV['SOLR_VERSION'] %>
-port: <%= ENV['SOLR_URL'] %>
+port: 8983
 validate: false
 instance_dir: tmp/solr
 download_dir: tmp/solr
