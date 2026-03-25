@@ -1,22 +1,15 @@
 # frozen_string_literal: true
 
 require "sidekiq/api"
-require "timeout"
-
-SOLR_COLLECTION = "blacklight-core"
-DEVELOPMENT_SOLR_PORT = 8983
-TEST_SOLR_PORT = 8985
 
 desc "Run test suite"
 task :ci do
-  success = true
+  shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
+  shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
-  if ENV["USE_EXISTING_SOLR"].present?
-    wait_for_solr!
-    system "RAILS_ENV=test bundle exec rake uwm:index:seed"
-    success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
-  else
-    with_managed_solr(port: TEST_SOLR_PORT) do
+  success = true
+  SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+    solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
       system "RAILS_ENV=test bundle exec rake uwm:index:seed"
       success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
     end
@@ -45,6 +38,12 @@ namespace :redis do
 end
 
 namespace :uwm do
+  def transliterated_docs_from(paths)
+    Dir[paths].map { |f| JSON.parse File.read(f) }.flatten.map do |document|
+      TitleTransliterator.add_to_document(document)
+    end
+  end
+
   def shared_solr_opts
     opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
     opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
@@ -72,13 +71,12 @@ namespace :uwm do
     raise "Timed out starting managed Solr on port #{solr.port}"
   end
 
-  def wait_for_solr!(timeout: ENV.fetch("SOLR_WAIT_TIMEOUT", 90).to_i)
-    solr_url = Blacklight.default_index.connection.options[:url]
+  def wait_for_solr!(timeout: ENV.fetch("SOLR_WAIT_TIMEOUT", 90).to_i, solr_url: ENV["SOLR_URL"] || Blacklight.default_index.connection.options[:url])
     solr = RSolr.connect(url: solr_url)
 
     Timeout.timeout(timeout) do
       loop do
-        response = solr.get("select", params: {q: "*:*", rows: 0, sort: "id asc", wt: "ruby"})
+        response = solr.get("select", params: {q: "*:*", rows: 0, sort: "id asc", wt: "json"})
         break if response.dig("responseHeader", "status") == 0
       rescue RSolr::Error::Http, RSolr::Error::ConnectionRefused, Errno::ECONNREFUSED, Faraday::ConnectionFailed
         sleep 0.25
@@ -91,15 +89,20 @@ namespace :uwm do
   task :server, [:rails_server_args] do
     require "solr_wrapper"
 
-    with_managed_solr(port: DEVELOPMENT_SOLR_PORT) do
-      puts "Solr running at http://localhost:#{DEVELOPMENT_SOLR_PORT}/solr/#{SOLR_COLLECTION}/, ^C to exit"
-      puts " "
-      begin
-        Rake::Task["uwm:index:seed"].invoke
-        system "bundle exec rails s -b 0.0.0.0"
-        sleep
-      rescue Interrupt
-        puts "\nShutting down..."
+    shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
+    shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
+
+    SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
+      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+        puts "Solr running at http://localhost:8983/solr/blacklight-core/, ^C to exit"
+        puts " "
+        begin
+          Rake::Task["uwm:index:seed"].invoke
+          system "bundle exec rails s -b 0.0.0.0"
+          sleep
+        rescue Interrupt
+          puts "\nShutting down..."
+        end
       end
     end
   end
@@ -107,13 +110,18 @@ namespace :uwm do
   desc "Start solr server for testing."
   task :test do
     if Rails.env.test?
-      with_managed_solr(port: TEST_SOLR_PORT) do
-        puts "Solr running at http://localhost:#{TEST_SOLR_PORT}/solr/#{SOLR_COLLECTION}/, ^C to exit"
-        begin
-          Rake::Task["uwm:index:seed"].invoke
-          sleep
-        rescue Interrupt
-          puts "\nShutting down..."
+      shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
+      shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
+
+      SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+        solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+          puts "Solr running at http://localhost:8985/solr/#/blacklight-core/, ^C to exit"
+          begin
+            Rake::Task["uwm:index:seed"].invoke
+            sleep
+          rescue Interrupt
+            puts "\nShutting down..."
+          end
         end
       end
     else
@@ -123,13 +131,18 @@ namespace :uwm do
 
   desc "Start solr server for development."
   task :development do
-    with_managed_solr(port: DEVELOPMENT_SOLR_PORT) do
-      puts "Solr running at http://localhost:#{DEVELOPMENT_SOLR_PORT}/solr/#{SOLR_COLLECTION}/, ^C to exit"
-      begin
-        Rake::Task["uwm:index:seed"].invoke
-        sleep
-      rescue Interrupt
-        puts "\nShutting down..."
+    shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
+    shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
+
+    SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
+      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+        puts "Solr running at http://localhost:8983/solr/#/blacklight-core/, ^C to exit"
+        begin
+          Rake::Task["uwm:index:seed"].invoke
+          sleep
+        rescue Interrupt
+          puts "\nShutting down..."
+        end
       end
     end
   end
@@ -156,14 +169,14 @@ namespace :uwm do
   namespace :index do
     desc "Put all sample data into solr"
     task seed: :environment do
-      docs = Dir["test/fixtures/files/**/*.json"].map { |f| JSON.parse File.read(f) }.flatten
+      docs = transliterated_docs_from("test/fixtures/files/**/*.json")
       Blacklight.default_index.connection.add docs
       Blacklight.default_index.connection.commit
     end
 
     desc "Put uwm sample data into solr"
     task uwm: :environment do
-      docs = Dir["test/fixtures/files/uwm_documents/*.json"].map { |f| JSON.parse File.read(f) }.flatten
+      docs = transliterated_docs_from("test/fixtures/files/uwm_documents/*.json")
       Blacklight.default_index.connection.add docs
       Blacklight.default_index.connection.commit
     end
