@@ -4,6 +4,8 @@ require "test_helper"
 require "capybara-screenshot/minitest"
 require_relative "support/axe_helper"
 
+Selenium::WebDriver.logger.level = :warn
+
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new
 
