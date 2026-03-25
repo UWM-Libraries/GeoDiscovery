@@ -13,6 +13,8 @@ set :default_env, {
   "VITE_RUBY_SKIP_ASSETS_PRECOMPILE_INSTALL" => "true"
 }
 
+set :yarn_flags, %w[--frozen-lockfile --silent --no-progress]
+
 # Default branch is :main
 # Prompt to choose a tag (or name a branch), default to last listed tag
 # unless an environment variable was passed on the command line as in:
