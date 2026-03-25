@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require "stringio"
-
 # server-based syntax
 # ======================
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-set :application, "geodiscovery"
 set :deploy_user, "geoblacklight"
 set :app_user, "geoblacklight"
 
@@ -15,7 +12,6 @@ server "geodiscovery.uwm.edu", user: fetch(:deploy_user), roles: %w[app db web]
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
 
-set :deploy_to, "/var/www/rubyapps/uwm-geoblacklight"
 set :rails_env, "production"
 
 # role-based syntax

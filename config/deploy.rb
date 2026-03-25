@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "stringio"
-require "whenever/capistrano"
 
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.17.1"
@@ -45,7 +44,7 @@ set :migration_role, :app
 append :linked_files, "config/blacklight.yml", "config/database.yml", "config/master.key", ".env.production"
 
 # Default value for linked_dirs is []
-append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "tmp/webpacker", "public/system", "vendor",
+append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system", "vendor",
   "storage"
 
 # tmp directory is user-specific
