@@ -168,7 +168,7 @@ class CatalogController < ApplicationController
     # # config.add_index_field 'Area', :label => 'Area:'
     # config.add_index_field Settings.FIELDS.SUBJECT, :label => 'Keywords:'
     config.add_index_field Settings.FIELDS.ACCESS_RIGHTS
-    config.add_index_field Settings.FIELDS.INDEX_YEAR
+    config.add_index_field Settings.FIELDS.TEMPORAL_COVERAGE, helper_method: :format_index_temporal_coverage
     config.add_index_field Settings.FIELDS.CREATOR
     config.add_index_field Settings.FIELDS.DESCRIPTION, helper_method: :snippit
     config.add_index_field Settings.FIELDS.PUBLISHER
