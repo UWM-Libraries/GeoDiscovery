@@ -18,6 +18,7 @@
 //= require ./uwm/modules/results
 //= require geoblacklight/modules/svg_tooltips
 //= require geoblacklight/modules/util
+//= require ./geoblacklight/modules/util_a11y_patch
 
 //= require geoblacklight/downloaders
 //= require leaflet-iiif

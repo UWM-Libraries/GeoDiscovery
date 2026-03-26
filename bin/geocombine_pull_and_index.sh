@@ -49,6 +49,7 @@ tasks=(
     "uwm:opendataharvest:normalize_aardvark"
     # "uwm:index:delete_all"
     "geocombine:index"
+    "uwm:index:prune_stale"
 )
 
 for task in "${tasks[@]}"; do
