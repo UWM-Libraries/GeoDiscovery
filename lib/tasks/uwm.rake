@@ -256,24 +256,7 @@ namespace :uwm do
       solr.commit
 
       puts "Deleted #{stale_ids.size} stale Solr records."
-      puts "You can now purge orphaned thumbnail/allmaps sidecars safely."
-    end
-  end
-
-  namespace :sidecars do
-    desc "Destroy orphaned Blacklight Allmaps sidecars whose Solr document no longer exists"
-    task purge_allmaps_orphans: :environment do
-      destroyed = 0
-
-      Blacklight::Allmaps::Sidecar.find_each do |sidecar|
-        SolrDocument.find(sidecar.solr_document_id)
-      rescue
-        sidecar.destroy
-        destroyed += 1
-        puts "orphaned / #{sidecar.solr_document_id} / destroyed"
-      end
-
-      puts "Destroyed #{destroyed} orphaned Allmaps sidecars."
+      puts "You can now run blacklight_allmaps:sidecars:purge_orphans safely."
     end
   end
 end
