@@ -5,7 +5,7 @@
     return;
   }
 
-  function previewLinkLabel(data) {
+  function websiteLinkLabel(data) {
     if (data && data.title) return "Open website for " + data.title;
     if (data && data.label) return "Open website for " + data.label;
     return "Open website";
@@ -22,7 +22,7 @@
       if (!link) return;
 
       if (!link.getAttribute("aria-label")) {
-        link.setAttribute("aria-label", previewLinkLabel(data));
+        link.setAttribute("aria-label", websiteLinkLabel(data));
       }
     });
 
