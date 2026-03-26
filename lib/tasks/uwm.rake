@@ -164,6 +164,13 @@ namespace :uwm do
       sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/gbl_to_aardvark.py"
       puts "Run rake geocombine:index to index converted documents"
     end
+
+    desc "Normalize harvested Aardvark metadata before indexing"
+    task :normalize_aardvark do
+      puts "Normalizing harvested Aardvark metadata.\nsee opendataharvest.log"
+      sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/normalize.py"
+      puts "Run rake geocombine:index to index normalized documents"
+    end
   end
 
   namespace :index do

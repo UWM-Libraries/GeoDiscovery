@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import argparse
 import yaml
+from normalize import MetadataNormalizer
 
 # Load configuration from YAML file
 with open("config/opendataharvest.yaml", "r") as file:
@@ -25,8 +26,6 @@ class LoggerConfig:
             level=level,
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
-
-
 class SchemaUpdater:
     CROSSWALK_PATH = Path(config["paths"]["crosswalk"])
 
@@ -102,11 +101,11 @@ class SchemaUpdater:
             for key, value in self.overwrite_values.items():
                 data[key] = value
 
-            # Run all the static functions:
+            # Run normalization and cleanup after conversion.
             data = self.string2array(data)
             self.check_required(data)
             self.add_restricted_display_notes(data)
-            self.fix_stanford_place_issue(data)
+            self.apply_normalizations(data)
             self.fix_wisco_provider_issue(data)
             self.remove_deprecated(data)
 
@@ -362,6 +361,9 @@ class SchemaUpdater:
             data_dict["gbl_resourceType_sm"],
         ) = self.determine_resource_class_and_type(data_dict)
 
+    def apply_normalizations(self, data_dict: Dict) -> None:
+        MetadataNormalizer.normalize_document(data_dict)
+
     def remove_deprecated(self, data_dict: Dict) -> None:
         """Remove deprecated fields from the data dictionary."""
         deprecated_fields = config["deprecated_fields"]["remove_deprecated"]
@@ -369,25 +371,6 @@ class SchemaUpdater:
             if field in data_dict:
                 logging.debug(f"Removing deprecated field: {field}")
                 data_dict.pop(field, None)
-
-    def fix_stanford_place_issue(self, data_dict: Dict) -> None:
-        """Fix specific place issues related to Stanford."""
-        spatial = data_dict.get("dct_spatial_sm", [])
-        if "Wisconsin" in spatial and "New Mexico" in spatial:
-            data_dict["dct_spatial_sm"] = ["United States"]
-
-    def fix_wisco_provider_issue(self, data_dict: Dict) -> None:
-        """Fix specific provider issues related to edu.wisc."""
-        provider = data_dict.get("schema_provider_s", "")
-        wisco_providers = config["wisco_providers"]
-        if provider in wisco_providers:
-            logging.debug(f"Wisco provider identified: {provider}")
-            data_dict["schema_provider_s"] = ["University of Wisconsin-Madison"]
-            data_dict["dct_description_sm"].insert(
-                0, f"Resource provided by {provider}."
-            )
-            description = str(data_dict["dct_description_sm"])
-            logging.debug(f"Wisco Description now reads: {description}")
 
     def string2array(self, data_dict: Dict) -> Dict:
         """Convert certain string fields to array if they should be lists."""
