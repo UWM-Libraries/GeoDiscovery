@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "sidekiq/api"
+require "set"
 
 desc "Run test suite"
 task :ci do
@@ -38,6 +39,40 @@ namespace :redis do
 end
 
 namespace :uwm do
+  def harvested_document_ids
+    GeoCombine::Harvester.new.docs_to_index.each_with_object(Set.new) do |(doc, _path), ids|
+      ids << doc.fetch(SolrDocument.unique_key)
+    end
+  end
+
+  def indexed_document_ids(solr:, unique_key:)
+    ids = Set.new
+    cursor_mark = "*"
+
+    loop do
+      response = solr.get(
+        "select",
+        params: {
+          q: "*:*",
+          fl: unique_key,
+          cursorMark: cursor_mark,
+          rows: 1000,
+          sort: "#{unique_key} asc"
+        }
+      )
+
+      response.dig("response", "docs").each do |doc|
+        ids << doc.fetch(unique_key)
+      end
+
+      break if response["nextCursorMark"] == cursor_mark
+
+      cursor_mark = response["nextCursorMark"]
+    end
+
+    ids
+  end
+
   def transliterated_docs_from(paths)
     Dir[paths].map { |f| JSON.parse File.read(f) }.flatten.map do |document|
       TitleTransliterator.add_to_document(document)
@@ -185,6 +220,61 @@ namespace :uwm do
     task delete_all: :environment do
       Blacklight.default_index.connection.delete_by_query "*:*"
       Blacklight.default_index.connection.commit
+    end
+
+    desc "Delete Solr records no longer present in the current GeoCombine harvest set"
+    task prune_stale: :environment do
+      solr = Blacklight.default_index.connection
+      unique_key = SolrDocument.unique_key
+      dry_run = ActiveModel::Type::Boolean.new.cast(ENV.fetch("DRY_RUN", "false"))
+
+      harvested_ids = harvested_document_ids
+      indexed_ids = indexed_document_ids(solr:, unique_key:)
+      stale_ids = indexed_ids - harvested_ids
+
+      puts "Harvested IDs: #{harvested_ids.size}"
+      puts "Indexed IDs: #{indexed_ids.size}"
+      puts "Stale IDs: #{stale_ids.size}"
+
+      if stale_ids.empty?
+        puts "No stale Solr records found."
+        next
+      end
+
+      stale_ids.to_a.sort.first(20).each do |id|
+        puts "STALE #{id}"
+      end
+      puts "...and #{stale_ids.size - 20} more" if stale_ids.size > 20
+
+      if dry_run
+        puts "Dry run only. Re-run without DRY_RUN=true to delete these Solr records."
+        next
+      end
+
+      stale_ids.each_slice(100) do |slice|
+        solr.delete_by_id(slice)
+      end
+      solr.commit
+
+      puts "Deleted #{stale_ids.size} stale Solr records."
+      puts "You can now purge orphaned thumbnail/allmaps sidecars safely."
+    end
+  end
+
+  namespace :sidecars do
+    desc "Destroy orphaned Blacklight Allmaps sidecars whose Solr document no longer exists"
+    task purge_allmaps_orphans: :environment do
+      destroyed = 0
+
+      Blacklight::Allmaps::Sidecar.find_each do |sidecar|
+        SolrDocument.find(sidecar.solr_document_id)
+      rescue StandardError
+        sidecar.destroy
+        destroyed += 1
+        puts "orphaned / #{sidecar.solr_document_id} / destroyed"
+      end
+
+      puts "Destroyed #{destroyed} orphaned Allmaps sidecars."
     end
   end
 end
