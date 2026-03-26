@@ -22,6 +22,7 @@ if defined?(GeoCombine::Harvester)
       return to_enum(:docs_to_index) unless block_given?
 
       super do |record, path|
+        record = RestrictedDisplayNote.add_to_document(record, source_path: path)
         yield TitleTransliterator.add_to_document(record), path
       end
     end

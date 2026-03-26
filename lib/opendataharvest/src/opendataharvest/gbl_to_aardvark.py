@@ -8,7 +8,10 @@ with open("config/opendataharvest.yaml", "r") as file:
     config = yaml.safe_load(file)
 
 # Get the OGM_PATH environment variable or from config
-ogm_path = os.getenv("OGM_PATH", config["paths"]["ogm_path"])
+env_ogm_path = os.getenv("OGM_PATH")
+if os.getenv("RAILS_ENV") == "production" and not env_ogm_path:
+    raise ValueError("OGM_PATH must be set in production")
+ogm_path = env_ogm_path or config["paths"]["ogm_path"]
 
 # Set up logging to a file
 logfile = config["logging"]["logfile"]
