@@ -7,7 +7,7 @@
   <div class="col-sm-12">
     {{#if thumbnailUrl}}
       {{#if websiteUrl}}
-        <a href="{{websiteUrl}}" aria-label="{{#if title}}Open preview image for {{title}}{{else}}{{#if label}}Open preview image for {{label}}{{else}}Open preview image{{/if}}{{/if}}">
+        <a href="{{websiteUrl}}" aria-label="{{#if title}}Open website for {{title}}{{else}}{{#if label}}Open website for {{label}}{{else}}Open website{{/if}}{{/if}}">
           <img src="{{thumbnailUrl}}" class="img-fluid" alt="">
         </a>
       {{else}}
@@ -16,7 +16,7 @@
     {{/if}}
     {{#if thumbUrl}}
       {{#if websiteUrl}}
-        <a href="{{websiteUrl}}" aria-label="{{#if title}}Open preview image for {{title}}{{else}}{{#if label}}Open preview image for {{label}}{{else}}Open preview image{{/if}}{{/if}}">
+        <a href="{{websiteUrl}}" aria-label="{{#if title}}Open website for {{title}}{{else}}{{#if label}}Open website for {{label}}{{else}}Open website{{/if}}{{/if}}">
           <img src="{{thumbUrl}}" class="img-fluid" alt="">
         </a>
       {{else}}
