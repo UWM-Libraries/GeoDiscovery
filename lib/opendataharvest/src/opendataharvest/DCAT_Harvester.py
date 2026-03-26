@@ -24,7 +24,9 @@ AI was utilized in authoring this script.
 import csv
 import json
 import logging
+import os
 import re
+import shutil
 import sys
 import time
 import uuid
@@ -51,7 +53,17 @@ except FileNotFoundError:
 
 try:
     CONFIG = config.get("CONFIG")
-    OUTPUTDIR = Path(CONFIG.get("OUTPUTDIR"))
+    env_ogm_path = os.getenv("OGM_PATH")
+    if os.getenv("RAILS_ENV") == "production" and not env_ogm_path:
+        raise ValueError("OGM_PATH must be set in production")
+    OGM_PATH = Path(env_ogm_path or config["paths"]["ogm_path"])
+    outputdir_config = Path(CONFIG.get("OUTPUTDIR", "opendataharvest"))
+    OUTPUTDIR = (
+        outputdir_config
+        if outputdir_config.is_absolute()
+        else OGM_PATH / outputdir_config
+    )
+    COLLECTION_RECORD = Path(CONFIG.get("COLLECTION_RECORD"))
     LOGFILE = config["logging"]["logfile"]
     LOGLEVEL = getattr(logging, config["logging"]["level"].upper(), logging.ERROR)
     DEFAULTBBOX = Path(CONFIG.get("DEFAULTBBOX"))
@@ -78,7 +90,7 @@ try:
     ## Get the JSON schema:
     SCHEMA = CONFIG.get("SCHEMA")
 
-except AttributeError as e:
+except (AttributeError, ValueError) as e:
     print(f"Unable to read all configuration values from {config_file}")
     print(e)
     sys.exit()
@@ -90,6 +102,28 @@ logging.basicConfig(
 
 dt = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
 logging.warning(f"Script running at {dt}")
+
+
+def ensure_collection_record(output_dir: Path):
+    """Copy the committed collection-level record into the harvest output."""
+    if not COLLECTION_RECORD.is_file():
+        logging.warning(f"Collection record not found at {COLLECTION_RECORD}")
+        return
+
+    destination = output_dir / COLLECTION_RECORD.name
+    try:
+        shutil.copy2(COLLECTION_RECORD, destination)
+    except Exception as e:
+        logging.warning(f"Unable to copy collection record to {destination}: {e}")
+
+
+def clear_output_directory(output_dir: Path):
+    """Remove old JSON harvest output so each run produces a clean set."""
+    for path in output_dir.glob("*.json"):
+        try:
+            path.unlink()
+        except Exception as e:
+            logging.warning(f"Unable to remove {path}: {e}")
 
 
 class Site:
@@ -553,6 +587,11 @@ class Aardvark:
         self.dct_creator_sm = (
             [dataset_dict["publisher"]["name"]] if "publisher" in dataset_dict else []
         )
+        self.dct_publisher_sm = (
+            [dataset_dict["publisher"]["name"]]
+            if "publisher" in dataset_dict
+            else [website.site_details["CreatedBy"]]
+        )
 
         # dct_issued_s
         self.dct_issued_s = AardvarkDataProcessor.issue_date_parser(dataset_dict)
@@ -673,8 +712,10 @@ class Aardvark:
             "id",
             "dct_title_s",
             "dct_creator_sm",
+            "dct_publisher_sm",
             "dct_identifier_sm",
             "dct_rights_sm",
+            "pcdm_memberOf_sm",
             "gbl_resourceClass_sm",
             "dct_accessRights_s",
             "gbl_mdModified_dt",
@@ -743,10 +784,13 @@ def main():
     if not OUTPUTDIR.is_dir():
         try:
             logging.warning(f"Creating directory {str(OUTPUTDIR)}")
-            OUTPUTDIR.mkdir()
+            OUTPUTDIR.mkdir(parents=True, exist_ok=True)
         except Exception as e:
             logging.warning("Unable to create output directory")
             return
+
+    clear_output_directory(OUTPUTDIR)
+    ensure_collection_record(OUTPUTDIR)
 
     for website in list_of_sites:
         new_aardvark_objects = []

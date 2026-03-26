@@ -5,7 +5,7 @@ logging:
 
 paths:
   crosswalk: "lib/opendataharvest/src/opendataharvest/data/crosswalk.csv"
-  ogm_path: "/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata"
+  ogm_path: "tmp/opengeometadata"
   defaultbbox: "lib/opendataharvest/src/opendataharvest/data/default_bbox.csv"
 
 requirements:
@@ -43,7 +43,8 @@ string2array_suffixes:
 # DCAT Harvester specific configuration
 CONFIG:
   CATALOG: "DCAT_Sites" # TestSites, DCAT_Sites, or CKAN_Sites
-  OUTPUTDIR: "/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/opendataharvest/"
+  OUTPUTDIR: "opendataharvest"
+  COLLECTION_RECORD: "lib/opendataharvest/src/opendataharvest/data/agsl-opendata-harvest.json"
   DEFAULTBBOX: "lib/opendataharvest/src/opendataharvest/data/default_bbox.csv"
   MAXRETRY: 3
   SLEEPTIME: 2
@@ -54,7 +55,7 @@ CONFIG:
 ################
 DEFAULT:
   MEMBEROF:
-    - "AGSLOpenDataHarvest"
+    - "agsl-opendata-harvest"
   RESOURCECLASS:
     - "Datasets"
   ACCESSRIGHTS: "Public"
@@ -68,8 +69,8 @@ DEFAULT:
   RESOURCETYPE:
     - "Digital maps"
   FORMAT: None
-  DESCRIPTION: This dataset was automatically cataloged from the creator's Open Data Portal. In some cases, publication year and bounding coordinates shown here may be incorrect. Additional download formats may be available on the author's website. Please check the 'More details at' link for additional information.
-  DISPLAYNOTE: 'Info: This dataset was automatically cataloged from the creator''s Open Data Portal. See the "More details at" link to view the original resource.'
+  DESCRIPTION: This dataset was automatically cataloged from the creator's Open Data Portal. In some cases, publication year and bounding coordinates shown here may be incorrect. Additional download formats may be available on the author's website. Please check the Resource Link for additional information.
+  DISPLAYNOTE: 'Info: This dataset was automatically cataloged from the creator''s Open Data Portal. See the Resource Link to view the original resource.'
 
 ##############
 # Test Sites #
