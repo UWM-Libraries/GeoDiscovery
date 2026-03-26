@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "sidekiq/api"
-require "set"
 
 desc "Run test suite"
 task :ci do
@@ -268,7 +267,7 @@ namespace :uwm do
 
       Blacklight::Allmaps::Sidecar.find_each do |sidecar|
         SolrDocument.find(sidecar.solr_document_id)
-      rescue StandardError
+      rescue
         sidecar.destroy
         destroyed += 1
         puts "orphaned / #{sidecar.solr_document_id} / destroyed"
