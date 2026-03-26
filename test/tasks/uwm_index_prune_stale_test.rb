@@ -13,9 +13,8 @@ class UwmIndexPruneStaleTest < ActiveSupport::TestCase
 
   test "prune_stale removes records absent from the current harvest set" do
     shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
-    harvested_doc = JSON.parse(
-      File.read(Rails.root.join("lib/opendataharvest/src/opendataharvest/data/agsl-opendata-harvest.json"))
-    )
+    harvested_doc = GeoCombine::Harvester.new.docs_to_index.first.first
+    harvested_doc_id = harvested_doc.fetch("id")
     stale_doc = harvested_doc.merge(
       "id" => "stale-opendataharvest-record",
       "dct_title_s" => "Stale opendataharvest record"
@@ -24,6 +23,8 @@ class UwmIndexPruneStaleTest < ActiveSupport::TestCase
     SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr_wrapper|
       solr_wrapper.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
         solr = RSolr.connect(url: "http://127.0.0.1:8985/solr/blacklight-core")
+        solr.delete_by_query("*:*")
+        solr.commit
         solr.add([harvested_doc, stale_doc])
         solr.commit
 
@@ -42,7 +43,7 @@ class UwmIndexPruneStaleTest < ActiveSupport::TestCase
           params: {q: "*:*", fl: "id", rows: 10_000, sort: "id asc"}
         ).dig("response", "docs").map { |doc| doc.fetch("id") }
 
-        assert_includes ids, "agsl-opendata-harvest"
+        assert_includes ids, harvested_doc_id
         refute_includes ids, "stale-opendataharvest-record"
       end
     end
