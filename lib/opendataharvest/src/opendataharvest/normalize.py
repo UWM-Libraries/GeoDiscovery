@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import yaml
+from classify import ResourceClassifier
 
 # Load configuration from YAML file
 with open("config/opendataharvest.yaml", "r") as file:
@@ -21,6 +22,30 @@ class StanfordSpatialNormalizer:
             data_dict["dct_spatial_sm"] = ["United States"]
 
 
+class OpenIndexMapsNormalizer:
+    @staticmethod
+    def normalize(data_dict: Dict) -> None:
+        """Restore OpenIndexMaps class/type logic for harvested Aardvark records."""
+        dct_references_s = str(data_dict.get("dct_references_s", ""))
+        identifier = str(data_dict.get("id", ""))
+        dct_source_sm = str(data_dict.get("dct_source_sm", ""))
+        dct_description_sm = str(data_dict.get("dct_description_sm", ""))
+
+        if (
+            ("openindexmaps" not in dct_references_s.lower())
+            and (identifier != "stanford-ch237ht4777")
+            and ("ch237ht4777" not in dct_source_sm.lower())
+        ):
+            return
+
+        logging.debug("OpenIndexMap detected, setting resource class and type.")
+        data_dict["gbl_resourceClass_sm"] = ["Maps"]
+        data_dict["gbl_resourceType_sm"] = ["Index maps"]
+
+        if "aerial" in dct_description_sm.lower():
+            data_dict["gbl_resourceClass_sm"] = ["Imagery"]
+
+
 class WiscoProviderNormalizer:
     @staticmethod
     def normalize(data_dict: Dict) -> None:
@@ -30,6 +55,14 @@ class WiscoProviderNormalizer:
             return
 
         logging.debug(f"Wisco provider identified: {provider}")
+        source = data_dict.get("dct_source_sm", [])
+        if not isinstance(source, list):
+            source = [source] if source else []
+
+        if provider not in source:
+            source.append(provider)
+
+        data_dict["dct_source_sm"] = source
         data_dict["schema_provider_s"] = ["University of Wisconsin-Madison"]
 
         description = data_dict.get("dct_description_sm", [])
@@ -44,11 +77,49 @@ class WiscoProviderNormalizer:
         logging.debug(f"Wisco Description now reads: {description}")
 
 
+class RestrictedNoteNormalizer:
+    @staticmethod
+    def normalize(data_dict: Dict) -> None:
+        """Add a warning note for restricted records."""
+        if data_dict.get("dct_accessRights_s") != "Restricted":
+            return
+
+        note = (
+            "Warning: This dataset is restricted and you may not be able to access "
+            "the resource. Contact the dataset provider or the AGSL for assistance."
+        )
+        display_notes = data_dict.get("gbl_displayNote_sm")
+
+        if display_notes is None:
+            data_dict["gbl_displayNote_sm"] = [note]
+        elif isinstance(display_notes, list):
+            if note not in display_notes:
+                display_notes.append(note)
+        else:
+            data_dict["gbl_displayNote_sm"] = [display_notes, note]
+
+
+class ResourceClassificationNormalizer:
+    @staticmethod
+    def normalize(data_dict: Dict) -> None:
+        """Fill missing resource class/type using shared classification rules."""
+        if data_dict.get("gbl_resourceClass_sm") and data_dict.get("gbl_resourceType_sm"):
+            return
+
+        (
+            data_dict["gbl_resourceClass_sm"],
+            data_dict["gbl_resourceType_sm"],
+        ) = ResourceClassifier.determine_resource_class_and_type(data_dict)
+
+
 class MetadataNormalizer:
     @staticmethod
     def normalize_document(data_dict: Dict) -> None:
         StanfordSpatialNormalizer.normalize(data_dict)
+        OpenIndexMapsNormalizer.normalize(data_dict)
         WiscoProviderNormalizer.normalize(data_dict)
+        RestrictedNoteNormalizer.normalize(data_dict)
+        ResourceClassificationNormalizer.normalize(data_dict)
 
 
 def iter_json_files(rootdir: Path) -> List[Path]:
