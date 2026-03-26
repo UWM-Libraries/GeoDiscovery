@@ -9,9 +9,9 @@ Rails.application.config.to_prepare do
             href,
             class: "remove",
             rel: "nofollow",
-            aria: { label: helpers.t(:"blacklight.search.facets.selected.remove") }
+            aria: {label: helpers.t(:"blacklight.search.facets.selected.remove")}
           ) do
-            tag.span("✖", class: "remove-icon", aria: { hidden: true })
+            tag.span("✖", class: "remove-icon", aria: {hidden: true})
           end
       end + render_facet_count(classes: ["selected"])
     end
