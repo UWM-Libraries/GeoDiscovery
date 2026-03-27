@@ -18,6 +18,7 @@ run_rake_task() {
     bundle exec rake $task >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]; then
         echo "Error running task: $task at: $(date)" >> $LOG_FILE
+        return 1
     else
         echo "Successfully ran task: $task at: $(date)" >> $LOG_FILE
     fi
@@ -53,7 +54,7 @@ tasks=(
 )
 
 for task in "${tasks[@]}"; do
-    run_rake_task $task
+    run_rake_task $task || exit 1
 done
 
 current_time=$(date "+%Y.%m.%d-%H.%M.%S")
