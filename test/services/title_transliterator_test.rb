@@ -18,13 +18,13 @@ class TitleTransliteratorTest < ActiveSupport::TestCase
   test "adds transliterated title field to documents" do
     document = TitleTransliterator.add_to_document({"dct_title_s" => "北京市城区街道图"})
 
-    assert_equal "bei jing shi cheng qu jie dao tu", document["dct_title_transliterated_s"]
+    assert_equal "bei jing shi cheng qu jie dao tu", document["agsl_title_transliterated_s"]
   end
 
   test "adds transliterated title field to uwm fixture documents used for indexing" do
     document = TitleTransliterator.add_to_document(uwm_fixture_document("transliterated_sort_test_BL_Aardvark.json"))
 
-    assert_equal "bei jing shi cheng qu jie dao tu", document["dct_title_transliterated_s"]
+    assert_equal "bei jing shi cheng qu jie dao tu", document["agsl_title_transliterated_s"]
   end
 
   test "geo combine harvester docs_to_index adds transliterated title field" do
@@ -34,7 +34,7 @@ class TitleTransliteratorTest < ActiveSupport::TestCase
       harvester = GeoCombine::Harvester.new(ogm_path: dir, schema_version: "Aardvark")
       document, = harvester.docs_to_index.first
 
-      assert_equal "bei jing shi cheng qu jie dao tu", document["dct_title_transliterated_s"]
+      assert_equal "bei jing shi cheng qu jie dao tu", document["agsl_title_transliterated_s"]
     end
   end
 

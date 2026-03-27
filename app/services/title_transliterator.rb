@@ -3,7 +3,7 @@
 require "open3"
 
 class TitleTransliterator
-  FIELD = "dct_title_transliterated_s"
+  FIELD = "agsl_title_transliterated_s"
   ICU_TRANSFORM = "Any-Latin; Latin-ASCII"
   MISSING_DEPENDENCY_MESSAGE = "Title transliteration requires the ICU 'uconv' binary to be installed and on PATH."
   TOO_MANY_FILES_MESSAGE = "Title transliteration disabled for this process after hitting the open file limit while running 'uconv'."

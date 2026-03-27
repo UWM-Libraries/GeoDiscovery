@@ -3,6 +3,7 @@ import json
 import logging
 import os
 from pathlib import Path
+import subprocess
 from typing import Dict, List
 
 import yaml
@@ -112,6 +113,98 @@ class ResourceClassificationNormalizer:
         ) = ResourceClassifier.determine_resource_class_and_type(data_dict)
 
 
+class TitleTransliterationNormalizer:
+    FIELD = "agsl_title_transliterated_s"
+    ICU_TRANSFORM = "Any-Latin; Latin-ASCII"
+
+    _cache = {}
+    _process = None
+    _disabled = False
+
+    @classmethod
+    def normalize(cls, data_dict: Dict) -> None:
+        title = str(data_dict.get("dct_title_s", ""))
+        transliterated = cls.transliterate(title)
+
+        if transliterated:
+            data_dict[cls.FIELD] = transliterated
+        else:
+            data_dict.pop(cls.FIELD, None)
+
+    @classmethod
+    def transliterate(cls, title: str) -> str | None:
+        if not title or not cls.needs_transliteration(title):
+            return None
+        if title in cls._cache:
+            return cls._cache[title]
+        if cls._disabled:
+            return None
+
+        process = cls.process()
+        if process is None:
+            return None
+
+        try:
+            process.stdin.write(title.replace("\n", " ") + "\n")
+            process.stdin.flush()
+            stdout = process.stdout.readline()
+        except (BrokenPipeError, OSError) as exc:
+            logging.warning(f"uconv transliteration failed: {exc}")
+            cls.disable()
+            return None
+
+        transliterated = " ".join(stdout.split())
+        if not transliterated or transliterated == title:
+            cls._cache[title] = None
+            return None
+
+        cls._cache[title] = transliterated
+        return transliterated
+
+    @classmethod
+    def process(cls):
+        if cls._disabled:
+            return None
+        if cls._process is not None and cls._process.poll() is None:
+            return cls._process
+
+        try:
+            cls._process = subprocess.Popen(
+                ["uconv", "-x", cls.ICU_TRANSFORM],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                text=True,
+                encoding="utf-8",
+                bufsize=1,
+            )
+        except FileNotFoundError:
+            logging.warning(
+                "Title transliteration requires the ICU 'uconv' binary to be installed and on PATH."
+            )
+            cls.disable()
+            return None
+
+        return cls._process
+
+    @classmethod
+    def disable(cls) -> None:
+        cls._disabled = True
+        if cls._process is not None:
+            try:
+                cls._process.terminate()
+            except OSError:
+                pass
+        cls._process = None
+
+    @staticmethod
+    def needs_transliteration(title: str) -> bool:
+        normalized = title.lstrip()
+        if not normalized:
+            return False
+        return not normalized[0].isascii()
+
+
 class MetadataNormalizer:
     @staticmethod
     def normalize_document(data_dict: Dict) -> None:
@@ -120,6 +213,7 @@ class MetadataNormalizer:
         WiscoProviderNormalizer.normalize(data_dict)
         RestrictedNoteNormalizer.normalize(data_dict)
         ResourceClassificationNormalizer.normalize(data_dict)
+        TitleTransliterationNormalizer.normalize(data_dict)
 
 
 def iter_json_files(rootdir: Path) -> List[Path]:
