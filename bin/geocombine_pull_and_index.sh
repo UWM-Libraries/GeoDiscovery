@@ -18,6 +18,7 @@ run_rake_task() {
     bundle exec rake $task >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]; then
         echo "Error running task: $task at: $(date)" >> $LOG_FILE
+        return 1
     else
         echo "Successfully ran task: $task at: $(date)" >> $LOG_FILE
     fi
@@ -46,13 +47,14 @@ tasks=(
     "geocombine:pull[edu.princeton.arks]"
     "geocombine:pull[edu.stanford.purl]"
     "uwm:opendataharvest:gbl1_to_aardvark"
+    "uwm:opendataharvest:normalize_aardvark"
     # "uwm:index:delete_all"
     "geocombine:index"
     "uwm:index:prune_stale"
 )
 
 for task in "${tasks[@]}"; do
-    run_rake_task $task
+    run_rake_task $task || exit 1
 done
 
 current_time=$(date "+%Y.%m.%d-%H.%M.%S")

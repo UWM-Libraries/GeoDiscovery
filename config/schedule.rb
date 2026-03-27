@@ -31,7 +31,8 @@ every :wednesday, at: "2:30am", roles: [:app] do
   rake "uwm:opendataharvest:harvest_dcat"
 end
 
-# Updates the UWM OpenGeoMetadata directory (git pull) and re-index
+# Updates OpenGeoMetadata, converts legacy records, normalizes harvested Aardvark,
+# and re-indexes into Solr
 every :wednesday, at: "3:00am", roles: [:app] do
   command ". /var/www/rubyapps/uwm-geoblacklight/current/bin/geocombine_pull_and_index.sh"
 end

@@ -196,7 +196,14 @@ namespace :uwm do
     task :gbl1_to_aardvark do
       puts "Running GeoBlacklight 1.0 to OGM Aardvark Metadata Conversion.\nsee gbl_to_aardvark.log"
       sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/gbl_to_aardvark.py"
-      puts "Run rake geocombine:index to index converted documents"
+      puts "Run rake uwm:opendataharvest:normalize_aardvark before geocombine:index"
+    end
+
+    desc "Normalize harvested Aardvark metadata before indexing"
+    task :normalize_aardvark do
+      puts "Normalizing harvested Aardvark metadata.\nsee opendataharvest.log"
+      sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/normalize.py"
+      puts "Run rake geocombine:index to index normalized documents"
     end
   end
 

@@ -11,8 +11,7 @@ if defined?(GeoCombine::GeoBlacklightHarvester)
   existing_transformer = GeoCombine::GeoBlacklightHarvester.document_transformer
 
   GeoCombine::GeoBlacklightHarvester.document_transformer = lambda do |document|
-    document = existing_transformer.call(document) if existing_transformer
-    TitleTransliterator.add_to_document(document)
+    existing_transformer ? existing_transformer.call(document) : document
   end
 end
 
@@ -23,7 +22,7 @@ if defined?(GeoCombine::Harvester)
 
       super do |record, path|
         record = RestrictedDisplayNote.add_to_document(record, source_path: path)
-        yield TitleTransliterator.add_to_document(record), path
+        yield record, path
       end
     end
   end
