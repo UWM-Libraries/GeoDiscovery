@@ -272,6 +272,8 @@ def normalize_directory(rootdir: Path, schema_version: str = "Aardvark") -> int:
     updated = 0
     scanned = 0
 
+    logging.info(f"Starting normalization in {rootdir} for schema version {schema_version}.")
+
     for path in iter_json_files(rootdir):
         scanned += 1
         if scanned % 1000 == 0:
@@ -304,6 +306,8 @@ def normalize_directory(rootdir: Path, schema_version: str = "Aardvark") -> int:
                 json.dump(data, file, indent=2)
                 file.write("\n")
             updated += 1
+            if updated <= 10 or updated % 100 == 0:
+                logging.info(f"Updated {path}")
 
     logging.info(f"Finished scanning {scanned} files; updated {updated}.")
     return updated
