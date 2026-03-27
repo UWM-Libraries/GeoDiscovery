@@ -174,7 +174,7 @@ class TitleTransliterationNormalizer:
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL,
-                text=True,
+                universal_newlines=True,
                 encoding="utf-8",
                 bufsize=1,
             )
@@ -202,7 +202,7 @@ class TitleTransliterationNormalizer:
         normalized = title.lstrip()
         if not normalized:
             return False
-        return not normalized[0].isascii()
+        return ord(normalized[0]) > 127
 
 
 class MetadataNormalizer:
