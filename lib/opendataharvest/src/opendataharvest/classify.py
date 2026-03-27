@@ -48,7 +48,7 @@ class ResourceClassifier:
                 gbl_resourceClass_sm = ["Imagery"]
             return gbl_resourceClass_sm, gbl_resourceType_sm
 
-        logging.info("Class and Type determination using keywords...")
+        logging.debug("Class and Type determination using keywords...")
         logging.debug("id: %s", identifier)
         logging.debug("Title: %s", dct_title_s)
         logging.debug("Format: %s", dct_format_s)

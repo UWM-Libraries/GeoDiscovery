@@ -42,20 +42,19 @@ class OpenIndexMapsNormalizer:
             return False
 
         logging.debug("OpenIndexMap detected, setting resource class and type.")
-        changed = False
-
-        if data_dict.get("gbl_resourceClass_sm") != ["Maps"]:
-            data_dict["gbl_resourceClass_sm"] = ["Maps"]
-            changed = True
-        if data_dict.get("gbl_resourceType_sm") != ["Index maps"]:
-            data_dict["gbl_resourceType_sm"] = ["Index maps"]
-            changed = True
+        desired_class = ["Maps"]
+        desired_type = ["Index maps"]
 
         if "aerial" in dct_description_sm.lower():
-            if data_dict.get("gbl_resourceClass_sm") != ["Imagery"]:
-                data_dict["gbl_resourceClass_sm"] = ["Imagery"]
-                changed = True
+            desired_class = ["Imagery"]
 
+        changed = False
+        if data_dict.get("gbl_resourceClass_sm") != desired_class:
+            data_dict["gbl_resourceClass_sm"] = desired_class
+            changed = True
+        if data_dict.get("gbl_resourceType_sm") != desired_type:
+            data_dict["gbl_resourceType_sm"] = desired_type
+            changed = True
         return changed
 
 
@@ -155,7 +154,6 @@ class TitleTransliterationNormalizer:
     ICU_TRANSFORM = "Any-Latin; Latin-ASCII"
 
     _cache = {}
-    _process = None
     _disabled = False
 
     @classmethod
@@ -184,19 +182,29 @@ class TitleTransliterationNormalizer:
         if cls._disabled:
             return None
 
-        process = cls.process()
-        if process is None:
-            return None
-
         try:
-            process.stdin.write(title.replace("\n", " ") + "\n")
-            process.stdin.flush()
-            stdout = process.stdout.readline()
-        except (BrokenPipeError, OSError) as exc:
+            result = subprocess.run(
+                ["uconv", "-x", cls.ICU_TRANSFORM],
+                input=title.replace("\n", " ") + "\n",
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                universal_newlines=True,
+                encoding="utf-8",
+                timeout=5,
+                check=False,
+            )
+        except FileNotFoundError:
+            logging.warning(
+                "Title transliteration requires the ICU 'uconv' binary to be installed and on PATH."
+            )
+            cls.disable()
+            return None
+        except (OSError, subprocess.SubprocessError) as exc:
             logging.warning(f"uconv transliteration failed: {exc}")
             cls.disable()
             return None
 
+        stdout = result.stdout
         transliterated = " ".join(stdout.split())
         if not transliterated or transliterated == title:
             cls._cache[title] = None
@@ -206,40 +214,8 @@ class TitleTransliterationNormalizer:
         return transliterated
 
     @classmethod
-    def process(cls):
-        if cls._disabled:
-            return None
-        if cls._process is not None and cls._process.poll() is None:
-            return cls._process
-
-        try:
-            cls._process = subprocess.Popen(
-                ["uconv", "-x", cls.ICU_TRANSFORM],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.DEVNULL,
-                universal_newlines=True,
-                encoding="utf-8",
-                bufsize=1,
-            )
-        except FileNotFoundError:
-            logging.warning(
-                "Title transliteration requires the ICU 'uconv' binary to be installed and on PATH."
-            )
-            cls.disable()
-            return None
-
-        return cls._process
-
-    @classmethod
     def disable(cls) -> None:
         cls._disabled = True
-        if cls._process is not None:
-            try:
-                cls._process.terminate()
-            except OSError:
-                pass
-        cls._process = None
 
     @staticmethod
     def needs_transliteration(title: str) -> bool:
