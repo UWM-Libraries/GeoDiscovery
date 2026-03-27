@@ -4,7 +4,7 @@ import logging
 import os
 from pathlib import Path
 import subprocess
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import yaml
 from classify import ResourceClassifier
@@ -132,7 +132,7 @@ class TitleTransliterationNormalizer:
             data_dict.pop(cls.FIELD, None)
 
     @classmethod
-    def transliterate(cls, title: str) -> str | None:
+    def transliterate(cls, title: str) -> Optional[str]:
         if not title or not cls.needs_transliteration(title):
             return None
         if title in cls._cache:
