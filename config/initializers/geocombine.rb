@@ -22,6 +22,7 @@ if defined?(GeoCombine::Harvester)
 
       super do |record, path|
         record = RestrictedDisplayNote.add_to_document(record, source_path: path)
+        record = TitleTransliterator.add_to_document(record)
         yield record, path
       end
     end
