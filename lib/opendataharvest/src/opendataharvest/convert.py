@@ -4,6 +4,7 @@ import os
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
+import tempfile
 from typing import Dict, List, Optional, Tuple
 import argparse
 import yaml
@@ -27,6 +28,35 @@ class LoggerConfig:
             level=level,
             format="%(asctime)s - %(levelname)s - %(message)s",
         )
+
+
+def write_json_atomically(path: Path, data: Dict) -> None:
+    """Write JSON without leaving empty or truncated destination files."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with tempfile.NamedTemporaryFile(
+        "w",
+        encoding="utf8",
+        dir=path.parent,
+        delete=False,
+    ) as tmp_file:
+        tmp_path = Path(tmp_file.name)
+        json.dump(data, tmp_file, indent=2)
+        tmp_file.write("\n")
+        tmp_file.flush()
+        os.fsync(tmp_file.fileno())
+
+    try:
+        with open(tmp_path, encoding="utf8") as check_file:
+            json.load(check_file)
+        if tmp_path.stat().st_size == 0:
+            raise ValueError(f"Refusing to replace {path} with an empty JSON file.")
+        os.replace(tmp_path, path)
+    except Exception:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
 class SchemaUpdater:
     CROSSWALK_PATH = Path(config["paths"]["crosswalk"])
 
@@ -113,8 +143,7 @@ class SchemaUpdater:
                 if filepath.name != "geoblacklight.json"
                 else f"{data['id']}.json"
             )
-            with open(new_filepath, "w", encoding="utf8") as fw:
-                json.dump(data, fw, indent=2)
+            write_json_atomically(new_filepath, data)
         except FileNotFoundError:
             logging.error(f"File not found: {filepath}")
         except json.JSONDecodeError:

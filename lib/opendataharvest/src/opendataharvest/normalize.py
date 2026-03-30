@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 from typing import Dict, Iterable, Optional
+import tempfile
 
 import yaml
 from classify import ResourceClassifier
@@ -238,6 +239,33 @@ class MetadataNormalizer:
         return changed
 
 
+def write_json_atomically(path: Path, data) -> None:
+    """Write JSON without truncating the destination on partial failures."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with tempfile.NamedTemporaryFile(
+        "w",
+        encoding="utf8",
+        dir=path.parent,
+        delete=False,
+    ) as tmp_file:
+        tmp_path = Path(tmp_file.name)
+        json.dump(data, tmp_file, indent=2)
+        tmp_file.write("\n")
+        tmp_file.flush()
+        os.fsync(tmp_file.fileno())
+
+    try:
+        with open(tmp_path, encoding="utf8") as check_file:
+            json.load(check_file)
+        if tmp_path.stat().st_size == 0:
+            raise ValueError(f"Refusing to replace {path} with an empty JSON file.")
+        os.replace(tmp_path, path)
+    except Exception:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
 def iter_json_files(rootdir: Path) -> Iterable[Path]:
     for path in rootdir.rglob("*.json"):
         if path.name != "layers.json":
@@ -278,9 +306,7 @@ def normalize_directory(rootdir: Path, schema_version: str = "Aardvark") -> int:
             changed = MetadataNormalizer.normalize_document(record) or changed
 
         if changed:
-            with open(path, "w", encoding="utf8") as file:
-                json.dump(data, file, indent=2)
-                file.write("\n")
+            write_json_atomically(path, data)
             updated += 1
             if updated <= 10 or updated % 100 == 0:
                 logging.info(f"Updated {path}")
