@@ -30,10 +30,23 @@ class OpenIndexMapsNormalizer:
     @staticmethod
     def normalize(data_dict: Dict) -> bool:
         """Restore OpenIndexMaps class/type logic for harvested Aardvark records."""
+        def with_unique_items(items, additions):
+            result = list(items)
+            for item in additions:
+                if item not in result:
+                    result.append(item)
+            return result
+
         dct_references_s = str(data_dict.get("dct_references_s", ""))
         identifier = str(data_dict.get("id", ""))
         dct_source_sm = str(data_dict.get("dct_source_sm", ""))
         dct_description_sm = str(data_dict.get("dct_description_sm", ""))
+        dct_title_s = str(data_dict.get("dct_title_s", ""))
+        dct_subject_sm = str(data_dict.get("dct_subject_sm", ""))
+
+        description_lower = dct_description_sm.lower()
+        title_lower = dct_title_s.lower()
+        subject_lower = dct_subject_sm.lower()
 
         if (
             ("openindexmaps" not in dct_references_s.lower())
@@ -45,16 +58,31 @@ class OpenIndexMapsNormalizer:
         logging.debug("OpenIndexMap detected, setting resource class and type.")
         desired_class = ["Maps"]
         desired_type = ["Index maps"]
+        topographic_record = any(
+            term in " ".join([title_lower, description_lower, subject_lower])
+            for term in ["topography", "topographic", "topographical"]
+        )
 
-        if "aerial" in dct_description_sm.lower():
+        if "aerial" in description_lower:
             desired_class = ["Imagery"]
+        elif topographic_record:
+            desired_type.append("Topographic maps")
 
         changed = False
-        if data_dict.get("gbl_resourceClass_sm") != desired_class:
-            data_dict["gbl_resourceClass_sm"] = desired_class
+        current_class = data_dict.get("gbl_resourceClass_sm") or []
+        current_type = data_dict.get("gbl_resourceType_sm") or []
+
+        target_class = desired_class
+        if desired_class == ["Maps"]:
+            target_class = with_unique_items(current_class, desired_class)
+
+        target_type = with_unique_items(current_type, desired_type)
+
+        if data_dict.get("gbl_resourceClass_sm") != target_class:
+            data_dict["gbl_resourceClass_sm"] = target_class
             changed = True
-        if data_dict.get("gbl_resourceType_sm") != desired_type:
-            data_dict["gbl_resourceType_sm"] = desired_type
+        if data_dict.get("gbl_resourceType_sm") != target_type:
+            data_dict["gbl_resourceType_sm"] = target_type
             changed = True
         return changed
 

@@ -15,116 +15,142 @@ class ResourceClassifier:
             if item not in lst:
                 lst.append(item)
 
-        logging.debug("Determining resource class and type for data: %s", data_dict)
+        def contains_any(text: str, terms: List[str]) -> bool:
+            return any(term in text for term in terms)
 
-        gbl_resourceClass_sm = data_dict.get("gbl_resourceClass_sm") or []
-        gbl_resourceType_sm = data_dict.get("gbl_resourceType_sm") or []
+        def map_related(title: str, description: str, subject: str) -> bool:
+            return (
+                "relief" in description
+                or "map" in description
+                or "maps" in subject
+                or "plan" in title
+                or "map" in title
+                or "topographic" in title
+            )
 
-        logging.debug("Initial resource class: %s", gbl_resourceClass_sm)
-        logging.debug("Initial resource type: %s", gbl_resourceType_sm)
+        def with_unique_items(items: List[str], additions: List[str]) -> List[str]:
+            result = list(items)
+            for item in additions:
+                if item not in result:
+                    result.append(item)
+            return result
 
-        if gbl_resourceClass_sm and gbl_resourceType_sm:
+        resource_class = data_dict.get("gbl_resourceClass_sm") or []
+        resource_type = data_dict.get("gbl_resourceType_sm") or []
+
+        if resource_class and resource_type:
             logging.debug("Resource class and type already determined.")
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            return resource_class, resource_type
 
-        dct_title_s = str(data_dict.get("dct_title_s", ""))
-        dct_format_s = str(data_dict.get("dct_format_s", ""))
-        dct_description_sm = str(data_dict.get("dct_description_sm", ""))
-        dct_subject_sm = str(data_dict.get("dct_subject_sm", ""))
-        dct_publisher_sm = str(data_dict.get("dct_publisher_sm", ""))
+        title = str(data_dict.get("dct_title_s", ""))
+        format_value = str(data_dict.get("dct_format_s", ""))
+        description = str(data_dict.get("dct_description_sm", ""))
+        subject = str(data_dict.get("dct_subject_sm", ""))
+        publisher = str(data_dict.get("dct_publisher_sm", ""))
         identifier = str(data_dict.get("id", ""))
-        dct_references_s = str(data_dict.get("dct_references_s", ""))
-        dct_source_sm = str(data_dict.get("dct_source_sm", ""))
+        references = str(data_dict.get("dct_references_s", ""))
+        source = str(data_dict.get("dct_source_sm", ""))
+
+        title_lower = title.lower()
+        description_lower = description.lower()
+        subject_lower = subject.lower()
+        publisher_lower = publisher.lower()
+        references_lower = references.lower()
+        source_lower = source.lower()
+
+        aerial_photo = "aerial photo" in title_lower
+        iiif_reference = "iiif" in references_lower
+        openindexmaps_reference = "openindexmaps" in references_lower
+        map_like_record = map_related(title_lower, description_lower, subject_lower)
+        topographic_record = contains_any(
+            " ".join([title_lower, description_lower, subject_lower]),
+            ["topography", "topographic", "topographical"],
+        )
+        parcel_record = contains_any(
+            " ".join([title_lower, description_lower, subject_lower]),
+            ["parcel", "parcels"],
+        )
+        vector_download_reference = contains_any(
+            references_lower,
+            ["shapefile", "geodatabase", "_shp.zip", "_gdb.zip", ".shp", ".gdb"],
+        )
 
         if (
-            ("openindexmaps" in dct_references_s.lower())
+            openindexmaps_reference
             or (identifier == "stanford-ch237ht4777")
-            or ("ch237ht4777" in dct_source_sm.lower())
+            or ("ch237ht4777" in source_lower)
         ):
             logging.debug("OpenIndexMap detected, setting resource class and type.")
-            gbl_resourceClass_sm = ["Maps"]
-            gbl_resourceType_sm = ["Index maps"]
-            if "aerial" in dct_description_sm.lower():
-                gbl_resourceClass_sm = ["Imagery"]
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            resource_class = with_unique_items(resource_class, ["Maps"])
+            resource_type = with_unique_items(resource_type, ["Index maps"])
+            if "aerial" in description_lower:
+                resource_class = ["Imagery"]
+            elif topographic_record:
+                resource_type = with_unique_items(resource_type, ["Topographic maps"])
+            return resource_class, resource_type
 
-        logging.debug("Class and Type determination using keywords...")
-        logging.debug("id: %s", identifier)
-        logging.debug("Title: %s", dct_title_s)
-        logging.debug("Format: %s", dct_format_s)
-        logging.debug("Description: %s", dct_description_sm)
-        logging.debug("Subject: %s", dct_subject_sm)
-        logging.debug("Publisher: %s", dct_publisher_sm)
-        logging.debug("References: %s", dct_references_s)
+        logging.debug(
+            "Classifying %s with title=%r format=%r",
+            identifier,
+            title,
+            format_value,
+        )
 
-        if "aerial photo" in dct_title_s.lower():
-            logging.debug("Aerial photogrpahy detected")
-            gbl_resourceType_sm = ["Aerial photographs"]
-            gbl_resourceClass_sm = ["Imagery"]
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+        if aerial_photo:
+            logging.debug("Aerial photography detected from title.")
+            return ["Imagery"], ["Aerial photographs"]
 
-        if "sanborn" in dct_publisher_sm.lower():
+        if "sanborn" in publisher_lower:
             logging.debug("Sanborn map detected, setting resource class and type.")
-            append_if_not_exists(gbl_resourceClass_sm, "Maps")
-            append_if_not_exists(gbl_resourceType_sm, "Fire insurance maps")
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            append_if_not_exists(resource_class, "Maps")
+            append_if_not_exists(resource_type, "Fire insurance maps")
+            return resource_class, resource_type
 
-        if "topographical map" in dct_title_s.lower():
-            logging.debug("topographical map detected, setting resource class and type.")
-            append_if_not_exists(gbl_resourceClass_sm, "Maps")
-            append_if_not_exists(gbl_resourceType_sm, "Topographic maps")
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+        if "topographical map" in title_lower:
+            logging.debug("Topographical map detected, setting resource class and type.")
+            append_if_not_exists(resource_class, "Maps")
+            append_if_not_exists(resource_type, "Topographic maps")
+            return resource_class, resource_type
 
-        if "aeronautical" in dct_title_s.lower():
+        if "aeronautical" in title_lower:
             logging.debug(
                 "Aeronautical charts detected, setting resource class and type."
             )
-            append_if_not_exists(gbl_resourceClass_sm, "Maps")
-            append_if_not_exists(gbl_resourceType_sm, "Aeronautical charts")
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            append_if_not_exists(resource_class, "Maps")
+            append_if_not_exists(resource_type, "Aeronautical charts")
+            return resource_class, resource_type
 
-        if "iiif" in dct_references_s.lower():
+        if iiif_reference:
             logging.debug("IIIF Map detected, setting resource class and type.")
-            append_if_not_exists(gbl_resourceClass_sm, "Maps")
-            if ("aerial photo" in dct_title_s.lower()) or (
-                "aerial photo" in dct_description_sm.lower()
-            ):
-                logging.debug("IIIF Aerial Photography Detected")
-                append_if_not_exists(gbl_resourceType_sm, "Aerial photographs")
+            append_if_not_exists(resource_class, "Maps")
+            if aerial_photo or ("aerial photo" in description_lower):
+                logging.debug("IIIF aerial photography detected.")
+                append_if_not_exists(resource_type, "Aerial photographs")
             else:
-                logging.debug("IIIF Map Detected")
-                append_if_not_exists(gbl_resourceType_sm, "Digital maps")
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+                append_if_not_exists(resource_type, "Digital maps")
+            return resource_class, resource_type
 
-        if dct_format_s in ["GeoTIFF", "TIFF"]:
-            if (
-                "relief" in dct_description_sm.lower()
-                or "map" in dct_description_sm.lower()
-                or "maps" in dct_subject_sm.lower()
-                or "plan" in dct_title_s.lower()
-                or "map" in dct_title_s.lower()
-                or "topographic" in dct_title_s.lower()
-            ):
+        if format_value in ["GeoTIFF", "TIFF"]:
+            if map_like_record:
                 logging.debug(
                     "GeoTIFF or TIFF format with map-related description or subject detected."
                 )
-                append_if_not_exists(gbl_resourceClass_sm, "Maps")
-                append_if_not_exists(gbl_resourceType_sm, "Digital maps")
-                return gbl_resourceClass_sm, gbl_resourceType_sm
+                append_if_not_exists(resource_class, "Maps")
+                append_if_not_exists(resource_type, "Digital maps")
+                return resource_class, resource_type
 
-            if "aerial photo" in dct_title_s.lower():
-                logging.debug("Aerial Photogrpahy Detected")
-                append_if_not_exists(gbl_resourceType_sm, "Aerial photographs")
-                gbl_resourceClass_sm = ["Imagery"]
+            if aerial_photo:
+                logging.debug("Aerial photography detected from raster title.")
+                append_if_not_exists(resource_type, "Aerial photographs")
+                resource_class = ["Imagery"]
 
             logging.debug(
                 "GeoTIFF or TIFF format detected, setting resource class to Datasets."
             )
-            gbl_resourceClass_sm = ["Datasets"]
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            return ["Datasets"], resource_type
 
         if (
-            dct_format_s
+            format_value
             in [
                 "Shapefile",
                 "ArcGrid",
@@ -132,65 +158,68 @@ class ResourceClassifier:
                 "Geodatabase",
                 "Arc/Info Binary Grid",
             ]
-            or "csdgm" in dct_references_s
-            or "ArcGIS#" in dct_references_s
+            or "csdgm" in references_lower
+            or "arcgis#" in references_lower
         ):
             logging.debug("Setting resource class to Datasets based on format.")
-            gbl_resourceClass_sm = ["Datasets"]
-            if "aerial photo" in dct_title_s.lower():
-                logging.debug("Aerial photogrpahy detected")
-                gbl_resourceType_sm = ["Aerial photographs"]
-                gbl_resourceClass_sm = ["Imagery"]
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            resource_class = ["Datasets"]
+            if aerial_photo:
+                logging.debug("Aerial photography detected from dataset title.")
+                return ["Imagery"], ["Aerial photographs"]
+            return resource_class, resource_type
 
-        if dct_format_s == "":
-            if (
-                "relief" in dct_description_sm.lower()
-                or "map" in dct_description_sm.lower()
-                or "maps" in dct_subject_sm.lower()
-            ):
+        if (
+            parcel_record
+            and (
+                format_value in ["Shapefile", "GeoDatabase", "Geodatabase", "Multiple Formats"]
+                or vector_download_reference
+            )
+        ):
+            logging.debug("Parcel-style vector dataset detected.")
+            return ["Datasets"], ["Polygon data", "Cadastral maps"]
+
+        if format_value == "":
+            if map_like_record:
                 logging.debug(
                     "Empty format with map-related description or subject detected."
                 )
-                append_if_not_exists(gbl_resourceClass_sm, "Maps")
-                return gbl_resourceClass_sm, gbl_resourceType_sm
+                append_if_not_exists(resource_class, "Maps")
+                return resource_class, resource_type
 
             logging.debug("Empty format, setting resource class to Other.")
-            gbl_resourceClass_sm = ["Other"]
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            return ["Other"], resource_type
 
         if (
-            dct_format_s == "ArcGRID"
-            or dct_format_s == "IMG"
-            or "DEM" in dct_description_sm
-            or "DSM" in dct_description_sm
-            or "digital elevation model" in dct_description_sm
-            or "digital terrain model" in dct_description_sm
-            or "digital surface model" in dct_description_sm
-            or "arc-second" in dct_description_sm
-            or "raster dataset" in dct_description_sm.lower()
+            format_value in ["ArcGRID", "IMG"]
+            or contains_any(
+                description_lower,
+                [
+                    "dem",
+                    "dsm",
+                    "digital elevation model",
+                    "digital terrain model",
+                    "digital surface model",
+                    "arc-second",
+                    "raster dataset",
+                ],
+            )
         ):
             logging.debug("Elevation or other non-Imagery Raster Detected.")
-            append_if_not_exists(gbl_resourceClass_sm, "Datasets")
-            append_if_not_exists(gbl_resourceType_sm, "Raster data")
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            append_if_not_exists(resource_class, "Datasets")
+            append_if_not_exists(resource_type, "Raster data")
+            return resource_class, resource_type
 
-        if (
-            "relief" in dct_description_sm.lower()
-            or "map" in dct_description_sm.lower()
-            or "maps" in dct_subject_sm.lower()
-        ):
+        if map_like_record:
             logging.debug("Map-related description or subject detected.")
-            gbl_resourceClass_sm = ["Maps"]
-            return gbl_resourceClass_sm, gbl_resourceType_sm
+            return ["Maps"], resource_type
 
         logging.debug("Setting default resource class and type.")
         fallback_class = resource_class_default or "Datasets"
-        gbl_resourceClass_sm = [fallback_class]
+        resource_class = [fallback_class]
 
         if resource_type_default:
-            gbl_resourceType_sm = [resource_type_default]
+            resource_type = [resource_type_default]
         else:
-            gbl_resourceType_sm = []
+            resource_type = []
 
-        return gbl_resourceClass_sm, gbl_resourceType_sm
+        return resource_class, resource_type
