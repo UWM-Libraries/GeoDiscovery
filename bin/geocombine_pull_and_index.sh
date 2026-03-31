@@ -30,6 +30,7 @@ tasks=(
     "geocombine:pull[edu.illinois]"
     "geocombine:pull[edu.indiana]"
     "geocombine:pull[edu.uiowa]"
+    "geocombine:pull[edu.utexas]"
     "geocombine:pull[edu.umd]"
     "geocombine:pull[edu.msu]"
     "geocombine:pull[edu.umn]"

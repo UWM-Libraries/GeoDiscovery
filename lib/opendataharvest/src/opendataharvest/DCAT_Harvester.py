@@ -101,7 +101,7 @@ logging.basicConfig(
 )
 
 dt = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
-logging.warning(f"Script running at {dt}")
+logging.info(f"DCAT harvest started at {dt}")
 
 
 def ensure_collection_record(output_dir: Path):
@@ -220,23 +220,22 @@ def get_site_data(site: str, details: dict) -> dict:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.MissingSchema:
-            logging.warning(f"trying SitURL for {site} as a filepath")
+            logging.info(f"Trying SiteURL for {site} as a local filepath.")
             response_file = json.load(open(Path(details["SiteURL"]), "r"))
             return response_file
         except json.JSONDecodeError:
             logging.warning(f"The content from {site} is not a valid JSON document.")
             return None
         except (requests.HTTPError, requests.exceptions.Timeout) as e:
-            logging.info(
-                f"Received bad response from {site}. Retrying after {SLEEPTIME} seconds..."
+            logging.debug(
+                f"Received bad response from {site}. Retrying after {SLEEPTIME} seconds."
             )
             time.sleep(SLEEPTIME)
             if i == (MAXRETRY - 1):
                 logging.warning(
                     f"Failed to connect to {site} after {MAXRETRY + 1} attempts."
                 )
-                error = str(e) + "\n"
-                logging.warning(error)
+                logging.warning(str(e))
                 return None
 
 
@@ -418,7 +417,7 @@ class AardvarkDataProcessor:
     def getURL(distribution):
         url = distribution.get("accessURL", None)
         if url is None:
-            logging.info("There is no accessURL, looking for downloadURL instead.")
+            logging.debug("Distribution has no accessURL; falling back to downloadURL.")
             url = distribution.get("downloadURL", None)
         return quote(url, safe=":/?=")
 
@@ -467,15 +466,15 @@ class AardvarkDataProcessor:
 
         if not shapefile_found:
             title = dataset.get("title", "").lower()
-            logging.info(
-                f"Processing title: {title} ({dataset.get('identifier', 'no id')})\n"
+            logging.debug(
+                f"Processing title: {title} ({dataset.get('identifier', 'no id')})"
             )
             matched_keywords = [
                 keyword for keyword in aerial_keywords if keyword in title
             ]
             is_aerial = bool(matched_keywords)
-            logging.info(
-                f"Keywords matched: {is_aerial}, Matched keywords: {matched_keywords}\n"
+            logging.debug(
+                f"Keywords matched: {is_aerial}, matched keywords: {matched_keywords}"
             )
 
             if is_aerial:
@@ -559,7 +558,7 @@ class Aardvark:
 
         # Stop processing if in skiplist
         if self.uuid in website.site_skiplist:
-            logging.info(f"{self.uuid} is on the skiplist...\n")
+            logging.debug(f"{self.uuid} is on the skiplist.")
             return False
 
         self.dct_identifier_sm = [dataset_dict["identifier"]]
@@ -623,15 +622,15 @@ class Aardvark:
             self.gbl_resourceType_sm = result["gbl_resourceType_sm"]
         else:
             if self.uuid in website.site_applist:
-                logging.info(
-                    f"UUID {self.uuid} is in site_applist, setting gbl_resourceClass_sm to ['Websites']\n"
+                logging.debug(
+                    f"UUID {self.uuid} is in site_applist; setting gbl_resourceClass_sm to ['Websites']."
                 )
                 self.gbl_resourceClass_sm = ["Websites"]
                 self.dct_format_s = None
                 self.gbl_resourceType_sm = None
             elif self.uuid in website.site_maplist:
-                logging.info(
-                    f"UUID {self.uuid} is in site_maplist, setting gbl_resourceClass_sm to ['Maps']\n"
+                logging.debug(
+                    f"UUID {self.uuid} is in site_maplist; setting gbl_resourceClass_sm to ['Maps']."
                 )
                 self.gbl_resourceClass_sm = ["Maps"]
                 self.dct_format_s = None
@@ -653,11 +652,11 @@ class Aardvark:
             logging.warning(
                 f"There was a problem interpreting the bbox information for: {self.id}\n"
                 f"\t - at {dataset_dict['landingPage']}\n"
-                f"\t Warning: {e}\n"
+                f"\t Warning: {e}"
             )
             if defaultBbox is not None:
                 self.locn_geometry = self.dcat_bbox = defaultBbox["envelope"]
-                logging.warning("Using default envelope for the website.\n")
+                logging.debug("Using default envelope for the website.")
             else:
                 logging.warning(f"No default bounding box set for {website}")
 
@@ -673,35 +672,48 @@ class Aardvark:
 
         self.dct_references_s = json.dumps(references).replace(" ", "")
 
+    def _parse_index_year(self, value, field_name):
+        if not value:
+            return None
+
+        try:
+            index_date = parser.parse(value)
+            return int(index_date.year)
+        except ImportError:
+            try:
+                return int(str(value)[:4])
+            except (TypeError, ValueError) as exc:
+                logging.warning(
+                    f'Unable to derive {field_name} year from "{value}" for {self.id}: {exc}'
+                )
+                return None
+        except Exception as exc:
+            logging.warning(
+                f'Unable to parse {field_name} year from "{value}" for {self.id}: {exc}'
+            )
+            return None
+
     def _process_temporal_coverage(self, dataset_dict):
         if "modified" in dataset_dict:
-            try:
-                index_date = parser.parse(dataset_dict["modified"])
-                index_year = int(index_date.year)
-            except ImportError:
-                index_year = int(dataset_dict["modified"][:4])
-            except Exception as e:
-                logging.error(f"An error occurred: {e}")
-
-            self.gbl_indexYear_im = [index_year]
-            self.dct_temporal_sm = [f"Modified {index_year}"]
+            index_year = self._parse_index_year(dataset_dict["modified"], "modified")
+            if index_year is not None:
+                self.gbl_indexYear_im = [index_year]
+                self.dct_temporal_sm = [f"Modified {index_year}"]
+            else:
+                self.gbl_indexYear_im = []
+                self.dct_temporal_sm = []
         else:
             self.gbl_indexYear_im = []
+            self.dct_temporal_sm = []
 
         if "issued" in dataset_dict:
-            try:
-                index_date = parser.parse(dataset_dict["issued"])
-                index_year = int(index_date.year)
-            except ImportError:
-                index_year = int(dataset_dict["issued"][:4])
-            except Exception as e:
-                logging.error("Problem processing the issued date.")
-
-            self.gbl_indexYear_im.append(index_year)
-            if self.dct_temporal_sm:
-                self.dct_temporal_sm[0] = f"Issued {index_year}"
-            else:
-                self.dct_temporal_sm = [f"Issued {index_year}"]
+            index_year = self._parse_index_year(dataset_dict["issued"], "issued")
+            if index_year is not None:
+                self.gbl_indexYear_im.append(index_year)
+                if self.dct_temporal_sm:
+                    self.dct_temporal_sm[0] = f"Issued {index_year}"
+                else:
+                    self.dct_temporal_sm = [f"Issued {index_year}"]
 
     def to_dict(self):
         """
@@ -757,7 +769,7 @@ class Aardvark:
             return json_dump
         else:
             logging.warning(f"Failed JSON Validation:\n{error}")
-            logging.info(str(json_dump))
+            logging.debug(str(json_dump))
             return None
 
     def is_valid(self):
@@ -783,7 +795,7 @@ def main():
     # Create output dir if it doesn't exist:
     if not OUTPUTDIR.is_dir():
         try:
-            logging.warning(f"Creating directory {str(OUTPUTDIR)}")
+            logging.info(f"Creating output directory {str(OUTPUTDIR)}")
             OUTPUTDIR.mkdir(parents=True, exist_ok=True)
         except Exception as e:
             logging.warning("Unable to create output directory")
@@ -803,14 +815,14 @@ def main():
                 with open(newfilePath, "w", encoding="utf-8") as f:
                     f.write(new_aardvark_object.toJSON())
             except InitializationError as e:
-                logging.info(str(e))
+                logging.debug(str(e))
 
 
 if __name__ == "__main__":
     dt = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     try:
         main()
-        logging.warning(f"Script finished at {dt}")
+        logging.info(f"DCAT harvest finished at {dt}")
     except Exception as e:
         logging.error(str(e))
-        logging.warning(f"Script finished with errors at {dt}")
+        logging.warning(f"DCAT harvest finished with errors at {dt}")
