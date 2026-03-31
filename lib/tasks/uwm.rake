@@ -8,10 +8,12 @@ task :ci do
   shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
   success = true
-  SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
-    solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-      system "RAILS_ENV=test bundle exec rake uwm:index:seed"
-      success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
+  with_managed_solr_modules do
+    SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+        system "RAILS_ENV=test bundle exec rake uwm:index:seed"
+        success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
+      end
     end
   end
 
@@ -84,12 +86,22 @@ namespace :uwm do
     opts
   end
 
+  def with_managed_solr_modules
+    previous_modules = ENV["SOLR_MODULES"]
+    ENV["SOLR_MODULES"] = [previous_modules, "analysis-extras"].compact.join(",").split(",").uniq.join(",")
+    yield
+  ensure
+    ENV["SOLR_MODULES"] = previous_modules
+  end
+
   def with_managed_solr(port:)
-    SolrWrapper.wrap(shared_solr_opts.merge(port: port, instance_dir: "tmp/blacklight-core")) do |solr|
-      wait_for_solr_wrapper!(solr)
-      solr.with_collection(name: SOLR_COLLECTION, dir: Rails.root.join("solr", "conf").to_s) do
-        wait_for_solr!
-        yield
+    with_managed_solr_modules do
+      SolrWrapper.wrap(shared_solr_opts.merge(port: port, instance_dir: "tmp/blacklight-core")) do |solr|
+        wait_for_solr_wrapper!(solr)
+        solr.with_collection(name: SOLR_COLLECTION, dir: Rails.root.join("solr", "conf").to_s) do
+          wait_for_solr!
+          yield
+        end
       end
     end
   end
@@ -126,16 +138,18 @@ namespace :uwm do
     shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
     shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
-    SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
-      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-        puts "Solr running at http://localhost:8983/solr/blacklight-core/, ^C to exit"
-        puts " "
-        begin
-          Rake::Task["uwm:index:seed"].invoke
-          system "bundle exec rails s -b 0.0.0.0"
-          sleep
-        rescue Interrupt
-          puts "\nShutting down..."
+    with_managed_solr_modules do
+      SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
+        solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+          puts "Solr running at http://localhost:8983/solr/blacklight-core/, ^C to exit"
+          puts " "
+          begin
+            Rake::Task["uwm:index:seed"].invoke
+            system "bundle exec rails s -b 0.0.0.0"
+            sleep
+          rescue Interrupt
+            puts "\nShutting down..."
+          end
         end
       end
     end
@@ -147,14 +161,16 @@ namespace :uwm do
       shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
       shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
-      SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
-        solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-          puts "Solr running at http://localhost:8985/solr/#/blacklight-core/, ^C to exit"
-          begin
-            Rake::Task["uwm:index:seed"].invoke
-            sleep
-          rescue Interrupt
-            puts "\nShutting down..."
+      with_managed_solr_modules do
+        SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+          solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+            puts "Solr running at http://localhost:8985/solr/#/blacklight-core/, ^C to exit"
+            begin
+              Rake::Task["uwm:index:seed"].invoke
+              sleep
+            rescue Interrupt
+              puts "\nShutting down..."
+            end
           end
         end
       end
@@ -168,14 +184,16 @@ namespace :uwm do
     shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
     shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
-    SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
-      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-        puts "Solr running at http://localhost:8983/solr/#/blacklight-core/, ^C to exit"
-        begin
-          Rake::Task["uwm:index:seed"].invoke
-          sleep
-        rescue Interrupt
-          puts "\nShutting down..."
+    with_managed_solr_modules do
+      SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
+        solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+          puts "Solr running at http://localhost:8983/solr/#/blacklight-core/, ^C to exit"
+          begin
+            Rake::Task["uwm:index:seed"].invoke
+            sleep
+          rescue Interrupt
+            puts "\nShutting down..."
+          end
         end
       end
     end

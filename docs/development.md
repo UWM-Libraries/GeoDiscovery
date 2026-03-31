@@ -8,6 +8,8 @@ Make sure you have Java installed. On a Mac with homebrew, that can be as simple
 
 The transliterated-title prototype also depends on ICU's `uconv` command-line tool being available on `PATH`. GeoDiscovery uses it during indexing to populate a readable romanized companion title field. If `uconv` is missing, indexing still runs, but transliterated display titles will not be generated.
 
+Managed local Solr also needs Solr's `analysis-extras` module enabled so the ICU transliteration filters in the schema can load. The provided `uwm:*` rake tasks now set `SOLR_MODULES=analysis-extras` automatically for managed local/test Solr startup.
+
 ### Clone the GeoDiscovery repository, and cd into it
 
 ```bash
