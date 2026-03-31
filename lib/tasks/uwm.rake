@@ -214,6 +214,11 @@ namespace :uwm do
       sh "lib/opendataharvest/src/setup_python_env.sh"
     end
 
+    desc "Run opendataharvest Python unit tests"
+    task test: :setup_python_env do
+      sh "lib/opendataharvest/venv/bin/python3 -m unittest discover -s lib/opendataharvest/tests"
+    end
+
     desc "Run the DCAT_Harvester.py Python script"
     task :harvest_dcat do
       sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/DCAT_Harvester.py"
