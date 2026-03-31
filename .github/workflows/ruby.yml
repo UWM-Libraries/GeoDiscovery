@@ -18,6 +18,21 @@ jobs:
     - name: Run linter
       run: bundle exec standardrb
 
+  python-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install opendataharvest dependencies
+      run: python3 -m pip install -r lib/opendataharvest/src/requirements.txt
+    - name: Check opendataharvest formatting
+      run: python3 -m black --check lib/opendataharvest/src/opendataharvest lib/opendataharvest/tests
+    - name: Run opendataharvest unit tests
+      run: python3 -m unittest discover -s lib/opendataharvest/tests
+
   aardvark-fixture-linter:
     runs-on: ubuntu-latest
     steps:
