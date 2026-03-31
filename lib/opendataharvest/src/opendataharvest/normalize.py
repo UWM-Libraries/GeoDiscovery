@@ -156,6 +156,29 @@ class RestrictedNoteNormalizer:
         return False
 
 
+class ResourceValueNormalizer:
+    @staticmethod
+    def normalize(data_dict: Dict) -> bool:
+        changed = False
+
+        for field in ["gbl_resourceClass_sm", "gbl_resourceType_sm"]:
+            values = data_dict.get(field)
+            if not isinstance(values, list):
+                continue
+
+            normalized = []
+            for value in values:
+                cleaned = str(value).strip()
+                if cleaned and cleaned not in normalized:
+                    normalized.append(cleaned)
+
+            if values != normalized:
+                data_dict[field] = normalized
+                changed = True
+
+        return changed
+
+
 class ResourceClassificationNormalizer:
     @staticmethod
     def normalize(data_dict: Dict) -> bool:
@@ -274,6 +297,7 @@ class MetadataNormalizer:
     @staticmethod
     def normalize_document(data_dict: Dict) -> bool:
         changed = False
+        changed = ResourceValueNormalizer.normalize(data_dict) or changed
         changed = StanfordSpatialNormalizer.normalize(data_dict) or changed
         changed = OpenIndexMapsNormalizer.normalize(data_dict) or changed
         changed = WiscoProviderNormalizer.normalize(data_dict) or changed

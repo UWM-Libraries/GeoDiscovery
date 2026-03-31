@@ -4,15 +4,11 @@ require "open3"
 
 class TitleTransliterator
   FIELD = "agsl_title_transliterated_s"
-  SORT_SOURCE_FIELD = "agsl_title_sort_source_s"
   ICU_TRANSFORM = "Any-Latin; Latin-ASCII"
   MISSING_DEPENDENCY_MESSAGE = "Title transliteration requires the ICU 'uconv' binary to be installed and on PATH."
   TOO_MANY_FILES_MESSAGE = "Title transliteration disabled for this process after hitting the open file limit while running 'uconv'."
   LEADING_NON_ALNUM = /\A[^\p{L}\p{Nd}]+/u
   LATIN_LEADING = /\A[\p{Latin}\p{Nd}]/u
-  TITLE_OVERRIDES = {
-    "princeton-dcdb78tr193" => "Tibet and adjacent areas under Chinese rule"
-  }.freeze
 
   @cache = {}
   @disabled = false
@@ -20,11 +16,7 @@ class TitleTransliterator
   class << self
     def add_to_document(document)
       title = document["dct_title_s"].to_s
-      override = TITLE_OVERRIDES[document["id"].to_s]
-      transliterated = override || transliterate(title)
-      sort_source = override || title
-
-      document = document.merge(SORT_SOURCE_FIELD => sort_source)
+      transliterated = transliterate(title)
       return document if transliterated.blank?
 
       document.merge(FIELD => transliterated)

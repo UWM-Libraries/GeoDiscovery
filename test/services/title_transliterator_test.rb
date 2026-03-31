@@ -19,14 +19,12 @@ class TitleTransliteratorTest < ActiveSupport::TestCase
     document = TitleTransliterator.add_to_document({"dct_title_s" => "北京市城区街道图"})
 
     assert_equal "bei jing shi cheng qu jie dao tu", document["agsl_title_transliterated_s"]
-    assert_equal "北京市城区街道图", document["agsl_title_sort_source_s"]
   end
 
   test "adds transliterated title field to uwm fixture documents used for indexing" do
     document = TitleTransliterator.add_to_document(uwm_fixture_document("transliterated_sort_test_BL_Aardvark.json"))
 
     assert_equal "bei jing shi cheng qu jie dao tu", document["agsl_title_transliterated_s"]
-    assert_equal "北京市城区街道图", document["agsl_title_sort_source_s"]
   end
 
   test "geo combine harvester docs_to_index adds transliterated title field" do
@@ -37,20 +35,7 @@ class TitleTransliteratorTest < ActiveSupport::TestCase
       document, = harvester.docs_to_index.first
 
       assert_equal "bei jing shi cheng qu jie dao tu", document["agsl_title_transliterated_s"]
-      assert_equal "北京市城区街道图", document["agsl_title_sort_source_s"]
     end
-  end
-
-  test "uses record-specific title overrides for display and sorting" do
-    document = TitleTransliterator.add_to_document(
-      {
-        "id" => "princeton-dcdb78tr193",
-        "dct_title_s" => "རྒྱ་དམར་གྱི་བཙན་འོག་ཏུ་གནས་པའི་བོད་དང་ས་འབྲེལ་ཁག་གི་ས་ཁྲ"
-      }
-    )
-
-    assert_equal "Tibet and adjacent areas under Chinese rule", document["agsl_title_transliterated_s"]
-    assert_equal "Tibet and adjacent areas under Chinese rule", document["agsl_title_sort_source_s"]
   end
 
   test "does not shell out for latin leading titles" do

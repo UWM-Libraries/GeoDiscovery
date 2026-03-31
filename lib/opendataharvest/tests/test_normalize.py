@@ -11,6 +11,7 @@ sys.path.insert(0, str(REPO_ROOT / "lib/opendataharvest/src"))
 sys.path.insert(0, str(REPO_ROOT / "lib/opendataharvest/src/opendataharvest"))
 
 from opendataharvest.normalize import TitleTransliterationNormalizer
+from opendataharvest.normalize import ResourceValueNormalizer
 
 
 class TitleTransliterationNormalizerTest(unittest.TestCase):
@@ -36,6 +37,17 @@ class TitleTransliterationNormalizerTest(unittest.TestCase):
                 TitleTransliterationNormalizer.transliterate(title),
                 "Bei Jing Shi Cheng Qu Jie Dao Tu",
             )
+
+class ResourceValueNormalizerTest(unittest.TestCase):
+    def test_resource_types_are_trimmed_and_deduplicated(self):
+        record = {
+            "gbl_resourceType_sm": ["Index maps ", " Geological Maps", "Index maps"]
+        }
+
+        changed = ResourceValueNormalizer.normalize(record)
+
+        self.assertTrue(changed)
+        self.assertEqual(record["gbl_resourceType_sm"], ["Index maps", "Geological Maps"])
 
 
 if __name__ == "__main__":
