@@ -1,4 +1,3 @@
-black
 requests
 pyyaml
 python-dateutil

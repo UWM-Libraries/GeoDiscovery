@@ -9,12 +9,6 @@ task :ci do
   managed_solr_url = "http://127.0.0.1:8985/solr/blacklight-core"
 
   success = true
-  success &&= system("lib/opendataharvest/src/setup_python_env.sh", exception: false)
-  success &&= system(
-    "lib/opendataharvest/venv/bin/python3 -m unittest discover -s lib/opendataharvest/tests",
-    exception: false
-  )
-
   with_managed_solr_modules do
     SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
       solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do

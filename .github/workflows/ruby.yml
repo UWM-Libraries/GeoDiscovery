@@ -28,6 +28,8 @@ jobs:
         python-version: '3.11'
     - name: Install opendataharvest dependencies
       run: python3 -m pip install -r lib/opendataharvest/src/requirements.txt
+    - name: Install Black
+      run: python3 -m pip install black
     - name: Check opendataharvest formatting
       run: python3 -m black --check lib/opendataharvest/src/opendataharvest lib/opendataharvest/tests
     - name: Run opendataharvest unit tests
