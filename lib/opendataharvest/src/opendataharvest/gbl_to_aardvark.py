@@ -1,8 +1,10 @@
-import os
-import subprocess
+import json
 import logging
-import yaml
+import os
 from pathlib import Path
+import subprocess
+
+import yaml
 
 # Load configuration from YAML file
 with open("config/opendataharvest.yaml", "r") as file:
@@ -33,13 +35,36 @@ REPOS = [
 ]
 
 
+def iter_json_records(root: Path):
+    for path in root.rglob("*.json"):
+        if path.name == "layers.json":
+            continue
+
+        try:
+            with open(path, encoding="utf8") as file:
+                payload = json.load(file)
+        except (OSError, json.JSONDecodeError):
+            continue
+
+        if isinstance(payload, dict):
+            yield path, payload
+        elif isinstance(payload, list):
+            for record in payload:
+                if isinstance(record, dict):
+                    yield path, record
+
+
 def has_aardvark_metadata(repo_path: Path) -> bool:
     aardvark_dirs = [repo_path / "metadata-aardvark", repo_path / "aardvark"]
     for aardvark_dir in aardvark_dirs:
         if not aardvark_dir.is_dir():
             continue
-        if any(aardvark_dir.rglob("geoblacklight.json")):
-            return True
+        for _path, record in iter_json_records(aardvark_dir):
+            version = record.get("gbl_mdVersion_s") or record.get(
+                "geoblacklight_version"
+            )
+            if version == "Aardvark":
+                return True
     return False
 
 
@@ -49,47 +74,55 @@ def legacy_source_dir(repo_path: Path) -> Path:
 
 
 def has_legacy_metadata(repo_path: Path) -> bool:
-    return any(repo_path.rglob("geoblacklight.json"))
+    for _path, record in iter_json_records(repo_path):
+        if record.get("geoblacklight_version") == "1.0":
+            return True
+    return False
 
 
-for repo in REPOS:
-    repo_path = Path(ogm_path) / repo["name"]
+def main() -> None:
+    for repo in REPOS:
+        repo_path = Path(ogm_path) / repo["name"]
 
-    if not repo_path.is_dir():
-        logging.info(
-            f"Skipping conversion for {repo['name']}: local repository path does not exist."
-        )
-        continue
+        if not repo_path.is_dir():
+            logging.info(
+                f"Skipping conversion for {repo['name']}: local repository path does not exist."
+            )
+            continue
 
-    if has_aardvark_metadata(repo_path):
-        logging.info(
-            f"Skipping conversion for {repo['name']}: populated Aardvark metadata already exists."
-        )
-        continue
+        if has_aardvark_metadata(repo_path):
+            logging.info(
+                f"Skipping conversion for {repo['name']}: populated Aardvark metadata already exists."
+            )
+            continue
 
-    source_dir = legacy_source_dir(repo_path)
-    if not has_legacy_metadata(source_dir):
-        logging.warning(
-            f"Skipping conversion for {repo['name']}: no legacy geoblacklight.json files were found."
-        )
-        continue
+        source_dir = legacy_source_dir(repo_path)
+        if not has_legacy_metadata(source_dir):
+            logging.warning(
+                f"Skipping conversion for {repo['name']}: no legacy GeoBlacklight 1.0 JSON files were found."
+            )
+            continue
 
-    target_dir = repo_path / "aardvark"
-    command = [
-        "lib/opendataharvest/venv/bin/python3",
-        "lib/opendataharvest/src/opendataharvest/convert.py",
-        str(source_dir),
-        str(target_dir),
-    ] + repo.get("extra_args", [])
+        target_dir = repo_path / "aardvark"
+        command = [
+            "lib/opendataharvest/venv/bin/python3",
+            "lib/opendataharvest/src/opendataharvest/convert.py",
+            str(source_dir),
+            str(target_dir),
+        ] + repo.get("extra_args", [])
 
-    try:
-        subprocess.run(
-            command, check=True
-        )  # , capture_output=True, text=True) (This fails in production)
-        logging.info(f"Command {' '.join(command)} executed successfully.")
-    except subprocess.CalledProcessError as e:
-        logging.error(
-            f"Command {' '.join(command)} failed with return code {e.returncode}."
-        )
-        if e.stderr:
-            logging.error(f"Error message: {e.stderr}")
+        try:
+            subprocess.run(
+                command, check=True
+            )  # , capture_output=True, text=True) (This fails in production)
+            logging.info(f"Command {' '.join(command)} executed successfully.")
+        except subprocess.CalledProcessError as e:
+            logging.error(
+                f"Command {' '.join(command)} failed with return code {e.returncode}."
+            )
+            if e.stderr:
+                logging.error(f"Error message: {e.stderr}")
+
+
+if __name__ == "__main__":
+    main()
