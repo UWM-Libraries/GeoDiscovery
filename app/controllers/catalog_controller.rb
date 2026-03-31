@@ -319,9 +319,11 @@ class CatalogController < ApplicationController
     # label in pulldown is followed by the name of the SOLR field to sort by and
     # whether the sort is ascending or descending (it must be asc or desc
     # except in the relevancy case).
+    standard_title_sort = "dct_title_sort"
+
     config.add_sort_field "score desc, #{Settings.FIELDS.TITLE_SORT} asc", label: "Relevance"
-    config.add_sort_field "#{Settings.FIELDS.INDEX_YEAR} desc, #{Settings.FIELDS.TITLE_SORT} asc", label: "Year (Newest first)"
-    config.add_sort_field "#{Settings.FIELDS.INDEX_YEAR} asc, #{Settings.FIELDS.TITLE_SORT} asc", label: "Year (Oldest first)"
+    config.add_sort_field "#{Settings.FIELDS.INDEX_YEAR} desc, #{standard_title_sort} asc", label: "Year (Newest first)"
+    config.add_sort_field "#{Settings.FIELDS.INDEX_YEAR} asc, #{standard_title_sort} asc", label: "Year (Oldest first)"
     config.add_sort_field "#{Settings.FIELDS.TITLE_SORT} asc", label: "Title (A-Z)"
     config.add_sort_field "#{Settings.FIELDS.TITLE_SORT} desc", label: "Title (Z-A)"
 
