@@ -107,7 +107,9 @@ class ResourceClassifier:
             return resource_class, resource_type
 
         if "topographical map" in title_lower:
-            logging.debug("Topographical map detected, setting resource class and type.")
+            logging.debug(
+                "Topographical map detected, setting resource class and type."
+            )
             append_if_not_exists(resource_class, "Maps")
             append_if_not_exists(resource_type, "Topographic maps")
             return resource_class, resource_type
@@ -168,12 +170,10 @@ class ResourceClassifier:
                 return ["Imagery"], ["Aerial photographs"]
             return resource_class, resource_type
 
-        if (
-            parcel_record
-            and (
-                format_value in ["Shapefile", "GeoDatabase", "Geodatabase", "Multiple Formats"]
-                or vector_download_reference
-            )
+        if parcel_record and (
+            format_value
+            in ["Shapefile", "GeoDatabase", "Geodatabase", "Multiple Formats"]
+            or vector_download_reference
         ):
             logging.debug("Parcel-style vector dataset detected.")
             return ["Datasets"], ["Polygon data", "Cadastral maps"]
@@ -189,20 +189,17 @@ class ResourceClassifier:
             logging.debug("Empty format, setting resource class to Other.")
             return ["Other"], resource_type
 
-        if (
-            format_value in ["ArcGRID", "IMG"]
-            or contains_any(
-                description_lower,
-                [
-                    "dem",
-                    "dsm",
-                    "digital elevation model",
-                    "digital terrain model",
-                    "digital surface model",
-                    "arc-second",
-                    "raster dataset",
-                ],
-            )
+        if format_value in ["ArcGRID", "IMG"] or contains_any(
+            description_lower,
+            [
+                "dem",
+                "dsm",
+                "digital elevation model",
+                "digital terrain model",
+                "digital surface model",
+                "arc-second",
+                "raster dataset",
+            ],
         ):
             logging.debug("Elevation or other non-Imagery Raster Detected.")
             append_if_not_exists(resource_class, "Datasets")

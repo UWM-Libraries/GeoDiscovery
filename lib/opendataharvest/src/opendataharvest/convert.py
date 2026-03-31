@@ -181,8 +181,8 @@ class SchemaUpdater:
             )
         elif field == "gbl_mdModified_dt":
             data_dict["gbl_mdModified_dt"] = datetime.now(timezone.utc).strftime(
-            "%Y-%m-%dT%H:%M:%SZ"
-        )
+                "%Y-%m-%dT%H:%M:%SZ"
+            )
         elif field == "dct_publisher_sm":
             data_dict["dct_publisher_sm"] = data_dict.get("dct_creator_sm", [])
 
@@ -260,6 +260,11 @@ if __name__ == "__main__":
 
     logging.debug(f"Initializing SchemaUpdater with PLACE_DEFAULT: {args.place_default}")
 
-    schema_updater = SchemaUpdater(overwrite_values, args.resource_class_default, args.resource_type_default, args.place_default)
+    schema_updater = SchemaUpdater(
+        overwrite_values,
+        args.resource_class_default,
+        args.resource_type_default,
+        args.place_default,
+    )
     schema_updater.update_all_schemas(args.dir_old_schema, args.dir_new_schema)
     logging.info(f"Conversion complete for {args.dir_old_schema}")

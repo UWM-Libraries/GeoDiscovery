@@ -83,7 +83,9 @@ for repo in REPOS:
     ] + repo.get("extra_args", [])
 
     try:
-        subprocess.run(command, check=True) #, capture_output=True, text=True) (This fails in production)
+        subprocess.run(
+            command, check=True
+        )  # , capture_output=True, text=True) (This fails in production)
         logging.info(f"Command {' '.join(command)} executed successfully.")
     except subprocess.CalledProcessError as e:
         logging.error(
