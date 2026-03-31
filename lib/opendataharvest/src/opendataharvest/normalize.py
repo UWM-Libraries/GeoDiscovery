@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 from typing import Dict, Iterable, Optional
 import tempfile
+import unicodedata
 
 import yaml
 from classify import ResourceClassifier
@@ -30,6 +31,7 @@ class OpenIndexMapsNormalizer:
     @staticmethod
     def normalize(data_dict: Dict) -> bool:
         """Restore OpenIndexMaps class/type logic for harvested Aardvark records."""
+
         def with_unique_items(items, additions):
             result = list(items)
             for item in additions:
@@ -183,11 +185,13 @@ class ResourceClassificationNormalizer:
     @staticmethod
     def normalize(data_dict: Dict) -> bool:
         """Fill missing resource class/type using shared classification rules."""
-        if data_dict.get("gbl_resourceClass_sm") and data_dict.get("gbl_resourceType_sm"):
+        if data_dict.get("gbl_resourceClass_sm") and data_dict.get(
+            "gbl_resourceType_sm"
+        ):
             return False
 
-        resource_class, resource_type = ResourceClassifier.determine_resource_class_and_type(
-            data_dict
+        resource_class, resource_type = (
+            ResourceClassifier.determine_resource_class_and_type(data_dict)
         )
         changed = False
 
@@ -206,6 +210,7 @@ class TitleTransliterationNormalizer:
     ICU_TRANSFORM = "Any-Latin; Latin-ASCII"
     MAX_CACHE_SIZE = 10_000
     TRANSIENT_WARNING_LIMIT = 1
+    LEADING_NON_ALNUM = " \t\r\n\v\f!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 
     _cache = {}
     _disabled = False
@@ -229,7 +234,9 @@ class TitleTransliterationNormalizer:
         return False
 
     @classmethod
-    def transliterate(cls, title: str, record_id: Optional[str] = None) -> Optional[str]:
+    def transliterate(
+        cls, title: str, record_id: Optional[str] = None
+    ) -> Optional[str]:
         if not title or not cls.needs_transliteration(title):
             return None
         if title in cls._cache:
@@ -287,10 +294,14 @@ class TitleTransliterationNormalizer:
 
     @staticmethod
     def needs_transliteration(title: str) -> bool:
-        normalized = title.lstrip()
+        normalized = title.lstrip(TitleTransliterationNormalizer.LEADING_NON_ALNUM)
         if not normalized:
             return False
-        return ord(normalized[0]) > 127
+        first_char = normalized[0]
+        if first_char.isdigit():
+            return False
+
+        return "LATIN" not in unicodedata.name(first_char, "")
 
 
 class MetadataNormalizer:
@@ -344,7 +355,9 @@ def normalize_directory(rootdir: Path, schema_version: str = "Aardvark") -> int:
     updated = 0
     scanned = 0
 
-    logging.info(f"Starting normalization in {rootdir} for schema version {schema_version}.")
+    logging.info(
+        f"Starting normalization in {rootdir} for schema version {schema_version}."
+    )
 
     for path in iter_json_files(rootdir):
         scanned += 1
@@ -367,7 +380,9 @@ def normalize_directory(rootdir: Path, schema_version: str = "Aardvark") -> int:
             if not isinstance(record, dict):
                 continue
 
-            record_schema = record.get("gbl_mdVersion_s") or record.get("geoblacklight_version")
+            record_schema = record.get("gbl_mdVersion_s") or record.get(
+                "geoblacklight_version"
+            )
             if record_schema != schema_version:
                 continue
 
@@ -392,13 +407,13 @@ if __name__ == "__main__":
         type=Path,
         nargs="?",
         default=Path(os.getenv("OGM_PATH", config["paths"]["ogm_path"])),
-        help="Root directory of harvested JSON files"
+        help="Root directory of harvested JSON files",
     )
     parser.add_argument(
         "--schema_version",
         type=str,
         default=os.getenv("SCHEMA_VERSION", "Aardvark"),
-        help="Only normalize records matching this schema version"
+        help="Only normalize records matching this schema version",
     )
 
     logfile = config["logging"]["logfile"]
