@@ -20,7 +20,7 @@ class StanfordSpatialNormalizer:
     @staticmethod
     def normalize(data_dict: Dict) -> bool:
         """Collapse a known bad Stanford place combination to a broader place."""
-        spatial = data_dict.get("dct_spatial_sm", [])
+        spatial = data_dict.get("dct_spatial_sm") or []
         if "Wisconsin" in spatial and "New Mexico" in spatial:
             data_dict["dct_spatial_sm"] = ["United States"]
             return True
