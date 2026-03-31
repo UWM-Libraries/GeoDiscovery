@@ -96,15 +96,16 @@ class SchemaUpdater:
     def update_all_schemas(self, dir_old_schema: Path, dir_new_schema: Path) -> None:
         """Update schemas for all JSON files in the directory."""
         dir_new_schema.mkdir(parents=True, exist_ok=True)
-        files = self.list_all_json_files(dir_old_schema)
-        for file in files:
+        for file in self.list_all_json_files(dir_old_schema):
             logging.info(f"Processing {file} ...")
             self.update_schema(file, dir_new_schema)
 
     @staticmethod
-    def list_all_json_files(rootdir: Path) -> List[Path]:
-        """List all JSON files in a directory, excluding 'layers.json'."""
-        return [path for path in rootdir.rglob("*.json") if path.name != "layers.json"]
+    def list_all_json_files(rootdir: Path):
+        """Yield JSON files lazily so large trees do not get materialized in memory."""
+        for path in rootdir.rglob("*.json"):
+            if path.name != "layers.json":
+                yield path
 
     def update_schema(self, filepath: Path, dir_new_schema: Path) -> None:
         """Update the schema of a single JSON file."""
@@ -154,14 +155,21 @@ class SchemaUpdater:
     def check_required(self, data_dict: Dict) -> None:
         """Check for required fields and handle missing ones."""
         requirements = config["requirements"]["check_required"]
+        record_id = data_dict.get("id", "<missing id>")
 
         for req in requirements:
             value = data_dict.get(req)
             if not value or (isinstance(value, list) and not any(value)):
-                logging.warning(
-                    f"Requirement {req} is either missing or contains empty values..."
+                # Missing fields are common in legacy metadata and are often repairable here.
+                logging.info(
+                    f"Record {record_id}: requirement {req} is either missing or contains empty values."
                 )
                 self.handle_missing_field(data_dict, req)
+                repaired = data_dict.get(req)
+                if not repaired or (isinstance(repaired, list) and not any(repaired)):
+                    logging.warning(
+                        f"Record {record_id}: requirement {req} is still missing after normalization."
+                    )
 
     def handle_missing_field(self, data_dict: Dict, field: str) -> None:
         """Handle missing required fields with default values or logic."""

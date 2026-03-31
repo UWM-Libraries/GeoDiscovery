@@ -181,14 +181,17 @@ class ResourceClassificationNormalizer:
 class TitleTransliterationNormalizer:
     FIELD = "agsl_title_transliterated_s"
     ICU_TRANSFORM = "Any-Latin; Latin-ASCII"
+    MAX_CACHE_SIZE = 10_000
+    TRANSIENT_WARNING_LIMIT = 1
 
     _cache = {}
     _disabled = False
+    _transient_failures = 0
 
     @classmethod
     def normalize(cls, data_dict: Dict) -> bool:
         title = str(data_dict.get("dct_title_s", ""))
-        transliterated = cls.transliterate(title)
+        transliterated = cls.transliterate(title, record_id=data_dict.get("id"))
         current = data_dict.get(cls.FIELD)
 
         if transliterated:
@@ -203,13 +206,15 @@ class TitleTransliterationNormalizer:
         return False
 
     @classmethod
-    def transliterate(cls, title: str) -> Optional[str]:
+    def transliterate(cls, title: str, record_id: Optional[str] = None) -> Optional[str]:
         if not title or not cls.needs_transliteration(title):
             return None
         if title in cls._cache:
             return cls._cache[title]
         if cls._disabled:
             return None
+
+        record_label = f" for record {record_id}" if record_id else ""
 
         try:
             result = subprocess.run(
@@ -224,27 +229,38 @@ class TitleTransliterationNormalizer:
             )
         except FileNotFoundError:
             logging.warning(
-                "Title transliteration requires the ICU 'uconv' binary to be installed and on PATH."
+                f"Title transliteration requires the ICU 'uconv' binary to be installed and on PATH{record_label}."
             )
             cls.disable()
             return None
         except (OSError, subprocess.SubprocessError) as exc:
-            logging.warning(f"uconv transliteration failed: {exc}")
-            cls.disable()
+            cls._transient_failures += 1
+            if cls._transient_failures <= cls.TRANSIENT_WARNING_LIMIT:
+                logging.warning(f"uconv transliteration failed{record_label}: {exc}")
+            else:
+                logging.info(f"uconv transliteration failed{record_label}: {exc}")
             return None
 
         stdout = result.stdout
         transliterated = " ".join(stdout.split())
         if not transliterated or transliterated == title:
+            cls.trim_cache()
             cls._cache[title] = None
             return None
 
+        cls.trim_cache()
         cls._cache[title] = transliterated
         return transliterated
 
     @classmethod
     def disable(cls) -> None:
         cls._disabled = True
+
+    @classmethod
+    def trim_cache(cls) -> None:
+        # Drop cached titles in bulk instead of letting a long run grow without bound.
+        if len(cls._cache) >= cls.MAX_CACHE_SIZE:
+            cls._cache.clear()
 
     @staticmethod
     def needs_transliteration(title: str) -> bool:

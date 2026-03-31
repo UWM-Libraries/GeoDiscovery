@@ -48,6 +48,10 @@ def legacy_source_dir(repo_path: Path) -> Path:
     return metadata_1 if metadata_1.is_dir() else repo_path
 
 
+def has_legacy_metadata(repo_path: Path) -> bool:
+    return any(repo_path.rglob("geoblacklight.json"))
+
+
 for repo in REPOS:
     repo_path = Path(ogm_path) / repo["name"]
 
@@ -64,6 +68,12 @@ for repo in REPOS:
         continue
 
     source_dir = legacy_source_dir(repo_path)
+    if not has_legacy_metadata(source_dir):
+        logging.warning(
+            f"Skipping conversion for {repo['name']}: no legacy geoblacklight.json files were found."
+        )
+        continue
+
     target_dir = repo_path / "aardvark"
     command = [
         "lib/opendataharvest/venv/bin/python3",
@@ -79,4 +89,5 @@ for repo in REPOS:
         logging.error(
             f"Command {' '.join(command)} failed with return code {e.returncode}."
         )
-        logging.error(f"Error message: {e.stderr}")
+        if e.stderr:
+            logging.error(f"Error message: {e.stderr}")
