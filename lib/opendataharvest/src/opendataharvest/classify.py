@@ -38,6 +38,11 @@ class ResourceClassifier:
         resource_class = data_dict.get("gbl_resourceClass_sm") or []
         resource_type = data_dict.get("gbl_resourceType_sm") or []
 
+        if not isinstance(resource_class, list):
+            resource_class = [resource_class] if resource_class else []
+        if not isinstance(resource_type, list):
+            resource_type = [resource_type] if resource_type else []
+
         if resource_class and resource_type:
             logging.debug("Resource class and type already determined.")
             return resource_class, resource_type
