@@ -26,15 +26,13 @@ every :day, at: "2:00am", roles: [:app] do
   rake "blacklight:delete_old_searches[7]"
 end
 
-# Runs the OpenDataHarvest DCAT script
-every :wednesday, at: "2:30am", roles: [:app] do
-  rake "uwm:opendataharvest:harvest_dcat"
-end
-
-# Updates OpenGeoMetadata, converts legacy records, normalizes harvested Aardvark,
+# Updates OpenGeoMetadata, harvests DCAT, converts legacy records, normalizes harvested Aardvark,
 # and re-indexes into Solr
 every :wednesday, at: "3:00am", roles: [:app] do
-  command ". /var/www/rubyapps/uwm-geoblacklight/current/bin/geocombine_pull_and_index.sh"
+  rake "uwm:geocombine_pull_and_index", environment: {
+    "OGM_PATH" => "/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/",
+    "SCHEMA_VERSION" => "Aardvark"
+  }
 end
 
 # Harvest Allmaps IIIF Annotation Data

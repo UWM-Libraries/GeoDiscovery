@@ -49,6 +49,12 @@ namespace :redis do
 end
 
 namespace :uwm do
+  def invoke_task(task_name, *args)
+    task = Rake::Task[task_name]
+    task.reenable
+    task.invoke(*args)
+  end
+
   def harvested_document_ids
     GeoCombine::Harvester.new.docs_to_index.each_with_object(Set.new) do |(doc, _path), ids|
       ids << doc.fetch(SolrDocument.unique_key)
@@ -140,6 +146,51 @@ namespace :uwm do
   rescue Timeout::Error
     raise "Timed out waiting for Solr at #{solr_url}"
   end
+
+  desc "Pull OpenGeoMetadata, harvest DCAT, normalize metadata, index to Solr, and prune stale records"
+  task geocombine_pull_and_index: :environment do
+    pull_repos = %w[
+      edu.uwm
+      edu.uchicago
+      edu.illinois
+      edu.indiana
+      edu.uiowa
+      edu.utexas
+      edu.umd
+      edu.msu
+      edu.umn
+      edu.unl
+      edu.nyu
+      edu.osu
+      edu.psu
+      edu.purdue
+      edu.rutgers
+      edu.umich
+      edu.berkeley
+      edu.wisc
+      edu.columbia
+      edu.cornell
+      edu.princeton.arks
+      edu.stanford.purl
+    ]
+
+    pull_repos.each do |repo|
+      puts "Running task: geocombine:pull[#{repo}]"
+      invoke_task("geocombine:pull", repo)
+    end
+
+    %w[
+      uwm:opendataharvest:harvest_dcat
+      uwm:opendataharvest:gbl1_to_aardvark
+      uwm:opendataharvest:normalize_aardvark
+      geocombine:index
+      uwm:index:prune_stale
+    ].each do |task_name|
+      puts "Running task: #{task_name}"
+      invoke_task(task_name)
+    end
+  end
+
   desc "Run Solr and GeoBlacklight for interactive development"
   task :server, [:rails_server_args] do
     require "solr_wrapper"
