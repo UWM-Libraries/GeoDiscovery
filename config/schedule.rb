@@ -29,10 +29,7 @@ end
 # Updates OpenGeoMetadata, harvests DCAT, converts legacy records, normalizes harvested Aardvark,
 # and re-indexes into Solr
 every :wednesday, at: "3:00am", roles: [:app] do
-  rake "uwm:geocombine_pull_and_index", environment: {
-    "OGM_PATH" => "/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/",
-    "SCHEMA_VERSION" => "Aardvark"
-  }
+  rake "uwm:geocombine_pull_and_index"
 end
 
 # Harvest Allmaps IIIF Annotation Data
