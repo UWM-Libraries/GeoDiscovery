@@ -53,7 +53,7 @@ Rails.application.configure do
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
-  config.log_level = :error
+  config.log_level = :warn
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -106,12 +106,12 @@ Rails.application.configure do
 
   Sidekiq.configure_server do |config|
     config.logger = Rails.logger
-    config.logger.level = Logger::ERROR
+    config.logger.level = Logger::WARN
   end
 
   Sidekiq.configure_client do |config|
     config.logger = Rails.logger
-    config.logger.level = Logger::ERROR
+    config.logger.level = Logger::WARN
   end
 
   # Do not dump schema after migrations.

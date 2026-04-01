@@ -1,6 +1,6 @@
 # General configuration
 logging:
-  level: INFO
+  level: WARNING
   logfile: "log/opendataharvest.log"
 
 paths:
