@@ -6,12 +6,23 @@ desc "Run test suite"
 task :ci do
   shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
   shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
+  managed_solr_url = "http://127.0.0.1:8985/solr/blacklight-core"
 
   success = true
-  SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
-    solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-      system "RAILS_ENV=test bundle exec rake uwm:index:seed"
-      success = system 'RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test'
+  with_managed_solr_modules do
+    SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+        success &&= system(
+          {"SOLR_URL" => managed_solr_url},
+          "bundle exec rake uwm:index:seed",
+          exception: false
+        )
+        success &&= system(
+          {"SOLR_URL" => managed_solr_url},
+          'env RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test',
+          exception: false
+        )
+      end
     end
   end
 
@@ -84,12 +95,22 @@ namespace :uwm do
     opts
   end
 
+  def with_managed_solr_modules
+    previous_modules = ENV["SOLR_MODULES"]
+    ENV["SOLR_MODULES"] = [previous_modules, "analysis-extras"].compact.join(",").split(",").uniq.join(",")
+    yield
+  ensure
+    ENV["SOLR_MODULES"] = previous_modules
+  end
+
   def with_managed_solr(port:)
-    SolrWrapper.wrap(shared_solr_opts.merge(port: port, instance_dir: "tmp/blacklight-core")) do |solr|
-      wait_for_solr_wrapper!(solr)
-      solr.with_collection(name: SOLR_COLLECTION, dir: Rails.root.join("solr", "conf").to_s) do
-        wait_for_solr!
-        yield
+    with_managed_solr_modules do
+      SolrWrapper.wrap(shared_solr_opts.merge(port: port, instance_dir: "tmp/blacklight-core")) do |solr|
+        wait_for_solr_wrapper!(solr)
+        solr.with_collection(name: SOLR_COLLECTION, dir: Rails.root.join("solr", "conf").to_s) do
+          wait_for_solr!
+          yield
+        end
       end
     end
   end
@@ -126,16 +147,18 @@ namespace :uwm do
     shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
     shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
-    SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
-      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-        puts "Solr running at http://localhost:8983/solr/blacklight-core/, ^C to exit"
-        puts " "
-        begin
-          Rake::Task["uwm:index:seed"].invoke
-          system "bundle exec rails s -b 0.0.0.0"
-          sleep
-        rescue Interrupt
-          puts "\nShutting down..."
+    with_managed_solr_modules do
+      SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
+        solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+          puts "Solr running at http://localhost:8983/solr/blacklight-core/, ^C to exit"
+          puts " "
+          begin
+            Rake::Task["uwm:index:seed"].invoke
+            system "bundle exec rails s -b 0.0.0.0"
+            sleep
+          rescue Interrupt
+            puts "\nShutting down..."
+          end
         end
       end
     end
@@ -147,14 +170,16 @@ namespace :uwm do
       shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
       shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
-      SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
-        solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-          puts "Solr running at http://localhost:8985/solr/#/blacklight-core/, ^C to exit"
-          begin
-            Rake::Task["uwm:index:seed"].invoke
-            sleep
-          rescue Interrupt
-            puts "\nShutting down..."
+      with_managed_solr_modules do
+        SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+          solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+            puts "Solr running at http://localhost:8985/solr/#/blacklight-core/, ^C to exit"
+            begin
+              Rake::Task["uwm:index:seed"].invoke
+              sleep
+            rescue Interrupt
+              puts "\nShutting down..."
+            end
           end
         end
       end
@@ -168,14 +193,16 @@ namespace :uwm do
     shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
     shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
-    SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
-      solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-        puts "Solr running at http://localhost:8983/solr/#/blacklight-core/, ^C to exit"
-        begin
-          Rake::Task["uwm:index:seed"].invoke
-          sleep
-        rescue Interrupt
-          puts "\nShutting down..."
+    with_managed_solr_modules do
+      SolrWrapper.wrap(shared_solr_opts.merge(port: 8983, instance_dir: "tmp/blacklight-core")) do |solr|
+        solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
+          puts "Solr running at http://localhost:8983/solr/#/blacklight-core/, ^C to exit"
+          begin
+            Rake::Task["uwm:index:seed"].invoke
+            sleep
+          rescue Interrupt
+            puts "\nShutting down..."
+          end
         end
       end
     end
@@ -187,6 +214,11 @@ namespace :uwm do
       sh "lib/opendataharvest/src/setup_python_env.sh"
     end
 
+    desc "Run opendataharvest Python unit tests"
+    task test: :setup_python_env do
+      sh "lib/opendataharvest/venv/bin/python3 -m unittest discover -s lib/opendataharvest/tests"
+    end
+
     desc "Run the DCAT_Harvester.py Python script"
     task :harvest_dcat do
       sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/DCAT_Harvester.py"
@@ -196,7 +228,14 @@ namespace :uwm do
     task :gbl1_to_aardvark do
       puts "Running GeoBlacklight 1.0 to OGM Aardvark Metadata Conversion.\nsee gbl_to_aardvark.log"
       sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/gbl_to_aardvark.py"
-      puts "Run rake geocombine:index to index converted documents"
+      puts "Run rake uwm:opendataharvest:normalize_aardvark before geocombine:index"
+    end
+
+    desc "Normalize harvested Aardvark metadata before indexing"
+    task :normalize_aardvark do
+      puts "Normalizing harvested Aardvark metadata.\nsee opendataharvest.log"
+      sh "lib/opendataharvest/venv/bin/python3 lib/opendataharvest/src/opendataharvest/normalize.py"
+      puts "Run rake geocombine:index to index normalized documents"
     end
   end
 

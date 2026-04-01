@@ -5,8 +5,8 @@
     <field name="_version_" type="long"   stored="true" indexed="true"/>
     <field name="timestamp" type="date"   stored="true" indexed="true" default="NOW"/>
     <field name="id"        type="string" stored="true" indexed="true" required="true"/>
-    <field name="dct_title_transliterated_s" type="string" stored="true" indexed="true"/>
-    <field name="dct_title_transliterated_sort" type="text_transliterated_sort" stored="false" indexed="true"/>
+    <field name="agsl_title_transliterated_s" type="string" stored="true" indexed="true"/>
+    <field name="agsl_title_transliterated_sort" type="text_transliterated_sort" stored="false" indexed="true"/>
 
     <!-- core generated fields -->
     <field name="text" type="text_en" stored="false" indexed="true" multiValued="true"
@@ -189,7 +189,7 @@
   <!-- for sorting text fields -->
   <copyField source="schema_provider_s"   dest="schema_provider_sort"/>
   <copyField source="dct_title_s"         dest="dct_title_sort"/>
-  <copyField source="dct_title_s"         dest="dct_title_transliterated_sort"/>
+  <copyField source="dct_title_s"         dest="agsl_title_transliterated_sort"/>
 
   <!-- for spell checking -->
   <copyField source="dct_title_s" dest="spell"/>

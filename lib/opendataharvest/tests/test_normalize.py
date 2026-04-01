@@ -1,0 +1,70 @@
+import subprocess
+import sys
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(REPO_ROOT / "lib/opendataharvest/src"))
+sys.path.insert(0, str(REPO_ROOT / "lib/opendataharvest/src/opendataharvest"))
+
+from opendataharvest.normalize import TitleTransliterationNormalizer
+from opendataharvest.normalize import ResourceValueNormalizer
+
+
+class TitleTransliterationNormalizerTest(unittest.TestCase):
+    def setUp(self):
+        TitleTransliterationNormalizer._cache = {}
+        TitleTransliterationNormalizer._disabled = False
+        TitleTransliterationNormalizer._transient_failures = 0
+
+    def test_transient_uconv_failure_does_not_disable_later_transliteration(self):
+        title = "北京市城区街道图"
+
+        with patch(
+            "opendataharvest.normalize.subprocess.run",
+            side_effect=[
+                subprocess.SubprocessError("temporary uconv failure"),
+                SimpleNamespace(stdout="Bei Jing Shi Cheng Qu Jie Dao Tu\n"),
+            ],
+        ):
+            # A transient subprocess failure should not disable future attempts.
+            self.assertIsNone(TitleTransliterationNormalizer.transliterate(title))
+            self.assertFalse(TitleTransliterationNormalizer._disabled)
+
+            self.assertEqual(
+                TitleTransliterationNormalizer.transliterate(title),
+                "Bei Jing Shi Cheng Qu Jie Dao Tu",
+            )
+
+    def test_latin_leading_titles_after_punctuation_do_not_shell_out(self):
+        with patch("opendataharvest.normalize.subprocess.run") as mock_run:
+            self.assertIsNone(
+                TitleTransliterationNormalizer.transliterate(
+                    "!Alabama county boundaries"
+                )
+            )
+            self.assertIsNone(
+                TitleTransliterationNormalizer.transliterate("  Éire county map")
+            )
+
+        mock_run.assert_not_called()
+
+
+class ResourceValueNormalizerTest(unittest.TestCase):
+    def test_resource_types_are_trimmed_and_deduplicated(self):
+        record = {
+            "gbl_resourceType_sm": ["Index maps ", " Geological Maps", "Index maps"]
+        }
+
+        changed = ResourceValueNormalizer.normalize(record)
+
+        self.assertTrue(changed)
+        self.assertEqual(
+            record["gbl_resourceType_sm"], ["Index maps", "Geological Maps"]
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()

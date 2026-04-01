@@ -26,6 +26,8 @@
 - The Development and Production servers both run on RHEL 8 and both use `RAILS_ENV=production`. Do not assume the Development server behaves like a local Rails development environment.
 - If an error may be environment-specific, ask for follow-up information from the relevant server before proposing code changes (e.g. logs, versions, locations, permissions, and environment variables).
 - On server-like environments for this project, confirm the actual `RAILS_ENV` in use before troubleshooting. Some hosts that function as “development” infrastructure may still run with `RAILS_ENV=production`.
+- On hosted environments, do not assume the Solr core/collection name matches local `blacklight-core`; confirm the live Solr URL from the server’s shared `config/blacklight.yml` or via `bundle exec rails runner 'puts Blacklight.connection_config[:url]' RAILS_ENV=production` before running schema or core checks.
+- For Capistrano deploys from a local workstation, avoid the interactive tag prompt by setting `GEOBLACKLIGHT_RELEASE`, e.g. `GEOBLACKLIGHT_RELEASE=feature/normalization bundle exec cap development deploy`.
 - For sitemap issues, remember this app serves the sitemap from generated static files in `public/`, not from a Rails route. Check for `public/sitemap.xml.gz` and the Whenever schedule before proposing route changes.
 
 ## Repository-specific preferences
