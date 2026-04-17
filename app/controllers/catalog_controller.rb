@@ -12,6 +12,12 @@ class CatalogController < ApplicationController
   bot_challenge only: :index
   bot_challenge only: :facet, unless: -> { request.headers["sec-fetch-dest"] == "empty" }
 
+  # Blacklight still exposes SMS share routes even when the UI affordance is hidden.
+  # Return a plain 404 for direct hits so users and bots do not see the stale form.
+  def sms
+    raise ActionController::RoutingError, "Not Found"
+  end
+
   configure_blacklight do |config|
     # Advanced config values
     config.advanced_search[:enabled] = true
