@@ -25,7 +25,9 @@ Rails.application.config.to_prepare do
   # Exemption logic: allow facet fetches and safelisted IPs.
   # In bot_challenge_page 1.x this is configured with skip_when, which runs in
   # the controller instance context.
-  ip_safelist = ENV.fetch("TURNSTILE_IP_SAFELIST", "").split(",").map(&:strip)
+  ip_safelist =
+    Array(Settings.turnstile.ip_safelist).map(&:to_s) +
+    ENV.fetch("TURNSTILE_IP_SAFELIST", "").split(",").map(&:strip)
   safelisted_ranges = ip_safelist.filter_map do |cidr|
     IPAddr.new(cidr)
   rescue IPAddr::InvalidAddressError
