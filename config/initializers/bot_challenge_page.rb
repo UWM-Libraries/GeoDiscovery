@@ -34,9 +34,6 @@ Rails.application.config.to_prepare do
 
   config.skip_when = lambda do |_config|
     exempt =
-      (is_a?(CatalogController) &&
-       params[:action].in?(%w[facet]) &&
-       request.headers["sec-fetch-dest"] == "empty") ||
       safelisted_ranges.any? { |range| range.include?(request.remote_ip) }
 
     Rails.logger.warn "[Turnstile-EXEMPT] IP: #{request.remote_ip}, Exempt: #{exempt}"

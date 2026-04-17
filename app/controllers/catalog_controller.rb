@@ -10,6 +10,7 @@ class CatalogController < ApplicationController
   # We protect search/index requests, but not show pages, so crawlers can still
   # index item pages and the sitemap.
   bot_challenge only: :index
+  bot_challenge only: :facet, unless: -> { request.headers["sec-fetch-dest"] == "empty" }
 
   configure_blacklight do |config|
     # Advanced config values
