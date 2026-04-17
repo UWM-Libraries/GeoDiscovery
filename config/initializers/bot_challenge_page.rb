@@ -35,11 +35,7 @@ Rails.application.config.to_prepare do
   end
 
   config.skip_when = lambda do |_config|
-    exempt =
-      safelisted_ranges.any? { |range| range.include?(request.remote_ip) }
-
-    Rails.logger.warn "[Turnstile-EXEMPT] IP: #{request.remote_ip}, Exempt: #{exempt}"
-    exempt
+    safelisted_ranges.any? { |range| range.include?(request.remote_ip) }
   end
 
   # Disable Rack::Attack — this will prevent the additional rate-limiting logic from being applied
