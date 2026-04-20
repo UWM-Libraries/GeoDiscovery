@@ -6,15 +6,7 @@
 # Explicitly set path to 'current' to avoid hardcoding to timestamped release
 set :path, "/var/www/rubyapps/uwm-geoblacklight/current"
 
-# Harvest thumbnail images for search results
-every :sunday, at: "1:00am", roles: [:app] do
-  rake "gblsci:images:harvest_retry"
-end
-
-# Build the sitemap after the weekly metadata refresh.
-every :wednesday, at: "8:00am", roles: [:app] do
-  rake "sitemap:refresh"
-end
+# Daily maintenance jobs
 
 # Cleans up anonymous user accounts created by search sessions
 every :day, at: "1:30am", roles: [:app] do
@@ -26,28 +18,42 @@ every :day, at: "2:00am", roles: [:app] do
   rake "blacklight:delete_old_searches[7]"
 end
 
-# Updates OpenGeoMetadata, harvests DCAT, converts legacy records, normalizes harvested Aardvark,
-# and re-indexes into Solr
-every :wednesday, at: "6:00am", roles: [:app] do
-  rake "uwm:geocombine_pull_and_index"
+# Weekly maintenance jobs
+
+# Harvest thumbnail images for search results.
+every :sunday, at: "1:00am", roles: [:app] do
+  rake "gblsci:images:harvest_retry"
 end
 
-# Harvest Allmaps IIIF Annotation Data
+# Harvest Allmaps IIIF annotation data.
 every :sunday, at: "3:00am", roles: [:app] do
   rake "blacklight_allmaps:sidecars:harvest:allmaps"
 end
 
-every :sunday, at: "6:30am", roles: [:app] do
+# Refresh the georeferenced facet after the Sunday Allmaps harvest window.
+every :sunday, at: "7:00am", roles: [:app] do
   rake "blacklight_allmaps:index:georeferenced_facet"
 end
 
-# Purge thumbnail orphans monthly (first of the month at 9:00AM)
-every "0 9 1 * *", roles: [:app] do
+# Updates OpenGeoMetadata, harvests DCAT, converts legacy records, normalizes harvested Aardvark,
+# and re-indexes into Solr.
+every :wednesday, at: "4:00am", roles: [:app] do
+  rake "uwm:geocombine_pull_and_index"
+end
+
+# Build the sitemap the day after the weekly metadata refresh.
+every :thursday, at: "4:00am", roles: [:app] do
+  rake "sitemap:refresh"
+end
+
+# Monthly maintenance jobs
+
+# Purge thumbnail orphans monthly on the second Monday at 4:00AM.
+every "0 4 8-14 * 1", roles: [:app] do
   rake "gblsci:images:harvest_purge_orphans"
 end
 
-# Run uwm:index:delete_all on the 15th of every month (3:00AM)
-# every "0 3 15 * *", roles: [:app] do
-#   rake "uwm:index:delete_all"
-#   command "export RAILS_ENV='production' && export OGM_PATH='/var/www/rubyapps/uwm-geoblacklight/shared/tmp/opengeometadata/' && bundle exec rake geocombine:index"
-# end
+# Purge Allmaps sidecar orphans monthly on the third Tuesday at 4:00AM.
+every "0 4 15-21 * 2", roles: [:app] do
+  rake "blacklight_allmaps:sidecars:purge_orphans"
+end
