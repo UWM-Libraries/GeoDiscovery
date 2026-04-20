@@ -142,8 +142,10 @@ gem "exception_notification", "~> 5.0"
 
 gem "base64", "~> 0.2.0"
 
-# Blackligiht::Allmaps
-gem "blacklight_allmaps"
+# Blacklight::Allmaps
+# Temporary fork to validate the purge_orphans fix until it lands upstream.
+gem "blacklight_allmaps", git: "https://github.com/srappel/blacklight-allmaps.git",
+  branch: "bugfix/purge_docid"
 gem "capistrano-yarn"
 
 # Rackup
