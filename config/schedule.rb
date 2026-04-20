@@ -7,12 +7,12 @@
 set :path, "/var/www/rubyapps/uwm-geoblacklight/current"
 
 # Harvest thumbnail images for search results
-every :sunday, at: "12:05am", roles: [:app] do
+every :sunday, at: "1:00am", roles: [:app] do
   rake "gblsci:images:harvest_retry"
 end
 
 # Build the sitemap
-every :day, at: "12:30am", roles: [:app] do
+every :day, at: "4:30am", roles: [:app] do
   rake "sitemap:refresh"
 end
 
@@ -28,13 +28,16 @@ end
 
 # Updates OpenGeoMetadata, harvests DCAT, converts legacy records, normalizes harvested Aardvark,
 # and re-indexes into Solr
-every :wednesday, at: "3:00am", roles: [:app] do
+every :wednesday, at: "6:00am", roles: [:app] do
   rake "uwm:geocombine_pull_and_index"
 end
 
 # Harvest Allmaps IIIF Annotation Data
-every :sunday, at: "2:30am", roles: [:app] do
+every :sunday, at: "3:00am", roles: [:app] do
   rake "blacklight_allmaps:sidecars:harvest:allmaps"
+end
+
+every :sunday, at: "6:30am", roles: [:app] do
   rake "blacklight_allmaps:index:georeferenced_facet"
 end
 
