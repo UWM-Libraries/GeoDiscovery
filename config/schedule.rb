@@ -11,8 +11,8 @@ every :sunday, at: "1:00am", roles: [:app] do
   rake "gblsci:images:harvest_retry"
 end
 
-# Build the sitemap
-every :day, at: "4:30am", roles: [:app] do
+# Build the sitemap after the weekly metadata refresh.
+every :wednesday, at: "8:00am", roles: [:app] do
   rake "sitemap:refresh"
 end
 
@@ -39,6 +39,11 @@ end
 
 every :sunday, at: "6:30am", roles: [:app] do
   rake "blacklight_allmaps:index:georeferenced_facet"
+end
+
+# Purge thumbnail orphans monthly (first of the month at 9:00AM)
+every "0 9 1 * *", roles: [:app] do
+  rake "gblsci:images:harvest_purge_orphans"
 end
 
 # Run uwm:index:delete_all on the 15th of every month (3:00AM)
