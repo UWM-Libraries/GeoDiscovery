@@ -123,7 +123,7 @@ gem "dotenv-rails", "~> 3.1"
 gem "standardrb"
 
 # Cron Tasks
-gem "sitemap_generator", "~> 6.3"
+gem "sitemap_generator", "~> 7.0"
 gem "whenever", "~> 1.1.0"
 
 # Admin View
