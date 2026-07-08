@@ -609,7 +609,7 @@ DCAT_Sites:
 ######################
   DataYouCanUse_OpenData:
     CreatedBy: "Data You Can Use"
-    SiteURL: "https://data-ashlandcountywi.opendata.arcgis.com/api/feed/dcat-us/1.1.json"
+    SiteURL: "https://getdata-dycu.hub.arcgis.com/api/feed/dcat-us/1.1.json"
     SiteName: "DYCU"
     Spatial: ["Milwaukee County", "Wisconsin", "United States"]
     DefaultBbox: "Milwaukee"
