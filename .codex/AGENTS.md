@@ -29,6 +29,9 @@
 - On hosted environments, do not assume the Solr core/collection name matches local `blacklight-core`; confirm the live Solr URL from the server’s shared `config/blacklight.yml` or via `bundle exec rails runner 'puts Blacklight.connection_config[:url]' RAILS_ENV=production` before running schema or core checks.
 - For Capistrano deploys from a local workstation, avoid the interactive tag prompt by setting `GEOBLACKLIGHT_RELEASE`, e.g. `GEOBLACKLIGHT_RELEASE=feature/normalization bundle exec cap development deploy`.
 - For sitemap issues, remember this app serves the sitemap from generated static files in `public/`, not from a Rails route. Check for `public/sitemap.xml.gz` and the Whenever schedule before proposing route changes.
+- Follow the branch naming standards in the GeoDiscovery feature-development docs: use `feature/feature-name` for new features, `bugfix/bug-name` for fixes, and Dependabot-style names such as `dependabot/bundler/gem-being-updated` for dependency update work.
+- For PR-style or experimental work, create a matching upstream branch on GitHub as the default. After creating a local branch from `origin/main`, immediately publish it with an explicit refspec such as `git push -u origin HEAD:feature/branch-name` or `git push -u origin HEAD:bugfix/branch-name`.
+- Never leave a topic branch tracking `origin/main`. Before advising or running any push from a topic branch, verify `git status --short --branch`, `git config --get branch.$(git branch --show-current).merge`, and the intended destination. Only push to `main` when I explicitly ask for a direct main push.
 
 ## Repository-specific preferences
 

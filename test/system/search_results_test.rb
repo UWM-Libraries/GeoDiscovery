@@ -32,6 +32,20 @@ class SearchResultsTest < ApplicationSystemTestCase
   def test_thumbnail_images_stay_within_their_container
     assert page.has_selector?("#documents .thumbnail img", visible: :all)
 
+    assert page.evaluate_async_script(<<~JS)
+      const done = arguments[0];
+      const image = document.querySelector("#documents .thumbnail img");
+
+      if (!image) {
+        done(false);
+      } else if (image.complete) {
+        done(true);
+      } else {
+        image.addEventListener("load", () => done(true), { once: true });
+        image.addEventListener("error", () => done(false), { once: true });
+      }
+    JS
+
     bounds = page.evaluate_script(<<~JS)
       (() => {
         const thumbnail = document.querySelector("#documents .thumbnail");

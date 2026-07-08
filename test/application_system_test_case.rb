@@ -8,14 +8,21 @@ Selenium::WebDriver.logger.level = :warn
 
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new
+  options.page_load_strategy = "eager"
 
   [
-    "headless",
-    "window-size=1280x1280",
-    "disable-gpu"
+    "headless=new",
+    "window-size=1280,1280",
+    "disable-gpu",
+    "disable-dev-shm-usage",
+    "no-sandbox"
   ].each { |arg| options.add_argument(arg) }
 
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
+  http_client = Selenium::WebDriver::Remote::Http::Default.new
+  http_client.open_timeout = 120
+  http_client.read_timeout = 120
+
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options:, http_client:)
 end
 
 Capybara.save_path = "#{Rails.root}/tmp/screenshots"
