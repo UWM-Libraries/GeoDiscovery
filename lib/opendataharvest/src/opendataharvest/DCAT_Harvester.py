@@ -279,10 +279,14 @@ class AardvarkDataProcessor:
     @staticmethod
     def extract_data(dataset_dict):
         # Extract data from dataset_dict
-        title = dataset_dict.get("title", "Untitled Dataset")
-        if contains_unresolved_template(title):
-            title = "Untitled Dataset"
         identifier = dataset_dict["identifier"]
+        title = dataset_dict.get("title")
+        if not title or contains_unresolved_template(title):
+            logging.warning(
+                f'Assigned "Untitled Dataset" to {identifier}: '
+                f"title is missing or unresolved ({title!r})."
+            )
+            title = "Untitled Dataset"
         description = re.sub("<[^<]+?>", "", dataset_dict.get("description", []))
         publisher = (
             dataset_dict.get("publisher", {})
@@ -407,9 +411,13 @@ class AardvarkDataProcessor:
                 f"The bounding box has matching NS or EW coordinates:\n{spatial_string}"
             )
 
-        # Check to see if it's within the site's default bbox plus a 1 degree buffer
-        defaultBbox = defaultBbox
-        if any(
+        # Check whether it is within the site's default bbox plus a 1 degree
+        # buffer when a usable default bbox is configured.
+        has_default_bbox = all(
+            defaultBbox.get(key) is not None
+            for key in ("west", "east", "north", "south")
+        )
+        if has_default_bbox and any(
             [
                 coordinates[0] < defaultBbox["west"] - 1.0,
                 coordinates[2] > defaultBbox["east"] + 1.0,
@@ -465,8 +473,8 @@ class AardvarkDataProcessor:
 
         result = {
             "dct_format_s": None,
-            "gbl_resourceClass_sm": RESOURCECLASS,
-            "gbl_resourceType_sm": RESOURCETYPE,
+            "gbl_resourceClass_sm": list(RESOURCECLASS),
+            "gbl_resourceType_sm": list(RESOURCETYPE),
         }
 
         shapefile_found = False

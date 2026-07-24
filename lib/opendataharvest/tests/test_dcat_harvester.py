@@ -8,6 +8,7 @@ sys.path.insert(0, str(REPO_ROOT / "lib/opendataharvest/src"))
 from opendataharvest.DCAT_Harvester import Aardvark
 from opendataharvest.DCAT_Harvester import AardvarkDataProcessor
 from opendataharvest.DCAT_Harvester import DESCRIPTION
+from opendataharvest.DCAT_Harvester import RESOURCECLASS
 from opendataharvest.DCAT_Harvester import Site
 from opendataharvest.DCAT_Harvester import contains_unresolved_template
 
@@ -73,6 +74,59 @@ class UnresolvedTemplateTest(unittest.TestCase):
         self.assertEqual(record.dct_issued_s, "2024-01-08")
         self.assertEqual(record.dct_temporal_sm, ["Issued 2024"])
         self.assertEqual(record.gbl_indexYear_im, [2024])
+
+    def test_untitled_dataset_fallback_logs_record_identifier(self):
+        for title in (None, "", "{{name}}"):
+            with self.subTest(title=title):
+                dataset = {
+                    "identifier": "https://www.arcgis.com/home/item.html?id=example",
+                    "title": title,
+                    "description": "",
+                }
+
+                with self.assertLogs(level="WARNING") as captured:
+                    extracted = AardvarkDataProcessor.extract_data(dataset)
+
+                self.assertEqual(extracted["title"], "Untitled Dataset")
+                self.assertIn(
+                    'Assigned "Untitled Dataset" to '
+                    "https://www.arcgis.com/home/item.html?id=example",
+                    captured.output[0],
+                )
+
+
+class SpatialProcessingTest(unittest.TestCase):
+    def test_valid_spatial_data_does_not_require_a_default_bbox(self):
+        missing_default_bbox = {
+            "envelope": None,
+            "west": None,
+            "east": None,
+            "north": None,
+            "south": None,
+        }
+
+        result = AardvarkDataProcessor.process_dcat_spatial(
+            "-89.3219,43.6477,-87.7342,44.8530",
+            missing_default_bbox,
+        )
+
+        self.assertEqual(result, "ENVELOPE(-89.3219,-87.7342,44.853,43.6477)")
+
+
+class ResourceClassificationTest(unittest.TestCase):
+    def test_imagery_classification_does_not_leak_to_later_records(self):
+        original_resource_class = list(RESOURCECLASS)
+
+        imagery = AardvarkDataProcessor.process_dataset_class_type_and_format(
+            {"title": "County aerial photography", "distribution": []}
+        )
+        dataset = AardvarkDataProcessor.process_dataset_class_type_and_format(
+            {"title": "County road centerlines", "distribution": []}
+        )
+
+        self.assertIn("Imagery", imagery["gbl_resourceClass_sm"])
+        self.assertNotIn("Imagery", dataset["gbl_resourceClass_sm"])
+        self.assertEqual(RESOURCECLASS, original_resource_class)
 
 
 if __name__ == "__main__":
