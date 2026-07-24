@@ -129,5 +129,37 @@ class ResourceClassificationTest(unittest.TestCase):
         self.assertEqual(RESOURCECLASS, original_resource_class)
 
 
+class SkipListTest(unittest.TestCase):
+    def setUp(self):
+        self.dataset = {
+            "identifier": (
+                "https://www.arcgis.com/home/item.html"
+                "?id=5fddf40eccdd4de3acf119c2510036b4&sublayer=10"
+            )
+        }
+
+    def website_with_skiplist(self, skiplist):
+        return Site("VilasCounty", {}, {}, skiplist, [], [])
+
+    def test_composite_uuid_skips_only_the_matching_sublayer(self):
+        record = Aardvark.__new__(Aardvark)
+        website = self.website_with_skiplist(["5fddf40eccdd4de3acf119c2510036b410"])
+
+        self.assertFalse(record._process_id(self.dataset, website))
+
+        other_sublayer = {
+            "identifier": self.dataset["identifier"].replace(
+                "sublayer=10", "sublayer=12"
+            )
+        }
+        self.assertTrue(record._process_id(other_sublayer, website))
+
+    def test_base_uuid_skips_all_sublayers(self):
+        record = Aardvark.__new__(Aardvark)
+        website = self.website_with_skiplist(["5fddf40eccdd4de3acf119c2510036b4"])
+
+        self.assertFalse(record._process_id(self.dataset, website))
+
+
 if __name__ == "__main__":
     unittest.main()

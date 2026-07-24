@@ -573,7 +573,8 @@ class Aardvark:
         uuid, sublayer = AardvarkDataProcessor.extract_id_sublayer(
             dataset_dict["identifier"]
         )
-        self.id = f"{website.site_name}-{uuid}{sublayer if sublayer else ''}"
+        record_uuid = f"{uuid}{sublayer if sublayer else ''}"
+        self.id = f"{website.site_name}-{record_uuid}"
         self.uuid = uuid
 
         if not self.id:
@@ -581,8 +582,16 @@ class Aardvark:
             return False
 
         # Stop processing if in skiplist
-        if self.uuid in website.site_skiplist:
-            logging.debug(f"{self.uuid} is on the skiplist.")
+        skiplist_match = next(
+            (
+                candidate
+                for candidate in (self.uuid, record_uuid)
+                if candidate in website.site_skiplist
+            ),
+            None,
+        )
+        if skiplist_match:
+            logging.debug(f"{skiplist_match} is on the skiplist.")
             return False
 
         self.dct_identifier_sm = [dataset_dict["identifier"]]

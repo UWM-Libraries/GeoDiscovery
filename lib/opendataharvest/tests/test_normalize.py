@@ -9,8 +9,10 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT / "lib/opendataharvest/src"))
 sys.path.insert(0, str(REPO_ROOT / "lib/opendataharvest/src/opendataharvest"))
 
-from opendataharvest.normalize import TitleTransliterationNormalizer
+from opendataharvest.classify import ResourceClassifier
+from opendataharvest.normalize import ResourceClassificationNormalizer
 from opendataharvest.normalize import ResourceValueNormalizer
+from opendataharvest.normalize import TitleTransliterationNormalizer
 
 
 class TitleTransliterationNormalizerTest(unittest.TestCase):
@@ -64,6 +66,56 @@ class ResourceValueNormalizerTest(unittest.TestCase):
         self.assertEqual(
             record["gbl_resourceType_sm"], ["Index maps", "Geological Maps"]
         )
+
+
+class ResourceClassificationNormalizerTest(unittest.TestCase):
+    def test_explicit_website_class_does_not_require_a_resource_type(self):
+        record = {
+            "id": "VilasCounty-ed0f4064bfd34596abcd655452b1cd73",
+            "dct_title_s": "Vilas County application",
+            "dct_format_s": None,
+            "gbl_resourceClass_sm": ["Websites"],
+            "gbl_resourceType_sm": [],
+        }
+
+        changed = ResourceClassificationNormalizer.normalize(record)
+
+        self.assertFalse(changed)
+        self.assertEqual(record["gbl_resourceClass_sm"], ["Websites"])
+        self.assertEqual(record["gbl_resourceType_sm"], [])
+
+    def test_explicit_collection_class_does_not_require_a_resource_type(self):
+        record = {
+            "id": "agsl-opendata-harvest",
+            "dct_title_s": "AGSL Wisconsin Open Data Harvest",
+            "gbl_resourceClass_sm": ["Collections"],
+        }
+
+        changed = ResourceClassificationNormalizer.normalize(record)
+
+        self.assertFalse(changed)
+        self.assertEqual(record["gbl_resourceClass_sm"], ["Collections"])
+
+
+class ResourceClassifierTest(unittest.TestCase):
+    def test_planning_commission_in_title_is_not_a_map_signal(self):
+        record = {
+            "id": "CARPC-8a4d495a845e4c01934aea0855ada047",
+            "dct_title_s": (
+                "Capital Area Regional Planning Commission - Heritage Oak Project"
+            ),
+            "dct_description_sm": [],
+            "dct_subject_sm": [],
+            "dct_format_s": None,
+            "gbl_resourceClass_sm": [],
+            "gbl_resourceType_sm": [],
+        }
+
+        resource_class, _resource_type = (
+            ResourceClassifier.determine_resource_class_and_type(record)
+        )
+
+        self.assertNotIn("Maps", resource_class)
 
 
 if __name__ == "__main__":
