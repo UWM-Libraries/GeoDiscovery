@@ -104,6 +104,11 @@ dt = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
 logging.info(f"DCAT harvest started at {dt}")
 
 
+def contains_unresolved_template(value) -> bool:
+    """Return whether a string contains an unresolved ArcGIS template value."""
+    return isinstance(value, str) and re.search(r"\{\{[^{}]+\}\}", value) is not None
+
+
 def ensure_collection_record(output_dir: Path):
     """Copy the committed collection-level record into the harvest output."""
     if not COLLECTION_RECORD.is_file():
@@ -275,17 +280,25 @@ class AardvarkDataProcessor:
     def extract_data(dataset_dict):
         # Extract data from dataset_dict
         title = dataset_dict.get("title", "Untitled Dataset")
+        if contains_unresolved_template(title):
+            title = "Untitled Dataset"
         identifier = dataset_dict["identifier"]
         description = re.sub("<[^<]+?>", "", dataset_dict.get("description", []))
-        creator = (
-            [dataset_dict["publisher"]["name"]] if "publisher" in dataset_dict else []
+        publisher = (
+            dataset_dict.get("publisher", {})
+            if isinstance(dataset_dict.get("publisher"), dict)
+            else {}
         )
+        publisher_name = publisher.get("name")
+        if contains_unresolved_template(publisher_name):
+            publisher = {}
+            publisher_name = None
+        creator = [publisher_name] if publisher_name else []
         issued = dataset_dict.get("issued", "")
         modified = dataset_dict.get("modified", "")
         keyword = dataset_dict.get("keyword", [])
         spatial = dataset_dict.get("spatial", None)
         distribution = dataset_dict.get("distribution", None)
-        publisher = dataset_dict.get("publisher", [])
         landingPage = dataset_dict.get("landingPage", "")
 
         return {
@@ -489,6 +502,9 @@ class AardvarkDataProcessor:
     @staticmethod
     def issue_date_parser(dataset_dict):
         dt_string = dataset_dict["issued"]
+        if not dt_string or contains_unresolved_template(dt_string):
+            return None
+
         try:
             parsed_date = parser.parse(dt_string)
             dct_issued_s = parsed_date.strftime(r"%Y-%m-%d")
@@ -576,20 +592,24 @@ class Aardvark:
         )
 
         description = dataset_dict.get("description", "No description provided.")
-        if "{{description}}" not in description:
+        if not contains_unresolved_template(description):
             cleaned_description = re.sub("<[^<]+?>", "", description)
             unescaped_description = html.unescape(cleaned_description)
             self.dct_description_sm = [DESCRIPTION, unescaped_description]
         else:
             self.dct_description_sm = [DESCRIPTION]
 
-        self.dct_creator_sm = (
-            [dataset_dict["publisher"]["name"]] if "publisher" in dataset_dict else []
+        publisher_name = (
+            dataset_dict.get("publisher", {}).get("name")
+            if isinstance(dataset_dict.get("publisher"), dict)
+            else None
         )
+        if contains_unresolved_template(publisher_name):
+            publisher_name = None
+
+        self.dct_creator_sm = [publisher_name] if publisher_name else []
         self.dct_publisher_sm = (
-            [dataset_dict["publisher"]["name"]]
-            if "publisher" in dataset_dict
-            else [website.site_details["CreatedBy"]]
+            [publisher_name] if publisher_name else [website.site_details["CreatedBy"]]
         )
 
         # dct_issued_s
@@ -673,7 +693,7 @@ class Aardvark:
         self.dct_references_s = json.dumps(references).replace(" ", "")
 
     def _parse_index_year(self, value, field_name):
-        if not value:
+        if not value or contains_unresolved_template(value):
             return None
 
         try:
