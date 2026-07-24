@@ -77,31 +77,31 @@ DEFAULT:
 ##############
 TestSites:
   MilwaukeeCounty_OpenData:
-    CreatedBy: "Milwaukee County" 
+    CreatedBy: "Milwaukee County"
     SiteURL: "https://data-mclio.hub.arcgis.com/api/feed/dcat-us/1.1.json"
     SiteName: "MilwaukeeCounty"
     DefaultBbox: "MilwaukeeCounty"
-    SkipList: 
+    SkipList:
       - UUID: "d7f707071cd24b83ab3b9adb8a7d10ce"
-      - UUID: "bce9201dd312445b9b4567ee14d8032a" 
+      - UUID: "bce9201dd312445b9b4567ee14d8032a"
       - UUID: "84c7b8d95af04cdda6b0c2ae26590531"
-      - UUID: "7a1d3d055d4b4457845c721088c132f0" 
+      - UUID: "7a1d3d055d4b4457845c721088c132f0"
     Spatial: ["Milwaukee County", "Wisconsin", "United States"]
   DHS_OpenData:
-   CreatedBy: "Wisconsin Department of Health Services"
-   SiteURL: "https://data.dhsgis.wi.gov/data.json"
-   SiteName: "DHS"
-   Spatial: ["Wisconsin", "United States"]
-   DefaultBbox: "Wisconsin"
-   AppList:
-    - UUID: "e1ca38bf16f54fb8ac879b386dbce422" # Flood Risk Map
-    - UUID: "861fc902539e436ebef7a86a10e9337b" # Immunization Map
-    - UUID: "43ed2d88cf1348608230572166d76697" # Radon Map
-   SkipList: 
-    - UUID: "ca921d70bdd84ae8bc84cd09abd822d7" # link to census geography website 
-    - UUID: "00883495714c42a9be53b76b24300c8e" # GIS data disclaimer 
-    - UUID: "200036084844418bb3119d963cd7d98c" # OSDP Help?
-    - UUID: "29c62b7a834944ef8196573c123d7a9d"
+    CreatedBy: "Wisconsin Department of Health Services"
+    SiteURL: "https://data.dhsgis.wi.gov/data.json"
+    SiteName: "DHS"
+    Spatial: ["Wisconsin", "United States"]
+    DefaultBbox: "Wisconsin"
+    AppList:
+      - UUID: "e1ca38bf16f54fb8ac879b386dbce422" # Flood Risk Map
+      - UUID: "861fc902539e436ebef7a86a10e9337b" # Immunization Map
+      - UUID: "43ed2d88cf1348608230572166d76697" # Radon Map
+    SkipList:
+      - UUID: "ca921d70bdd84ae8bc84cd09abd822d7" # link to census geography website
+      - UUID: "00883495714c42a9be53b76b24300c8e" # GIS data disclaimer
+      - UUID: "200036084844418bb3119d963cd7d98c" # OSDP Help?
+      - UUID: "29c62b7a834944ef8196573c123d7a9d"
 
 ########################
 ########################
@@ -114,20 +114,20 @@ DCAT_Sites:
 # Wisconsin State Agencies #
 ############################
   DHS_OpenData:
-   CreatedBy: "Wisconsin Department of Health Services"
-   SiteURL: "https://data.dhsgis.wi.gov/data.json"
-   SiteName: "DHS"
-   Spatial: ["Wisconsin", "United States"]
-   DefaultBbox: "Wisconsin"
-   AppList:
-    - UUID: "e1ca38bf16f54fb8ac879b386dbce422" # Flood Risk Map
-    - UUID: "861fc902539e436ebef7a86a10e9337b" # Immunization Map
-    - UUID: "43ed2d88cf1348608230572166d76697" # Radon Map
-   SkipList: 
-    - UUID: "ca921d70bdd84ae8bc84cd09abd822d7" # link to census geography website 
-    - UUID: "00883495714c42a9be53b76b24300c8e" # GIS data disclaimer 
-    - UUID: "200036084844418bb3119d963cd7d98c" # OSDP Help?
-    - UUID: "29c62b7a834944ef8196573c123d7a9d"
+    CreatedBy: "Wisconsin Department of Health Services"
+    SiteURL: "https://data.dhsgis.wi.gov/data.json"
+    SiteName: "DHS"
+    Spatial: ["Wisconsin", "United States"]
+    DefaultBbox: "Wisconsin"
+    AppList:
+      - UUID: "e1ca38bf16f54fb8ac879b386dbce422" # Flood Risk Map
+      - UUID: "861fc902539e436ebef7a86a10e9337b" # Immunization Map
+      - UUID: "43ed2d88cf1348608230572166d76697" # Radon Map
+    SkipList:
+      - UUID: "ca921d70bdd84ae8bc84cd09abd822d7" # link to census geography website
+      - UUID: "00883495714c42a9be53b76b24300c8e" # GIS data disclaimer
+      - UUID: "200036084844418bb3119d963cd7d98c" # OSDP Help?
+      - UUID: "29c62b7a834944ef8196573c123d7a9d"
 
   DOT_OpenData:
     CreatedBy: "Wisconsin Department of Transportation"
@@ -140,7 +140,7 @@ DCAT_Sites:
       - UUID: "d1bd22f9e369402d9b665017d77b0125" # Culvert Inventory
     SkipList: ""
 
-  LTSB_OpenData: 
+  LTSB_OpenData:
     Collections:
       - CollectionName: "Wisconsin Open Data Sites"
       - CollectionName: "Wisconsin State Agencies"
@@ -163,7 +163,7 @@ DCAT_Sites:
       - UUID: "4f25df7f81ec40bdb6895166fe722cb6" # WI Supervisory Districts (direct BAS map service)
       - UUID: "1cc9878f86ee4a0f8b7535be1f465993" # WI Municipal Wards (direct BAS map service)
 
-  WiDNR_OpenData: 
+  WiDNR_OpenData:
     CreatedBy: "Wisconsin Department of Natural Resources"
     SiteURL: "https://data-wi-dnr.opendata.arcgis.com/api/feed/dcat-us/1.1.json"
     SiteName: "WIDNR"
@@ -174,7 +174,7 @@ DCAT_Sites:
       - UUID: "f34ca451d5d14e23a588e8a93dc9417e" # Wetland Monitoring Gallery
       - UUID: "200c06fc04074ef7ae24c0b74737b187" # Wetland Geodatabase
       - UUID: "4da3c08881cb4bd880bf9f695840b29b" # Land Patents
-    SkipList: 
+    SkipList:
       - UUID: "0542ce7130144fe69705848f8d319ae7"
       - UUID: "438c9dbdf5374faeba3339253e0c231c"
       - UUID: "bf33290f978e43d5ab1665d78fab34e0"
@@ -225,7 +225,7 @@ DCAT_Sites:
       - UUID: "60474b6a64e74559a51f9993d44e0228"
       - UUID: "1f679d805760455eab1ab9a41cf2a7c7"
       - UUID: "269abbd1e18a4bf4ab901d73f13e06a0"
-    SkipList: 
+    SkipList:
       - UUID: "WI-DPI-dpi-open-data"
       - UUID: "WI-DPI-test-layer"
       - UUID: "39d902cc45294ca8a3d62d1bfd237aa4"
@@ -245,7 +245,7 @@ DCAT_Sites:
       - UUID: "4b7708c82ef44ffc929d0c5ff72a748a"
       - UUID: "8853de122f734a16abde5973d58d2c6d"
       - UUID: "ba6321c4459a440fb12e37f8100e9840"
-    SkipList: 
+    SkipList:
       - UUID: "FitchburgWI-open-data-hub"
       - UUID: "FitchburgWI-city-of-fitchburg-police-department"
       - UUID: "FitchburgWI-fbpd"
@@ -271,7 +271,7 @@ DCAT_Sites:
     SiteName: "Madison"
     Spatial: ["Madison", "Wisconsin", "United States"]
     DefaultBbox: "Dane" # For now
-    SkipList: 
+    SkipList:
       - UUID: "9707ce85a9554be89e46f9fd2a4fec33"
       - UUID: "48695c41208b4a9ab6d3fceda27afb0a"
       - UUID: "c7459351d2b444448b098a6892eeaf5e"
@@ -319,7 +319,7 @@ DCAT_Sites:
     AppList:
       - UUID: "e64f06e8d912465a96f9ea9bfdb72676"
       - UUID: "f513b71dbc7841a298e76af672af441e"
-    SkipList: 
+    SkipList:
       - UUID: "459cc334740944d38580455a0a777a24"
       - UUID: "867895a71a1840399476fc717e76bb43"
       - UUID: "f35ef07c9ed24020aadd65c8a65d3754"
@@ -333,31 +333,31 @@ DCAT_Sites:
       - UUID: "3582b744bba84668b52a16b0b6942544"
       - UUID: "f33a34de3a294590ab48f246e99958c9"
       - UUID: "931d892ac7a843d7ba29d085e0433465"
-      - UUID: "aab054ab883c4a4094c72e949566ad40"  
-      - UUID: "25869b8718c0419db87dad07de5b02d8"    
+      - UUID: "aab054ab883c4a4094c72e949566ad40"
+      - UUID: "25869b8718c0419db87dad07de5b02d8"
       - UUID: "a343955125bf4002987c400ad6d0346c"
       - UUID: "2ea9c9cf54cb494187b03a5057d1a830"
-      - UUID: "de45b9cad20141ebb82fae0da8b3e2c6" 
-      - UUID: "61ffcf610f314933916e4b2c0e477b29" 
-      - UUID: "620875bf8a1945e799cf8bd5f25784d7" 
-      - UUID: "f81bc478e12c4f1691d0d7ab6361f5a6" 
-      - UUID: "1c8ddaba2ee9498cb0025554351e5475"  
-      - UUID: "1536abe5e5504e5db380ccfaa9b6fd8d"  
+      - UUID: "de45b9cad20141ebb82fae0da8b3e2c6"
+      - UUID: "61ffcf610f314933916e4b2c0e477b29"
+      - UUID: "620875bf8a1945e799cf8bd5f25784d7"
+      - UUID: "f81bc478e12c4f1691d0d7ab6361f5a6"
+      - UUID: "1c8ddaba2ee9498cb0025554351e5475"
+      - UUID: "1536abe5e5504e5db380ccfaa9b6fd8d"
       - UUID: "588f0e0acc514c11bc7c898fed9fc651"
-      - UUID: "c29cfb7875fc4b97b58ba6987c460862" 
-      - UUID: "48b8cec7ebf04b5fbdcaf70d09daff21" 
-      - UUID: "509e2d6b034246d692a461724ae2d62c" 
-      - UUID: "5d2bfa736f8448b3a1708e1f6be23eed"  
-      - UUID: "6e03e8c26aad4b9c92a87c1063ddb0e3" 
-      - UUID: "86de95d4e0244cba80f0fa2c9403a7b2" 
-      - UUID: "8b3b470883a744aeb60e5fff0a319ce7" 
-      - UUID: "d8855ee4d3d74413babfb0f41203b168"  
-      - UUID: "9efc83597840415e8a9237c70102279a" 
-      - UUID: "9d846bd61c7745b78d24520f3ca4e173" 
-      - UUID: "01a9cf952f024a73bd8450e0319d0f47"  
-      - UUID: "00719e989d25460bbbdc6d336e281026"  
-      - UUID: "346c14ea571d4e64bafa47db05964bbd"  
-      - UUID: "4be17af8cb9a46438fb20a44f8d8de12"  
+      - UUID: "c29cfb7875fc4b97b58ba6987c460862"
+      - UUID: "48b8cec7ebf04b5fbdcaf70d09daff21"
+      - UUID: "509e2d6b034246d692a461724ae2d62c"
+      - UUID: "5d2bfa736f8448b3a1708e1f6be23eed"
+      - UUID: "6e03e8c26aad4b9c92a87c1063ddb0e3"
+      - UUID: "86de95d4e0244cba80f0fa2c9403a7b2"
+      - UUID: "8b3b470883a744aeb60e5fff0a319ce7"
+      - UUID: "d8855ee4d3d74413babfb0f41203b168"
+      - UUID: "9efc83597840415e8a9237c70102279a"
+      - UUID: "9d846bd61c7745b78d24520f3ca4e173"
+      - UUID: "01a9cf952f024a73bd8450e0319d0f47"
+      - UUID: "00719e989d25460bbbdc6d336e281026"
+      - UUID: "346c14ea571d4e64bafa47db05964bbd"
+      - UUID: "4be17af8cb9a46438fb20a44f8d8de12"
 
   ECWRPC_OpenData:
     CreatedBy: "East Central Wisconsin Regional Planning Commission"
@@ -367,7 +367,7 @@ DCAT_Sites:
     DatasetPrefix: ""
     DatasetPostfix: ", ECWRPC"
     SkipList: ""
-      
+
 ######################
 # Wisconsin Counties #
 ######################
@@ -377,45 +377,45 @@ DCAT_Sites:
     SiteName: "AshlandCounty"
     Spatial: ["Ashland County", "Wisconsin", "United States"]
     DefaultBbox: "Ashland"
-    SkipList: ""    
-  
+    SkipList: ""
+
   ColumbiaCounty_OpenData:
     CreatedBy: "Columbia County"
     SiteURL: "https://opendata-cclid.opendata.arcgis.com/api/feed/dcat-us/1.1.json"
     SiteName: "ColumbiaCounty"
     Spatial: ["Columbia County", "Wisconsin", "United States"]
     DefaultBbox: "Columbia"
-    AppList: 
+    AppList:
       - UUID: "2233871b2d7740998bffcdedffea2818"
-    SkipList: 
+    SkipList:
       - UUID: "25869b8718c0419db87dad07de5b02d8"
       - UUID: "48b8cec7ebf04b5fbdcaf70d09daff21"
-      - UUID: "cclid-opendata-columbia-county-land-information-department"  
-      - UUID: "509e2d6b034246d692a461724ae2d62c"  
-      - UUID: "5d2bfa736f8448b3a1708e1f6be23eed"  
+      - UUID: "cclid-opendata-columbia-county-land-information-department"
+      - UUID: "509e2d6b034246d692a461724ae2d62c"
+      - UUID: "5d2bfa736f8448b3a1708e1f6be23eed"
       - UUID: "6e03e8c26aad4b9c92a87c1063ddb0e3"
-      - UUID: "86de95d4e0244cba80f0fa2c9403a7b2"  
-      - UUID: "8b3b470883a744aeb60e5fff0a319ce7" 
+      - UUID: "86de95d4e0244cba80f0fa2c9403a7b2"
+      - UUID: "8b3b470883a744aeb60e5fff0a319ce7"
       - UUID: "d8855ee4d3d74413babfb0f41203b168"
       - UUID: "64a332c9dd094241b02ff05050117ce2"
       - UUID: "413fd05bbd7342f5991d5ec96f4f8b18"
       - UUID: "3d66e986942348698ae68f130ce949f4"
-      - UUID: "e2bf7b46c4a7475a89a6a7b666748408"      
+      - UUID: "e2bf7b46c4a7475a89a6a7b666748408"
       - UUID: "9539d56dd6534e949de742e70d44b96a"
       - UUID: "aab054ab883c4a4094c72e949566ad40"
       - UUID: "931d892ac7a843d7ba29d085e0433465"
       - UUID: "6d9fa6d159ae4a1f80b9e296ed300767"
 
-  DaneCounty_OpenData: 
+  DaneCounty_OpenData:
     CreatedBy: "Dane County"
     SiteURL: "https://gis-countyofdane.opendata.arcgis.com/api/feed/dcat-us/1.1.json"
     SiteName: "DaneCounty"
     Spatial: ["Dane County", "Wisconsin", "United States"]
     DefaultBbox: "Dane"
-    SkipList: 
-      - UUID: "countyofdane-parceltest1117"  
+    SkipList:
+      - UUID: "countyofdane-parceltest1117"
 
-  EauClaire_OpenData: 
+  EauClaire_OpenData:
     CreatedBy: "Eau Claire County"
     SiteURL: "https://hub-eccounty.hub.arcgis.com/api/feed/dcat-us/1.1.json"
     SiteName: "EauClaireCounty"
@@ -425,11 +425,11 @@ DCAT_Sites:
       - UUID: "cb505290c5e44c6185e83d814e58ed19" # Aiport Zoning
       - UUID: "d2ba78cd16a74070b4901f38b2e706b4" # Lidar and Air Photo Download App
       - UUID: "53b6d275fa594bb6ad8a76f612cd7b87" # Historical Air Photo App
-    SkipList: 
+    SkipList:
       - UUID: "f2c971b06a4340e1bfb206fe693008af"
       - UUID: "3cf146ed887e407586413747a2b2c029"
 
-  Kenosha_OpenData: 
+  Kenosha_OpenData:
     CreatedBy: "Kenosha County"
     SiteURL: "https://dataportal.kenoshacounty.org/api/feed/dcat-us/1.1.json"
     SiteName: "KenoshaCounty"
@@ -439,20 +439,20 @@ DCAT_Sites:
       - UUID: "ffc6ee38a1e04a7ab0f875fff2fb1882" # Parcel Viewer
     SkipList:
       - UUID: "2305d040132b4e66a2f62166654e0d32"
-      - UUID: "c8f3263922c94d968d931a4ab714b943"  
+      - UUID: "c8f3263922c94d968d931a4ab714b943"
       - UUID: "d79c52a223824107a264b0884f9ab53c"
       - UUID: "93634028191f4333a0055518d7a05d89"
 
   MilwaukeeCounty_OpenData:
-    CreatedBy: "Milwaukee County" 
+    CreatedBy: "Milwaukee County"
     SiteURL: "https://data-mclio.hub.arcgis.com/api/feed/dcat-us/1.1.json"
     SiteName: "MilwaukeeCounty"
     DefaultBbox: "MilwaukeeCounty"
-    SkipList: 
+    SkipList:
       - UUID: "d7f707071cd24b83ab3b9adb8a7d10ce"
-      - UUID: "bce9201dd312445b9b4567ee14d8032a" 
+      - UUID: "bce9201dd312445b9b4567ee14d8032a"
       - UUID: "84c7b8d95af04cdda6b0c2ae26590531"
-      - UUID: "7a1d3d055d4b4457845c721088c132f0" 
+      - UUID: "7a1d3d055d4b4457845c721088c132f0"
     Spatial: ["Milwaukee County", "Wisconsin", "United States"]
 
   OutagamieCounty_OpenData:
@@ -461,7 +461,7 @@ DCAT_Sites:
     SiteName: "OutagamieCounty"
     Spatial: ["Outagamie County", "Wisconsin", "United States"]
     DefaultBbox: "Outagamie"
-    SkipList: ""    
+    SkipList: ""
 
   PierceCounty_OpenData:
     CreatedBy: "Pierce County"
@@ -471,7 +471,7 @@ DCAT_Sites:
     DefaultBbox: "Pierce"
     AppList:
       - UUID: "cb9c65ce9ea34cc09b3e27a2f83c9077" # Tourism StoryMap
-    SkipList: ""   
+    SkipList: ""
 
   RacineCounty_OpenData:
     CreatedBy: "Racine County"
@@ -489,7 +489,7 @@ DCAT_Sites:
     SiteName: "SheboyganCounty"
     Spatial: ["Sheboygan County", "Wisconsin", "United States"]
     DefaultBbox: "Sheboygan"
-    SkipList: ""    
+    SkipList: ""
 
   StCroixCounty_OpenData:
     CreatedBy: "St. Croix County"
@@ -589,7 +589,7 @@ DCAT_Sites:
     SiteName: "WashingtonCounty"
     DefaultBbox: "Washington"
     Spatial: ["Washington County", "Wisconsin", "United States"]
-    SkipList: 
+    SkipList:
       - UUID: "6e03e8c26aad4b9c92a87c1063ddb0e3"
 
   WaukeshaCounty_OpenData:
@@ -1029,7 +1029,7 @@ CKAN_Sites:
       business-improvement-districts-bid:
         title: "Business Improvement Districts Milwaukee, Wisconsin"
         themes: ["Society", "Economy"]
-      votingward: 
+      votingward:
         title: "Polling Locations Milwaukee, Wisconsin"
         themes: ["Society"]
     SpecialDatasets:
@@ -1055,8 +1055,8 @@ CKAN_Sites:
         themes:
       parcel-outlines:
         note: "The service has MPROP, the rest of the shapefiles are by year and probably don't need frequent update"
-        title: 
-        themes:  
+        title:
+        themes:
       master-address-index-mai-points-mpd:
         note: "This one is weird. I think MAI is updated more often, but this is 3 years old. Why MPD? see mai"
       mprop:
@@ -1075,4 +1075,4 @@ CKAN_Sites:
         title: "Delinquent Real Estate Tax Accounts"
         note: "excel only, includes taxkey and addresses"
 
-  
+
