@@ -123,6 +123,8 @@ DCAT_Sites:
       - UUID: "e1ca38bf16f54fb8ac879b386dbce422" # Flood Risk Map
       - UUID: "861fc902539e436ebef7a86a10e9337b" # Immunization Map
       - UUID: "43ed2d88cf1348608230572166d76697" # Radon Map
+      - UUID: "e5aa80f05a8843f09bffc1269f3d0d7b"
+      - UUID: "4bf88e231aa043598a2ca8bf8a1d8091"
     SkipList:
       - UUID: "ca921d70bdd84ae8bc84cd09abd822d7" # link to census geography website
       - UUID: "00883495714c42a9be53b76b24300c8e" # GIS data disclaimer
@@ -171,9 +173,11 @@ DCAT_Sites:
     DefaultBbox: "Wisconsin"
     SpatialTip: "{{extent:computeSpatialProperty}} is used in the spatial field when it's a non-spatial dataset"
     AppList:
-      - UUID: "f34ca451d5d14e23a588e8a93dc9417e" # Wetland Monitoring Gallery
       - UUID: "200c06fc04074ef7ae24c0b74737b187" # Wetland Geodatabase
       - UUID: "4da3c08881cb4bd880bf9f695840b29b" # Land Patents
+      - UUID: "41983ced80674b6d89ecbef6ad308b25"
+      - UUID: "56ac067c4f36488e8e615ad6de495b95"
+      - UUID: "a31d6f2d3b1542d699a1bf90c077b330"
     SkipList:
       - UUID: "0542ce7130144fe69705848f8d319ae7"
       - UUID: "438c9dbdf5374faeba3339253e0c231c"
@@ -185,6 +189,11 @@ DCAT_Sites:
       - UUID: "4506324090d7496da868c4a025c56cf6"
       - UUID: "96787e926ca34e07b1df3db6e320b340"
       - UUID: "b5d58851193f4d5188acf643e00c4372"
+      - UUID: "d3ecb35c627b44b78837014de9671e49" # External Tree Canopy Cover from NLCD
+      - UUID: "fd4d0c43abc04b4ab915586d9a0e89dd"
+      - UUID: "e1e89ae505594459a46407f1daf4ad5d"
+      - UUID: "4c81d81ceb444aec8b4ac5b74768d4c5"
+      - UUID: "f34ca451d5d14e23a588e8a93dc9417e" # Wetland Monitoring Gallery
 
   # Disabled because the former WEM Hub catalog is unavailable and no
   # replacement WEM DCAT feed was found.
@@ -220,7 +229,6 @@ DCAT_Sites:
     AppList:
       - UUID: "24d718b4d3674e7eb8d7230359a5b73c" # Education Boundaries, Wisconsin
       - UUID: "9b32bb6808894d608055cf7d0300d7c7" # ISPs
-      - UUID: "f73a6de8ce0b4ce8a5376d5966d598d6" # Overlap
       - UUID: "6936198c3fd347ebac5ccf6a94713656" # Enrollment
       - UUID: "60474b6a64e74559a51f9993d44e0228"
       - UUID: "1f679d805760455eab1ab9a41cf2a7c7"
@@ -229,6 +237,7 @@ DCAT_Sites:
       - UUID: "WI-DPI-dpi-open-data"
       - UUID: "WI-DPI-test-layer"
       - UUID: "39d902cc45294ca8a3d62d1bfd237aa4"
+      - UUID: "f73a6de8ce0b4ce8a5376d5966d598d6" # Overlap
 
 ####################
 # Wisconsin Cities #
@@ -241,8 +250,6 @@ DCAT_Sites:
     DefaultBbox: "Dane" # For now
     AppList:
       - UUID: "4a691e2b13c249e287109fbfe10a76f4"
-      - UUID: "21be1cd4662542198dec32eec45939d2"
-      - UUID: "4b7708c82ef44ffc929d0c5ff72a748a"
       - UUID: "8853de122f734a16abde5973d58d2c6d"
       - UUID: "ba6321c4459a440fb12e37f8100e9840"
     SkipList:
@@ -256,6 +263,8 @@ DCAT_Sites:
       - UUID: "807c1ed9135e4ada932894765475ad4b"
       - UUID: "bbd8c8834f124420a7709205e7c237a1"
       - UUID: "0c43abdea8e0477f8e674401340de1f3"
+      - UUID: "21be1cd4662542198dec32eec45939d2"
+      - UUID: "4b7708c82ef44ffc929d0c5ff72a748a"
     MapList:
       - UUID: "543c2219c737440f8b9b3c69d1c9c63b"
       - UUID: "6ac890fd500c43648178ef151298967c"
@@ -277,6 +286,7 @@ DCAT_Sites:
       - UUID: "c7459351d2b444448b098a6892eeaf5e"
       - UUID: "365b9d3ba82f40dbbc5594696836b91f"
       - UUID: "0ae67f0f85e04bebbaac8f91a38c758c"
+      - UUID: "c203c656c7b3465cb68118918c09f7a456"
 
   WisconsinRapids_OpenData:
     CreatedBy: "City of Wisconsin Rapids"
@@ -319,6 +329,15 @@ DCAT_Sites:
     AppList:
       - UUID: "e64f06e8d912465a96f9ea9bfdb72676"
       - UUID: "f513b71dbc7841a298e76af672af441e"
+      - UUID: "8a4d495a845e4c01934aea0855ada047"
+      - UUID: "0c33b54c1f0b473c95990e31927c5d59"
+      - UUID: "0c347dbc480f456aabecd568ec0c5d06"
+      - UUID: "cdec847e135e4b29952e8f38575ca873"
+      - UUID: "5abd826fb24a45769a1ab2e207c85c6f"
+      - UUID: "80ea346c68394d48a2106746082a910f"
+      - UUID: "c1ea919ce7e847fd904a12545247fe1d"
+      - UUID: "a4e163642ed046b7adf00646e7174b78"
+      - UUID: "99b25263069647439ea380897fbd8019"
     SkipList:
       - UUID: "459cc334740944d38580455a0a777a24"
       - UUID: "867895a71a1840399476fc717e76bb43"
@@ -331,6 +350,15 @@ DCAT_Sites:
       - UUID: "8d91bd39e873417ea21673e0fee87604"
       - UUID: "9e557abc61ce41c9b8ec8b15800c20d3"
       - UUID: "3582b744bba84668b52a16b0b6942544"
+      - UUID: "4d033c2178ae470ba76afdfa4dfec2ca"
+      - UUID: "140b0e3f76674605bbf32c18d27c4d91"
+      - UUID: "427850562d0145ca959254ef4295d11d"
+      - UUID: "7278dd9fc81a43a49a8e146c543e7a38"
+      - UUID: "cfd06fd519fb4cf79a724d83f72c925d"
+      - UUID: "b3197c26bd0a46dab131b211380a5df2"
+      - UUID: "ccf6101cd496433e9304f583afa05faf"
+      - UUID: "4e587a124d3e457997396d9271092b4e"
+      - UUID: "50d625d1ba154c5fb6134b20d3534074"
       - UUID: "f33a34de3a294590ab48f246e99958c9"
       - UUID: "931d892ac7a843d7ba29d085e0433465"
       - UUID: "aab054ab883c4a4094c72e949566ad40"
@@ -364,6 +392,7 @@ DCAT_Sites:
     SiteURL: "https://data-ecwrpc.opendata.arcgis.com/api/feed/dcat-us/1.1.json"
     SiteName: "ECWRPC"
     Spatial: ["Wisconsin", "United States"]
+    DefaultBbox: "East Central Wisconsin Regional Planning Commission"
     DatasetPrefix: ""
     DatasetPostfix: ", ECWRPC"
     SkipList: ""
@@ -385,9 +414,8 @@ DCAT_Sites:
     SiteName: "ColumbiaCounty"
     Spatial: ["Columbia County", "Wisconsin", "United States"]
     DefaultBbox: "Columbia"
-    AppList:
-      - UUID: "2233871b2d7740998bffcdedffea2818"
     SkipList:
+      - UUID: "2233871b2d7740998bffcdedffea2818"
       - UUID: "25869b8718c0419db87dad07de5b02d8"
       - UUID: "48b8cec7ebf04b5fbdcaf70d09daff21"
       - UUID: "cclid-opendata-columbia-county-land-information-department"
@@ -405,6 +433,42 @@ DCAT_Sites:
       - UUID: "aab054ab883c4a4094c72e949566ad40"
       - UUID: "931d892ac7a843d7ba29d085e0433465"
       - UUID: "6d9fa6d159ae4a1f80b9e296ed300767"
+      - UUID: "02fc19a7fe334f47881db1dd3477fef8" # Esri Mid-Century Map
+      - UUID: "077d7ab74898469f94fea84c59f68ef6" # Esri Modern Antique Map
+      - UUID: "0d17ba68a8f64c278e7e2e7864e1069d" # Esri Imagery Hybrid
+      - UUID: "22fb75c0fa5a4c88b8ca4c4b8ae5c90b" # Esri Streets
+      - UUID: "2397372e8bf34ca1a9e346d346197842" # Esri Outline Map
+      - UUID: "33d6280d276d4af89fb66a6ffa7f2072" # Esri Oceans
+      - UUID: "668f436dc2dc4f2c83ceb0c064380590" # Esri Topographic
+      - UUID: "752d5eb93f38494082ae19bd718fac98" # Esri National Geographic Style Map
+      - UUID: "755c7737c8cf4443be78e79df16dec80" # Esri NAIP Imagery Hybrid
+      - UUID: "755dc1e5660042d4874fca2d96ed4bf4" # Esri Blueprint
+      - UUID: "77992696200d4b419ca24c545284f7a1" # Esri Nova Map
+      - UUID: "77b3505cd7ae4484ac3fc253a50ee9c8" # Esri Dark Gray Canvas
+      - UUID: "7a4aa667d61541c583d9a723c8b349da" # Esri Firefly Imagery Hybrid
+      - UUID: "83204ea4090446c4aae868bba6454597" # Esri Navigation (Places)
+      - UUID: "83aeff137ea54be986e568fe206376d5" # Esri Enhanced Contrast Map
+      - UUID: "8d57f09b9df345e79945f0f3da1d4d0f" # Esri Topographic (Vector)
+      - UUID: "8efddf97a1a74a3ea47c90c3fe62df91" # Esri Navigation (Dark - Places)
+      - UUID: "908967a20fee4d1db3ff5149ec6efcc5" # Esri Human Geography Dark Map
+      - UUID: "93a76c89f9ea4c169f116c0715e37f6f" # Esri Streets (Night)
+      - UUID: "a0b3492409bc45c6abecfc5b081c336c" # Esri Human Geography Map
+      - UUID: "aa012d7f13f347618aed0fd24a7df40a" # Esri Environment Map
+      - UUID: "b39a6353a02d4cef9262d35db10a4143" # Esri Navigation
+      - UUID: "bb6c3aa9f44e444a8f5de18030f6b4be" # Esri Enhanced Contrast Dark Map
+      - UUID: "c29cfb7875fc4b97b58ba6987c460862" # Esri OpenStreetMap Style
+      - UUID: "c5b0e6e1ded840639b8b4ff3d9927145" # Esri Light Gray Canvas
+      - UUID: "cb31316d3fba44799f23312d721bfb5c" # Esri Navigation (Dark)
+      - UUID: "d79fdaf65e014686b5bde5b24216907b" # Esri Newspaper Map
+      - UUID: "d9eb1392e6504930b5fbd9689ac32ff4" # Esri Terrain with Labels
+      - UUID: "e128f7554370429c91ef7c0e260c078a" # Esri Outdoor
+      - UUID: "e1684637c34c45b1b685c53e63d7f2b8" # Esri Charted Territory Map
+      - UUID: "e45454cc103f467db8fd4c145122ee42" # Esri Community Map
+      - UUID: "fa24d46b47aa4ce29f8d1a457089a2f1" # Esri Colored Pencil Map
+      - UUID: "07d7ede36daa48fb88057c31666c2f3b" # Roads (Deprecated)
+      - UUID: "62b0c2f4ef784084b0922a5af25e217a" # Address Points (Deprecated)
+      - UUID: "69de4f413ffc40498e3f747d590a4839"
+      - UUID: "e4b673bcece74b45bee293a80f1eaa47"
 
   DaneCounty_OpenData:
     CreatedBy: "Dane County"
@@ -412,8 +476,45 @@ DCAT_Sites:
     SiteName: "DaneCounty"
     Spatial: ["Dane County", "Wisconsin", "United States"]
     DefaultBbox: "Dane"
+    AppList:
+      - UUID: "cac28c261a244d35b657ae34fa16616d"
+      - UUID: "212ff31e90714ad78c04da705b599447"
+      - UUID: "b4e4965915724e97bf9abd822c2b81f0"
+      - UUID: "8cbd052ff11a4703bacf6f3f742b5abd"
+      - UUID: "24e9a82d954b432fb2f26be5c3a7051f"
+      - UUID: "408e59363d8a4380800023f998072435" # Municipal Viewer
+      - UUID: "603c9924dd6d46e8852237bdda215ff8" # Bicycle and Pedestrian Trails
+      - UUID: "6defb53aba894696ae6a3a547aac0652" # Roadway Functional Classification
+      - UUID: "795b6a7fbc9743719dab572dc96c8f82" # Census Geography
+      - UUID: "86597824682f4b8db9483ced01f02c5e" # Pedestrian Facilities
+      - UUID: "c5c3b06f4e784c6f94f01c3f068f3bb2" # Low Stress Bicycle Route Finder
+      - UUID: "fa3986eda4c3421d9713fef814cb6128" # Remonumentation Status
     SkipList:
       - UUID: "countyofdane-parceltest1117"
+      - UUID: "cf7e67f0e79e4a028c7366136c4f3cc5"
+      - UUID: "efe21b12184443e79c6daedc5bf910db"
+      - UUID: "cbf2a5db0dee4103880425447c730559"
+      - UUID: "36d0db6f07204bff89af5fdcb579bd27"
+      - UUID: "966b30f2f6d8412b85ddd6cd112fb439"
+      - UUID: "bd1861733c95494da1c5dd525cbaa1ea"
+      - UUID: "d983b6d74ffd41c1b178e92814ede58c"
+      - UUID: "536dc0d64b444c7cbfae67a3a03769dc"
+      - UUID: "1926601c6edf4a8cb1de27ddc3a10cf2" # Imagery Hub page
+      - UUID: "35d88a9281a64d8a9f7e111c44191d4f" # Health & Safety Hub page
+      - UUID: "8ef71ba433664a319fe5c29d8fe1c2c9" # Water Resources Hub page
+      - UUID: "9c08350aa0fc4b759adcf1940ea55e80" # Property & Land Hub page
+      - UUID: "afd4fe071c4a4e14945c398f24995cfa" # Transportation Hub page
+      - UUID: "b444e8fd9f10451d8229440f1ecd994b" # Elevation Hub page
+      - UUID: "b90da47e19f04e3faa0884e78c23462a" # Survey System Hub page
+      - UUID: "b9f8955672ee457aaedb08446b4bdeac" # Infrastructure Hub page
+      - UUID: "cd0492f0494a4ef4a4f628495ebf4aab" # Parks & Recreation Hub page
+      - UUID: "e1a4a19472ce4e038a3fb365c7e7d681" # Planning Hub page
+      - UUID: "f2a81fa43e824afbb47eebb9e019bcb6" # Political Hub page
+      - UUID: "36922a549fff439eba631e7b91c0edb7" # Fishing document link
+      - UUID: "412cd300d0a34fc38bc371e94b211b98" # Snowmobile Trails document link
+      - UUID: "41449a088dda4375b4b7db91a1710b2a" # Hunting document link
+      - UUID: "5e16ed84d2b94253bf30937857c5527c" # Park Property Maps document link
+      - UUID: "fe200a3616874720ae5d12c13f4a4621" # Highway Projects Hub site
 
   EauClaire_OpenData:
     CreatedBy: "Eau Claire County"
@@ -423,11 +524,12 @@ DCAT_Sites:
     Spatial: ["Eau Claire County", "Wisconsin", "United States"]
     AppList:
       - UUID: "cb505290c5e44c6185e83d814e58ed19" # Aiport Zoning
-      - UUID: "d2ba78cd16a74070b4901f38b2e706b4" # Lidar and Air Photo Download App
       - UUID: "53b6d275fa594bb6ad8a76f612cd7b87" # Historical Air Photo App
     SkipList:
       - UUID: "f2c971b06a4340e1bfb206fe693008af"
       - UUID: "3cf146ed887e407586413747a2b2c029"
+      - UUID: "1453e9d2907246368840b79ad10b0fdf"
+      - UUID: "d2ba78cd16a74070b4901f38b2e706b4" # Lidar and Air Photo Download App
 
   Kenosha_OpenData:
     CreatedBy: "Kenosha County"
@@ -442,6 +544,10 @@ DCAT_Sites:
       - UUID: "c8f3263922c94d968d931a4ab714b943"
       - UUID: "d79c52a223824107a264b0884f9ab53c"
       - UUID: "93634028191f4333a0055518d7a05d89"
+      - UUID: "db59f22288264f05a78c890602720ad2"
+      - UUID: "06c690a71819455ab24f64aff1d4d6f1"
+      - UUID: "c26e4b125d4e466bbc71d9e2849c82e7"
+      - UUID: "e3e9a8df0b41405e810c65d39d94f483"
 
   MilwaukeeCounty_OpenData:
     CreatedBy: "Milwaukee County"
@@ -461,6 +567,9 @@ DCAT_Sites:
     SiteName: "OutagamieCounty"
     Spatial: ["Outagamie County", "Wisconsin", "United States"]
     DefaultBbox: "Outagamie"
+    AppList:
+      - UUID: "13f555139a64462187226bd4356ecf5b"
+      - UUID: "b454ac64d31b46a2a3ec0a7e0abb944a"
     SkipList: ""
 
   PierceCounty_OpenData:
@@ -479,9 +588,8 @@ DCAT_Sites:
     Spatial: ["Racine County", "Wisconsin", "United States"]
     DefaultBbox: "Racine"
     SiteName: "RacineCounty"
-    AppList:
+    SkipList:
       - UUID: "d7eb01146699492d9592e62ba63ec705"
-    SkipList: ""
 
   SheboyganCounty_OpenData:
     CreatedBy: "Sheboygan County"
@@ -489,7 +597,11 @@ DCAT_Sites:
     SiteName: "SheboyganCounty"
     Spatial: ["Sheboygan County", "Wisconsin", "United States"]
     DefaultBbox: "Sheboygan"
-    SkipList: ""
+    SkipList:
+      - UUID: "5c46afb16574469880656438923bce8d"
+      - UUID: "36ddd9860cdc4e9a8b1c7d0161b4c8aa"
+      - UUID: "893cf505ba87415d91437aa7af7ad728"
+      - UUID: "5bd48f7494714493aea53e848c468baf"
 
   StCroixCounty_OpenData:
     CreatedBy: "St. Croix County"
@@ -554,8 +666,8 @@ DCAT_Sites:
       - UUID: "e3abb64511c14f24bab7439f741152f8" # Recreation Explorer
       - UUID: "c6f997dfe7ff4c96a40f3acaa52070e7" # Static Map Lookup
       - UUID: "19297a89386a4798b96f7f4265999fdd" # Tax Parcel Explorer
-      - UUID: "ac2f181b2b094a4986a92c24818bcbcb" # Vilas County USNG Explorer
-      - UUID: "4ce374a87eb64d79a78b134775a8bc4e" # Voting Information Explorer
+      - UUID: "2640080de8374ac1b532ad0a2e3b622c"
+      - UUID: "ae6fc96ad7714a20afcfbd4e48c22ef6"
     SkipList:
       - UUID: "81e69aa1029d41a09b8cdb112f221efe" # WDNR: Wisconsin Wetland Inventory
       - UUID: "d6e8df34a3034a169073a989123f2086" # FEMA: Flood Map Service Center
@@ -569,6 +681,154 @@ DCAT_Sites:
       - UUID: "b01933f9682f4eb2b80e226adcfe02cb" # Arthur H. Robinson Map Library
       - UUID: "b9c5cc6ac76547d2b99fb3a07ae725e3" # WDNR: Surface Water Data Viewer
       - UUID: "3071e33be186440d989a771d945adb1b" # WI Statewide Parcel Map Initiative
+      - UUID: "c4794f2be2984fd09827085d54cacf02"
+      - UUID: "4b5177c92a6a4a48819e96d2af2a19dc"
+      - UUID: "2c804a8c32c849a8879d303372217673"
+      - UUID: "4ce374a87eb64d79a78b134775a8bc4e" # Voting Information Explorer
+      - UUID: "82c7e33345894cfd9889c3ba65049f67"
+      - UUID: "5246e3a40bc643158c94dc1722955d71"
+      - UUID: "a7ec5216a1b644328fdb75fb19e96897"
+      - UUID: "ac2f181b2b094a4986a92c24818bcbcb" # Vilas County USNG Explorer
+      - UUID: "202ceecfcd5f4b85afd5592479819d6020"
+      - UUID: "202ceecfcd5f4b85afd5592479819d605"
+      - UUID: "2c45e67cef594d139b549efa785a7bcc13"
+      - UUID: "33fe322ed04b469ea2bd374f666b0b8d1"
+      - UUID: "60f8effb5f1c42e19bf8a002dd69750420"
+      - UUID: "60f8effb5f1c42e19bf8a002dd6975048"
+      - UUID: "8f631493a97f45ad925bb0b2cf1a22f61"
+      - UUID: "94925e5a7be244929fafc3de3727faed1"
+      - UUID: "e563904249764eeab8faa566b0044df512"
+      - UUID: "e563904249764eeab8faa566b0044df53"
+      - UUID: "e563904249764eeab8faa566b0044df520"
+      - UUID: "e563904249764eeab8faa566b0044df517"
+      - UUID: "e563904249764eeab8faa566b0044df521"
+      - UUID: "e563904249764eeab8faa566b0044df522"
+      - UUID: "94925e5a7be244929fafc3de3727faed3"
+      - UUID: "e563904249764eeab8faa566b0044df524"
+      - UUID: "e563904249764eeab8faa566b0044df518"
+      - UUID: "e563904249764eeab8faa566b0044df523"
+      # MapServer copies of equivalent FeatureServer datasets
+      - UUID: "034108e7c85444fcb8d103a26cc7b45c0"
+      - UUID: "066aa5a7e37b483abca82a8283144ec5144"
+      - UUID: "0746a6bcc34445c9a99a9e9808f044db1"
+      - UUID: "1b933a1354694bb4837b090c8e02b33c0"
+      - UUID: "2ae3c3f1d7ae4ee28f3a1439050db5650"
+      - UUID: "320a4e13e80d4419bf55ff4966b519eb0"
+      - UUID: "330d90624a074616bdb6a5aac208ced30"
+      - UUID: "371ecdc5199f4fa89fab79c3a4a7c5f60"
+      - UUID: "3a9729d4bc0f40b38ecb5789d48370740"
+      - UUID: "4157fcccda264a24a21695a640b92d9f0"
+      - UUID: "4b93b7e6cee248688da9860df3d2d0800"
+      - UUID: "4f2c94f26ce341708622bd971d01b53b0"
+      - UUID: "5639c93cf7c94aa6a3b67bdd1848534d0"
+      - UUID: "582e835717324555a4ff6d40786126560"
+      - UUID: "5c7a956c2586420b8621e01597ab2ac20"
+      - UUID: "65fae29227b84e31864638df4aa38494149"
+      - UUID: "79a550fe9c204634817fe57178f90bd00"
+      - UUID: "7dbe164c3615422a87f62d2f358b6d910"
+      - UUID: "86203ee57fca41069cd7af17c3b04db50"
+      - UUID: "9a1ccddeddc04da394aa1f1b735c84f10"
+      - UUID: "9b2adc1a37c1449b91cc1b9f527e5c880"
+      - UUID: "a1f090a744f14aaaa676647cf78b6edd0"
+      - UUID: "a442f7f77632468b89c800a6d4f5dd450"
+      - UUID: "aff58e0ad1874519a77093ba5b117ce60"
+      - UUID: "b2bf38dbff0f4645b455ca17ffc231350"
+      - UUID: "b4ff91a0f69c47999f5d696c8dd98e920"
+      - UUID: "b5a35ee4d2fb49bb990f5d551fc8ff6b0"
+      - UUID: "b85a2e53b1334c009eef8997ed3fb7160"
+      - UUID: "bb023f130bd645f38b34cb677442b4e10"
+      - UUID: "bbef835ddef84b65897fdc3a40b798dd0"
+      - UUID: "d4f2d0dacb5a48b2b288743947dc9bcf0"
+      - UUID: "e6cf26558706465db271e330f57fe8f2149"
+      - UUID: "e6e80d7d5b8747888812e5aa717c88d90"
+      - UUID: "f18e898c21234cd09afe4e97366b32ed0"
+      - UUID: "f23011811ee840fb8d9bfeccdec239721"
+      - UUID: "f2b1e0ad30ae443988b2147a52b75b0f0"
+      - UUID: "fb88393d798c45b2842eb737ee2e6fdf0"
+      # Internal support and symbology layers from cached map services
+      - UUID: "0efca609e0fb4e6d8071ed82ba51e0c21"
+      - UUID: "0efca609e0fb4e6d8071ed82ba51e0c22"
+      - UUID: "0efca609e0fb4e6d8071ed82ba51e0c23"
+      - UUID: "202ceecfcd5f4b85afd5592479819d600"
+      - UUID: "202ceecfcd5f4b85afd5592479819d601"
+      - UUID: "202ceecfcd5f4b85afd5592479819d6021"
+      - UUID: "202ceecfcd5f4b85afd5592479819d6022"
+      - UUID: "202ceecfcd5f4b85afd5592479819d606"
+      - UUID: "202ceecfcd5f4b85afd5592479819d607"
+      - UUID: "2c45e67cef594d139b549efa785a7bcc14"
+      - UUID: "2c45e67cef594d139b549efa785a7bcc8"
+      - UUID: "2c45e67cef594d139b549efa785a7bcc9"
+      - UUID: "33fe322ed04b469ea2bd374f666b0b8d2"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b41"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b410"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b412"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b44"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b47"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b48"
+      - UUID: "60f8effb5f1c42e19bf8a002dd69750421"
+      - UUID: "60f8effb5f1c42e19bf8a002dd6975044"
+      - UUID: "60f8effb5f1c42e19bf8a002dd6975045"
+      - UUID: "60f8effb5f1c42e19bf8a002dd6975046"
+      - UUID: "60f8effb5f1c42e19bf8a002dd6975047"
+      - UUID: "7ca87167f0614bc3a6d405365f8086e11"
+      - UUID: "7ca87167f0614bc3a6d405365f8086e110"
+      - UUID: "7ca87167f0614bc3a6d405365f8086e112"
+      - UUID: "7ca87167f0614bc3a6d405365f8086e12"
+      - UUID: "7ca87167f0614bc3a6d405365f8086e16"
+      - UUID: "7ca87167f0614bc3a6d405365f8086e17"
+      - UUID: "8f631493a97f45ad925bb0b2cf1a22f64"
+      - UUID: "94925e5a7be244929fafc3de3727faed2"
+      - UUID: "94925e5a7be244929fafc3de3727faed4"
+      - UUID: "94925e5a7be244929fafc3de3727faed5"
+      - UUID: "e563904249764eeab8faa566b0044df513"
+      - UUID: "e563904249764eeab8faa566b0044df519"
+      - UUID: "e563904249764eeab8faa566b0044df526"
+      - UUID: "e563904249764eeab8faa566b0044df527"
+      - UUID: "e563904249764eeab8faa566b0044df528"
+      - UUID: "e563904249764eeab8faa566b0044df529"
+      - UUID: "e563904249764eeab8faa566b0044df58"
+      - UUID: "fc5b48a4df8445cda63df1083967711e1"
+      - UUID: "fc5b48a4df8445cda63df1083967711e2"
+      - UUID: "fc5b48a4df8445cda63df1083967711e3"
+      # Duplicate shell items without an ArcGIS REST service reference
+      - UUID: "07b6a5c6fcfe465b91eddf913c0849c6"
+      - UUID: "1cce77d68974451bbde9feadd7db23e0"
+      - UUID: "1ec676d5008343b3b17e16d2c24ce16c"
+      - UUID: "30f6c955bb334c0ead694be24eb11377"
+      - UUID: "5d452f6af4b84527b68fc36ae86497ab"
+      - UUID: "71b6da64021d443e8a0bde90d8e66575"
+      - UUID: "b4304386cfef4083a75325268878b4bf"
+      - UUID: "c3034badf30d4c2b83bb8ab1f4a181a9"
+      - UUID: "e3af5ce4c01d4ffab5f9299dca772840"
+      - UUID: "e87cabd332d7449d994b6cbb62e22a50"
+      - UUID: "f257eaff47f44bb4b347f4b8270d10c8"
+      # Misleading year/title sublayers embedded in other cached services
+      - UUID: "202ceecfcd5f4b85afd5592479819d604"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b40"
+      - UUID: "60f8effb5f1c42e19bf8a002dd6975049"
+      - UUID: "7ca87167f0614bc3a6d405365f8086e18"
+      - UUID: "e563904249764eeab8faa566b0044df511"
+      # Additional repeated sublayers with a retained canonical record
+      - UUID: "2c45e67cef594d139b549efa785a7bcc12"
+      - UUID: "33fe322ed04b469ea2bd374f666b0b8d3"
+      - UUID: "94925e5a7be244929fafc3de3727faed0"
+      - UUID: "58284cf612d44a798d176b27211b456c0"
+      - UUID: "202ceecfcd5f4b85afd5592479819d6012"
+      - UUID: "202ceecfcd5f4b85afd5592479819d6015"
+      - UUID: "202ceecfcd5f4b85afd5592479819d6016"
+      - UUID: "202ceecfcd5f4b85afd5592479819d6017"
+      - UUID: "202ceecfcd5f4b85afd5592479819d6018"
+      - UUID: "60f8effb5f1c42e19bf8a002dd69750412"
+      - UUID: "60f8effb5f1c42e19bf8a002dd69750415"
+      - UUID: "60f8effb5f1c42e19bf8a002dd69750416"
+      - UUID: "60f8effb5f1c42e19bf8a002dd69750417"
+      - UUID: "60f8effb5f1c42e19bf8a002dd69750418"
+      - UUID: "9ec88a16555e41c088607b651ec724c4"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b45"
+      - UUID: "5fddf40eccdd4de3acf119c2510036b49"
+      - UUID: "8f631493a97f45ad925bb0b2cf1a22f65"
+      - UUID: "e563904249764eeab8faa566b0044df514"
+      - UUID: "be3fd6d4116f43949fe39cd393b4416f"
 
   # Disabled because its DCAT-US 1.1 and DCAT-AP 2.1.1 feeds fail, and
   # DCAT-AP 3.0.0 is not yet supported by the harvester.
@@ -589,8 +849,27 @@ DCAT_Sites:
     SiteName: "WashingtonCounty"
     DefaultBbox: "Washington"
     Spatial: ["Washington County", "Wisconsin", "United States"]
+    AppList:
+      - UUID: "e566040670144d779123f15690a9e927"
+      - UUID: "ffa67420deab409aae2244c4479af5cd"
     SkipList:
       - UUID: "6e03e8c26aad4b9c92a87c1063ddb0e3"
+      - UUID: "864618f255164ca081d3057b43203769" # WashCoGIS Basemap map image layers
+      - UUID: "86514f14a91442588ebc229412f91b6f"
+      - UUID: "e3399329c4d345f1867e10651d0ea067"
+      - UUID: "03cd5fec9b474b9cb3bb2ab6673c1c5e"
+      - UUID: "67123d73ec754faf8b97ef40fcad98de"
+      - UUID: "ea7d8957faea49aa91c803778bd296e1"
+      - UUID: "e8cf4065574e4858ae016403b2d99ebe"
+      - UUID: "21d7a97caa47441e9dbd7f7dacda3d2f"
+      - UUID: "5332f92042af408b897d9887757aac93"
+      - UUID: "2d59d78623d94a9db22df5bacd91d7ae"
+      - UUID: "9ff996be93ff46e78d4edb11d6e6e8bf"
+      - UUID: "489339e3a81a4ec2a2c32cd11d9467f8"
+    MapList:
+      - UUID: "2b53805559f342f48c061659a2a5ec03"
+      - UUID: "915a01d0b3b64f109f2fe1aa6f8ea12f"
+      - UUID: "e896ff686924421d8236715760aedade"
 
   WaukeshaCounty_OpenData:
     CreatedBy: "Waukesha County"
@@ -611,8 +890,10 @@ DCAT_Sites:
     DefaultBbox: "Waupaca"
     AppList:
       - UUID: "f231321d9f1d4d77b605dfb9b33046e0"
+      - UUID: "e4dcd638cb0f441b9b465f24f5aec089"
     SkipList:
       - UUID: "b6dd1313a3944c84ad965dbcbac197d3"
+      - UUID: "5b5c8bee456a4f71a3d9a4c1b15267e2"
 
   WausharaCounty_OpenData:
     CreatedBy: "Waushara County"
@@ -1074,5 +1355,3 @@ CKAN_Sites:
       delinquent-real-estate-tax-accounts:
         title: "Delinquent Real Estate Tax Accounts"
         note: "excel only, includes taxkey and addresses"
-
-
