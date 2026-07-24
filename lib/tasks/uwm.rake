@@ -10,7 +10,7 @@ task :ci do
 
   success = true
   with_managed_solr_modules do
-    SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+    SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core-test")) do |solr|
       solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
         success &&= system(
           {"SOLR_URL" => managed_solr_url},
@@ -222,7 +222,7 @@ namespace :uwm do
       shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
       with_managed_solr_modules do
-        SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core")) do |solr|
+        SolrWrapper.wrap(shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core-test")) do |solr|
           solr.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
             puts "Solr running at http://localhost:8985/solr/#/blacklight-core/, ^C to exit"
             begin
