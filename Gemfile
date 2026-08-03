@@ -94,7 +94,7 @@ group :test do
   gem "webdrivers"
   gem "minitest", "< 6"
 end
-gem "blacklight", "~> 7.35"
+gem "blacklight", "~> 7.42"
 
 # BL Advanced Search / Pinned to EWL bug-fix
 # See: https://github.com/projectblacklight/blacklight_advanced_search/issues/127
