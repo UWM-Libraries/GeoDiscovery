@@ -183,7 +183,6 @@ GEM
       warden (~> 1.2.3)
     devise-guests (0.8.3)
       devise
-    docile (1.4.1)
     domain_name (0.6.20240107)
     dotenv (3.2.0)
     dotenv-rails (3.2.0)
@@ -240,13 +239,13 @@ GEM
       rgeo-geojson
       sprockets-rails (~> 3.0)
       vite_rails (~> 3.0)
-    geoblacklight_sidecar_images (1.1.1)
+    geoblacklight_sidecar_images (1.1.2)
       faraday (>= 2.0)
       geoblacklight (~> 4.0)
       image_processing (~> 1.6)
       mimemagic (~> 0.3)
       mini_magick (~> 4.9.4)
-      rails (>= 5.2, < 8.0)
+      rails (>= 5.2, < 8.2)
       statesman (>= 3.4)
     git (5.0.2)
       activesupport (>= 5.0)
@@ -255,7 +254,7 @@ GEM
       rchardet (~> 1.9)
     globalid (1.4.0)
       activesupport (>= 6.1)
-    haml (7.2.0)
+    haml (7.2.2)
       temple (>= 0.8.2)
       thor
       tilt
@@ -527,13 +526,8 @@ GEM
       logger
       rack (>= 2.2.4, < 3.3)
       redis-client (>= 0.23.0, < 1)
-    simplecov (0.22.0)
-      docile (~> 1.1)
-      simplecov-html (~> 0.11)
-      simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.13.2)
-    simplecov_json_formatter (0.1.4)
-    sitemap_generator (7.1.0)
+    simplecov (1.0.3)
+    sitemap_generator (7.1.1)
       builder (~> 3.0)
     solr_wrapper (4.4.0)
       faraday (~> 2.0)
