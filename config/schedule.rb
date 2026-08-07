@@ -20,11 +20,6 @@ end
 
 # Weekly maintenance jobs
 
-# Harvest thumbnail images for search results.
-every :sunday, at: "1:00am", roles: [:app] do
-  rake "gblsci:images:harvest_retry"
-end
-
 # Harvest Allmaps IIIF annotation data.
 every :sunday, at: "3:00am", roles: [:app] do
   rake "blacklight_allmaps:sidecars:harvest:allmaps"
@@ -47,6 +42,11 @@ every :thursday, at: "4:00am", roles: [:app] do
 end
 
 # Monthly maintenance jobs
+
+# Retry thumbnail harvesting monthly at 1:00 a.m. on the first day of the month.
+every "0 1 1 * *", roles: [:app] do
+  rake "gblsci:images:harvest_retry"
+end
 
 # Purge thumbnail orphans monthly on the second Monday at 4:00AM.
 every "0 4 8-14 * 1", roles: [:app] do
