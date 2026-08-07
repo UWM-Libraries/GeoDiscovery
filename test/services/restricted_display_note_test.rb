@@ -49,7 +49,11 @@ class RestrictedDisplayNoteTest < ActiveSupport::TestCase
         JSON.generate(gbl_fixture_document("actual-raster1.json"))
       )
 
-      harvester = GeoCombine::Harvester.new(ogm_path: dir, schema_version: "Aardvark")
+      harvester = GeoCombine::Harvester.new(
+        ogm_path: dir,
+        schema_version: "Aardvark",
+        skip_restricted: false
+      )
       document, = harvester.docs_to_index.first
 
       assert_includes document["gbl_displayNote_sm"], RestrictedDisplayNote::NOTE
@@ -64,7 +68,11 @@ class RestrictedDisplayNoteTest < ActiveSupport::TestCase
         JSON.generate(gbl_fixture_document("actual-raster1.json"))
       )
 
-      harvester = GeoCombine::Harvester.new(ogm_path: dir, schema_version: "Aardvark")
+      harvester = GeoCombine::Harvester.new(
+        ogm_path: dir,
+        schema_version: "Aardvark",
+        skip_restricted: false
+      )
       document, = harvester.docs_to_index.first
 
       assert_nil document["gbl_displayNote_sm"]

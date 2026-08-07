@@ -18,8 +18,13 @@ task :ci do
           exception: false
         )
         success &&= system(
-          {"SOLR_URL" => managed_solr_url},
-          'env RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test',
+          {"SIMPLECOV_COMMAND_NAME" => "Unit Tests", "SOLR_URL" => managed_solr_url},
+          'env RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test',
+          exception: false
+        )
+        success &&= system(
+          {"SIMPLECOV_COMMAND_NAME" => "System Tests", "SOLR_URL" => managed_solr_url},
+          'env RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system',
           exception: false
         )
       end
@@ -56,7 +61,11 @@ namespace :uwm do
   end
 
   def harvested_document_ids
-    GeoCombine::Harvester.new.docs_to_index.each_with_object(Set.new) do |(doc, _path), ids|
+    harvester = GeoCombine::Harvester.new(
+      ogm_path: ENV.fetch("OGM_PATH", "tmp/opengeometadata")
+    )
+
+    harvester.docs_to_index.each_with_object(Set.new) do |(doc, _path), ids|
       ids << doc.fetch(SolrDocument.unique_key)
     end
   end

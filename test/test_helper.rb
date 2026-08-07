@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "simplecov"
+SimpleCov.command_name ENV.fetch("SIMPLECOV_COMMAND_NAME", "Minitest")
 SimpleCov.start
 
 ENV["RAILS_ENV"] ||= "test"
