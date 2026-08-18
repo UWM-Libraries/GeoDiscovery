@@ -254,7 +254,8 @@ GEM
       rchardet (~> 1.9)
     globalid (1.4.0)
       activesupport (>= 6.1)
-    haml (7.2.2)
+    haml (7.3.1)
+      prism (>= 1.1.0)
       temple (>= 0.8.2)
       thor
       tilt
@@ -572,9 +573,9 @@ GEM
     statesman (13.1.0)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
-    temple (0.10.4)
+    temple (0.10.7)
     thor (1.5.0)
-    tilt (2.8.0)
+    tilt (2.9.0)
     timeout (0.6.1)
     track_open_instances (0.1.15)
     tsort (0.2.0)
