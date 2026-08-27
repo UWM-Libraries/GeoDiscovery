@@ -17,6 +17,23 @@
 // UWM
 //= require uwm
 
+// CARTO requires an API key for its hosted basemaps. The key is supplied by
+// the server's CARTO_BASEMAP_API_KEY environment variable via the page layout.
+var cartoBasemapApiKey = document.querySelector('meta[name="carto-basemap-api-key"]');
+
+if (cartoBasemapApiKey) {
+  GeoBlacklight.Basemaps.positron = L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{retina}.png?key=' +
+      encodeURIComponent(cartoBasemapApiKey.content), {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      maxZoom: 18,
+      worldCopyJump: true,
+      retina: '@2x',
+      detectRetina: false
+    }
+  );
+}
+
 // @CUSTOMIZED
 // - set initial bbox
 // following was borrowed from BTAA with slight modifications
