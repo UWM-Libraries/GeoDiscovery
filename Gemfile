@@ -100,7 +100,7 @@ gem "blacklight", "~> 7.42"
 # See: https://github.com/projectblacklight/blacklight_advanced_search/issues/127
 gem "blacklight_advanced_search", git: "https://github.com/ewlarson/blacklight_advanced_search.git",
   branch: "bl7-fix-gentle-hands"
-gem "geoblacklight", "~> 4.5"
+gem "geoblacklight", "~> 4.6"
 gem "geoblacklight_sidecar_images", "~> 1.1"
 gem "mini_magick", "~> 4.0"
 gem "sprockets", "~> 4.2"
