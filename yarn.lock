@@ -251,15 +251,16 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
-"@geoblacklight/frontend@^4.4":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@geoblacklight/frontend/-/frontend-4.4.6.tgz#11e688d37b6b2faa086ed2d1e2426c661b1bdade"
-  integrity sha512-7+Xs6CQTAIjOMDM3ER5AKNqXxUDNanDDgzdEFL4lsf218A0lIMhWL3KbvjRCbd1g34Pn/kqMeA5g83gvC/aSqQ==
+"@geoblacklight/frontend@~4.7.0":
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/@geoblacklight/frontend/-/frontend-4.7.0.tgz#bb13396f573f40be0c8981d1c73d278c7077ab1a"
+  integrity sha512-f2fKbJiJhrAoCJHy6MCrnUHp+VVq016DzR7fHDZrYDuhpMKwNOEAEr+6HxO4dI/jZtCJKXbXSQAXiasBVjTnJQ==
   dependencies:
     "@samvera/clover-iiif" "^2.3.2"
     ol "8.1.0"
     ol-pmtiles "^0.3.0"
     react "^18.2.0"
+    react-dom "^18.2.0"
 
 "@iiif/parser@^1.1.2":
   version "1.1.2"
