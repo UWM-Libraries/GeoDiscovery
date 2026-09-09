@@ -251,15 +251,16 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
-"@geoblacklight/frontend@^4.4":
-  version "4.4.6"
-  resolved "https://registry.yarnpkg.com/@geoblacklight/frontend/-/frontend-4.4.6.tgz#11e688d37b6b2faa086ed2d1e2426c661b1bdade"
-  integrity sha512-7+Xs6CQTAIjOMDM3ER5AKNqXxUDNanDDgzdEFL4lsf218A0lIMhWL3KbvjRCbd1g34Pn/kqMeA5g83gvC/aSqQ==
+"@geoblacklight/frontend@~4.7.0":
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/@geoblacklight/frontend/-/frontend-4.7.0.tgz#bb13396f573f40be0c8981d1c73d278c7077ab1a"
+  integrity sha512-f2fKbJiJhrAoCJHy6MCrnUHp+VVq016DzR7fHDZrYDuhpMKwNOEAEr+6HxO4dI/jZtCJKXbXSQAXiasBVjTnJQ==
   dependencies:
     "@samvera/clover-iiif" "^2.3.2"
     ol "8.1.0"
     ol-pmtiles "^0.3.0"
     react "^18.2.0"
+    react-dom "^18.2.0"
 
 "@iiif/parser@^1.1.2":
   version "1.1.2"
@@ -1101,9 +1102,9 @@ fetch-blob@^3.1.2, fetch-blob@^3.1.4:
     web-streams-polyfill "^3.0.3"
 
 fflate@^0.8.0:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.8.2.tgz#fc8631f5347812ad6028bbe4a2308b2792aa1dea"
-  integrity sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.8.3.tgz#bc27d8eb30343d4d512abb03480202ce65d825fc"
+  integrity sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==
 
 fill-range@^7.1.1:
   version "7.1.1"
@@ -1310,9 +1311,9 @@ ms@2.1.2:
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
 nanoid@^3.3.16:
-  version "3.3.16"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.16.tgz#a04d8ec4b1f10009d2d533947aefe4293737816c"
-  integrity sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q==
+  version "3.3.18"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.18.tgz#f66a2de1199ffde0fcf21c8a5f13106b1c081913"
+  integrity sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==
 
 node-domexception@^1.0.0:
   version "1.0.0"
@@ -1617,9 +1618,9 @@ run-parallel@^1.1.9:
     queue-microtask "^1.2.2"
 
 sanitize-html@^2.11.0:
-  version "2.17.6"
-  resolved "https://registry.yarnpkg.com/sanitize-html/-/sanitize-html-2.17.6.tgz#c62a2e2e55d03004f3e0ecd6dbb9126d4b985d82"
-  integrity sha512-M4bo9tfv1yfhQZZKkc6dL07ALrGJtfvNOuhX3hU9AVPR/uPQ+nKOJBqTYc7LfMQblTW04mtSWDJWEyLvygJsLA==
+  version "2.17.7"
+  resolved "https://registry.yarnpkg.com/sanitize-html/-/sanitize-html-2.17.7.tgz#b16417c348ea5f99c2451964b6e6621ca6b1da94"
+  integrity sha512-PGtEkc9cbnedU3s9TmzDbpsZ8w086g/0Q8k8/oIO1NLNU3i5k9yn835CrjJSajp1KMmkisbO1qPXxNKO3welAg==
   dependencies:
     deepmerge "^4.2.2"
     escape-string-regexp "^4.0.0"

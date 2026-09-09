@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require "sidekiq/api"
+require "fileutils"
 
 desc "Run test suite"
 task :ci do
+  FileUtils.rm_f Rails.root.glob("coverage/.resultset.json*")
   shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
   shared_solr_opts[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
   managed_solr_url = "http://127.0.0.1:8985/solr/blacklight-core"
@@ -19,7 +21,7 @@ task :ci do
         )
         success &&= system(
           {"SOLR_URL" => managed_solr_url},
-          'env RUBYOPT=W0 RAILS_ENV=test TESTOPTS="-v" bundle exec rails test:system test',
+          "env RUBYOPT=W0 RAILS_ENV=test bundle exec rails test:all --verbose",
           exception: false
         )
       end

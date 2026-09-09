@@ -73,6 +73,8 @@ jobs:
       with:
         node-version: '24.x'
         cache: yarn
+    - name: Install ICU transliteration tools
+      run: sudo apt-get update && sudo apt-get install --yes icu-devtools
     - name: Create Solr container
       run: docker run -d -p 8983:8983 geoblacklight/solr:8.9-v1.0.0 server/scripts/ci-start.sh
     - name: Wait for Solr

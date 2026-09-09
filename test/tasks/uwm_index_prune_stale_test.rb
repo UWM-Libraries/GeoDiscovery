@@ -3,6 +3,8 @@
 require "test_helper"
 require "rake"
 require "solr_wrapper"
+require "json"
+require "tmpdir"
 
 class UwmIndexPruneStaleTest < ActiveSupport::TestCase
   setup do
@@ -12,35 +14,32 @@ class UwmIndexPruneStaleTest < ActiveSupport::TestCase
   end
 
   test "prune_stale removes records absent from the current harvest set" do
-    harvested_doc = GeoCombine::Harvester.new.docs_to_index.first.first
-    harvested_doc_id = harvested_doc.fetch("id")
-    stale_doc = harvested_doc.merge(
-      "id" => "stale-opendataharvest-record",
-      "dct_title_s" => "Stale opendataharvest record"
-    )
+    original_env = ENV.to_h.slice("OGM_PATH", "SCHEMA_VERSION", "DRY_RUN")
+    Dir.mktmpdir("prune-stale-harvest") do |dir|
+      ENV["OGM_PATH"] = dir
+      ENV["SCHEMA_VERSION"] = "Aardvark"
+      ENV["DRY_RUN"] = "false"
+      fixture = Rails.root.join("test/fixtures/files/gbl_documents/actual-point1.json")
+      File.write(File.join(dir, "harvested.json"), File.read(fixture))
 
-    with_test_solr do |solr|
-      original_docs = solr.get(
-        "select",
-        params: {q: "*:*", rows: 10_000, sort: "id asc"}
-      ).dig("response", "docs").map do |doc|
-        doc.except("_version_", "score")
-      end
+      harvested_doc = GeoCombine::Harvester.new.docs_to_index.first.first
+      harvested_doc_id = harvested_doc.fetch("id")
+      stale_doc = harvested_doc.merge(
+        "id" => "stale-opendataharvest-record",
+        "dct_title_s" => "Stale opendataharvest record"
+      )
 
-      begin
-        solr.delete_by_query("*:*")
-        solr.commit
+      with_test_solr do |solr|
         solr.add([harvested_doc, stale_doc])
         solr.commit
 
         repository = Blacklight.default_index
-        original_connection = repository.connection
+        original_connection = repository.method(:connection)
         repository.define_singleton_method(:connection) { solr }
-
         begin
           capture_io { @task.invoke }
         ensure
-          repository.define_singleton_method(:connection) { original_connection }
+          repository.define_singleton_method(:connection, original_connection)
         end
 
         ids = solr.get(
@@ -50,37 +49,29 @@ class UwmIndexPruneStaleTest < ActiveSupport::TestCase
 
         assert_includes ids, harvested_doc_id
         refute_includes ids, "stale-opendataharvest-record"
-      ensure
-        solr.delete_by_query("*:*")
-        solr.add(original_docs) unless original_docs.empty?
-        solr.commit
       end
     end
   ensure
+    %w[OGM_PATH SCHEMA_VERSION DRY_RUN].each { |name| ENV[name] = original_env[name] }
     @task.reenable
   end
 
   private
 
   def with_test_solr
-    if ENV["SOLR_URL"]
-      existing_solr = RSolr.connect(url: ENV.fetch("SOLR_URL"))
-      begin
-        existing_solr.get("admin/ping")
-        yield existing_solr
-        return
-      rescue RSolr::Error::Http, RSolr::Error::ConnectionRefused, Faraday::ConnectionFailed
-        # Start an isolated Solr instance when the configured test URL is not live.
-      end
-    end
+    previous_modules = ENV["SOLR_MODULES"]
+    ENV["SOLR_MODULES"] = [previous_modules, "analysis-extras"].compact.join(",").split(",").uniq.join(",")
+    options = {managed: true, verbose: true, persist: false, download_dir: "tmp",
+               port: 8986, instance_dir: "tmp/blacklight-core-prune-stale-test"}
+    options[:version] = ENV["SOLR_VERSION"] if ENV["SOLR_VERSION"]
 
-    shared_solr_opts = {managed: true, verbose: true, persist: false, download_dir: "tmp"}
-    SolrWrapper.wrap(
-      shared_solr_opts.merge(port: 8985, instance_dir: "tmp/blacklight-core-prune-stale-test")
-    ) do |solr_wrapper|
+    # This test deletes documents: never reuse the application's configured core.
+    SolrWrapper.wrap(options) do |solr_wrapper|
       solr_wrapper.with_collection(name: "blacklight-core", dir: Rails.root.join("solr", "conf").to_s) do
-        yield RSolr.connect(url: "http://127.0.0.1:8985/solr/blacklight-core")
+        yield RSolr.connect(url: "http://127.0.0.1:8986/solr/blacklight-core")
       end
     end
+  ensure
+    ENV["SOLR_MODULES"] = previous_modules
   end
 end

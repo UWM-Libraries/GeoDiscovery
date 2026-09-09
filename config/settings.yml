@@ -200,6 +200,13 @@ WMS_PARAMS:
 # Settings for leaflet
 LEAFLET:
   MAP:
+  # Shared by GeoBlacklight's Leaflet and OpenLayers viewers.
+  # Without a key, retain the upstream basemap defaults.
+<% if ENV["CARTO_BASEMAP_API_KEY"].present? %>
+  BASEMAPS:
+    positron:
+      url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{retina}.png?key=<%= ERB::Util.url_encode(ENV["CARTO_BASEMAP_API_KEY"]) %>"
+<% end %>
   LAYERS:
     DETECT_RETINA: true
     INDEX:

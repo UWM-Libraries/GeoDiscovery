@@ -60,3 +60,17 @@
 - For indexing or metadata normalization changes, document sample input and expected Solr output in notes or the final summary when possible.
 - When adding configuration, prefer patterns already used in the repository so deployment and local setup remain predictable.
 - Flag any change that may require reindexing, cache clearing, restart, or redeploy.
+
+## GeoBlacklight 5 upgrade planning
+
+- Keep GeoBlacklight 5 migration work separate from 4.x maintenance releases. Use `.codex/upgrade-guide.md` as the current upstream migration reference when it is available, and verify its advice against the installed release before implementing it.
+- Upgrade the existing application in place. Do not rebuild the application from scratch on GeoBlacklight 5; if a rebuild becomes desirable, reassess against GeoBlacklight 6 at that time.
+- While still on GeoBlacklight 4.7, retain and review the boot-time deprecation warnings as the application-specific migration inventory. Do not silence them before the migration is complete.
+- Aardvark metadata and `Settings.FIELDS` mappings carry forward to GeoBlacklight 5. The migration does not require converting metadata records, but its Solr `copyField` changes do require a full reindex.
+- Plan the frontend migration as a coordinated change: Blacklight 8, Bootstrap 5, Propshaft, import maps, and CSS bundling replace the current Blacklight 7, Bootstrap 4, Sprockets, and Vite arrangement. Prefer the import-map path because GeoBlacklight 6 removes Vite support.
+- Treat inherited GeoBlacklight 4 views and JavaScript as candidates for deletion before porting them. Preserve only confirmed AGSL behavior, then reimplement it through GeoBlacklight 5 components and Stimulus APIs. In particular, the old `GeoBlacklight.Viewer` and `GeoBlacklight.Modules` JavaScript APIs do not carry forward.
+- Expect to replace the Blacklight base layout and convert the custom header, search-result, viewer, sidebar, metadata, relationship, and show-tool overrides to components. Relocate intentional layout behavior such as analytics before deleting an inherited layout.
+- Reconcile `config/settings.yml` against the GeoBlacklight 5 template rather than copying the 4.x file forward. Review removed CARTO OneClick and per-viewer settings, changed ArcGIS/download/WMS defaults, required download formats, relationship keys, icon mappings, and new Leaflet options.
+- Replace the Solr schema and configuration from the target GeoBlacklight 5 release, reapply documented AGSL-specific fields and boosts, reload the deployed core/configset, and then fully reindex. Confirm the live Solr URL and deployment topology first.
+- GeoBlacklight 5 replaces `solr_wrapper` with Docker for local Solr. Migrate both the `uwm:server`/CI harness and the isolated stale-pruning test together; keep destructive pruning tests isolated from any shared Solr core.
+- Current 4.7 preparation is intentionally migration-friendly: CARTO uses `LEAFLET.BASEMAPS` instead of custom key injection, the frontend uses upstream initializers, Node 24 satisfies the future toolchain, and CI runs the complete suite with `rails test:all`.
