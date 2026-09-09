@@ -118,8 +118,8 @@ GEM
       rails (>= 6.1, < 9)
       view_component (>= 2.74, < 4)
       zeitwerk
-    bootsnap (1.24.6)
-      msgpack (~> 1.2)
+    bootsnap (1.26.0)
+      msgpack (~> 1.5)
     bootstrap (4.6.2.1)
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 1.16.1, < 2)
@@ -254,7 +254,8 @@ GEM
       rchardet (~> 1.9)
     globalid (1.4.0)
       activesupport (>= 6.1)
-    haml (7.2.2)
+    haml (7.5.1)
+      prism (>= 1.1.0)
       temple (>= 0.8.2)
       thor
       tilt
@@ -391,7 +392,7 @@ GEM
       ast (~> 2.4.1)
       racc
     parslet (2.0.0)
-    passenger (6.1.7)
+    passenger (6.2.0)
       logger (>= 1.7.0)
       rack (>= 1.6.13)
       rackup (>= 1.0.1)
@@ -526,7 +527,7 @@ GEM
       logger
       rack (>= 2.2.4, < 3.3)
       redis-client (>= 0.23.0, < 1)
-    simplecov (1.0.3)
+    simplecov (1.2.0)
     sitemap_generator (7.1.1)
       builder (~> 3.0)
     solr_wrapper (4.4.0)
