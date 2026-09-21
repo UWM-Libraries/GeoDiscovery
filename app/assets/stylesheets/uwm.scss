@@ -1,12 +1,8 @@
 // Local UWM Modules
 @import 'modules/colors';
-@import 'modules/accordions';
 @import 'modules/cards';
 @import 'modules/code';
-@import 'modules/footer';
-@import 'modules/homepage';
 @import 'modules/navbar';
-@import 'modules/scrolltotop';
 @import 'modules/type';
 
 // Button primary
@@ -19,6 +15,12 @@
   background: #ffd14c;
   border-color: #ffd14c;
   text-decoration: none;
+  color: $black;
+}
+
+.leaflet-control.search-control .btn-primary,
+.leaflet-control.search-control .btn-primary:hover,
+.leaflet-control.search-control .btn-primary:focus {
   color: $black;
 }
 
