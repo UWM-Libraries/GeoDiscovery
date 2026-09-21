@@ -32,7 +32,7 @@
 }
 
 .screen-reader-text {
-  @include sr-only;
+  @include visually-hidden;
 }
 
 .form-control {

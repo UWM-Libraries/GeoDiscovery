@@ -66,7 +66,7 @@ class CatalogController < ApplicationController
     config.show.display_type_field = "format"
     config.show.document_component = Geoblacklight::DocumentComponent
     config.show.sidebar_component = Geoblacklight::Document::SidebarComponent
-    config.header_component = Geoblacklight::HeaderComponent
+    config.header_component = UwmHeaderComponent
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display

@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand-md uwm-navbar topbar" aria-label="<%= aria_label %>">
+  <div class="<%= container_classes %>">
+    <%= link_to blacklight_config.logo_link, class: "uwm-brand-mark", aria: { label: "UWM Libraries home" } do %>
+      <%= image_tag "uwm-logomark-white-text-yellow-banner-no-shadow.svg", alt: "", class: "uwm-brand-mark-image" %>
+    <% end %>
+
+    <div class="uwm-app-title">
+      <%= link_to application_name, blacklight_config.logo_link %>
+    </div>
+
+    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#user-util-collapse" aria-controls="user-util-collapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-md-end" id="user-util-collapse">
+      <%= render "shared/user_util_links" %>
+    </div>
+  </div>
+</nav>

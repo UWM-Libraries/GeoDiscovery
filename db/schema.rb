@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_14_143553) do
+ActiveRecord::Schema[7.2].define(version: 2024_05_14_143553) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -80,7 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_14_143553) do
     t.string "to_state", null: false
     t.text "metadata"
     t.integer "sort_key", null: false
-    t.integer "solr_document_sidecar_id", null: false
+    t.bigint "solr_document_sidecar_id", null: false
     t.boolean "most_recent"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false

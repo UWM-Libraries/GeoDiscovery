@@ -1,52 +1,63 @@
 .uwm-navbar {
   background-color: $uwm-gold;
- }
+}
 
-.navbar-dark .navbar-nav .nav-link {
+.uwm-navbar .navbar-nav .nav-link {
   color: $black;
 }
 
-.navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:focus {
-  color: $uwm-bg-gray;
+.uwm-navbar .navbar-nav .nav-link:hover,
+.uwm-navbar .navbar-nav .nav-link:focus {
+  color: $black;
+  text-decoration: underline;
 }
 
 .uwm-app-title a {
   color: $black;
-  font-size: 1.7em;
+  font-size: 1.7rem;
   font-weight: 700;
   margin-left: 1rem;
-}
-
-.uwm-app-title a:hover{
-  color: $black;
   text-decoration: none;
 }
 
-.logo-wrapper {
-  background-color: $black;
-  padding: 0.75rem;
-  border-radius: 50%;
+.uwm-app-title a:hover,
+.uwm-app-title a:focus {
+  color: $black;
+  text-decoration: underline;
 }
 
-.navbar-brand {
-  flex: 0 0 55px;
-  background-size: 55px 55px;
-  margin-top: 0;
-  margin-right:1rem;
-  background: image-url("uwm-logomark-white-text-yellow-banner-no-shadow.svg") no-repeat top left;
-  overflow: hidden;
-  padding-left: 0;
-  padding-right: 0;
-  text-indent: 100%;
-  height: 44px;
-  width: 48px;
-  display: inline-block;
-  padding-top: 0.3125rem;
-  padding-bottom: 0.3125rem;
-  margin-right: 0;
-  font-size: 1.25rem;
-  line-height: inherit;
-  white-space: nowrap;
-  position: relative;
-  top: 10px;
+.uwm-brand-mark {
+  align-items: center;
+  background-color: $black;
+  border-radius: 50%;
+  display: inline-flex;
+  flex: 0 0 4.25rem;
+  height: 4.25rem;
+  justify-content: center;
+  padding: 0.65rem;
+  width: 4.25rem;
+}
+
+.uwm-brand-mark-image {
+  display: block;
+  height: auto;
+  max-height: 3rem;
+  width: 3rem;
+}
+
+.uwm-navbar .navbar-toggler {
+  border-color: $black;
+}
+
+@media (max-width: 575.98px) {
+  .uwm-app-title a {
+    font-size: 1.25rem;
+    margin-left: 0.75rem;
+  }
+
+  .uwm-brand-mark {
+    flex-basis: 3.5rem;
+    height: 3.5rem;
+    width: 3.5rem;
+  }
 }
