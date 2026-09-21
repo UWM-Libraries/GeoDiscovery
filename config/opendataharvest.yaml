@@ -308,14 +308,53 @@ DCAT_Sites:
       - UUID: "bb9ef9ce0b43412e8ea6a15782763c51" # City Garbage Routes app
       - UUID: "34967a0ee21d4f3a8b390889698d860e" # Public Salt/Sand Barrel Locations app
 
-  # Disabled because the available Hub catalogs do not expose the city's feature services.
-  # SunPrairie_OpenData:
-  #   CreatedBy: "City of Sun Prairie"
-  #   SiteURL: "https://maps-sunprairie.hub.arcgis.com/api/feed/dcat-us/1.1.json"
-  #   SiteName: "SunPrairie"
-  #   DefaultBbox: "Sun Prairie"
-  #   Spatial: ["Sun Prairie", "Wisconsin", "United States"]
-  #   SkipList: ""
+  Janesville_OpenData:
+    CreatedBy: "City of Janesville"
+    SiteURL: "https://janesville-open-data-hub-janesville.hub.arcgis.com/api/feed/dcat-us/1.1.json"
+    SiteName: "Janesville"
+    Spatial: ["Janesville", "Wisconsin", "United States"]
+    DefaultBbox: "Rock"
+    SkipList: ""
+
+  Stoughton_OpenData:
+    CreatedBy: "City of Stoughton"
+    SiteURL: "https://city-of-stoughton-stoughtonwi.hub.arcgis.com/api/feed/dcat-us/1.1.json"
+    SiteName: "Stoughton"
+    Spatial: ["Stoughton", "Wisconsin", "United States"]
+    DefaultBbox: "Dane"
+    AppList:
+      - UUID: "bc927887d62b4755aab2e922b5eb6518" # Jurisdictional Boundaries Map
+      - UUID: "dd86f67798404ebd87aebf510940384b" # CSM/Plat Viewer
+      - UUID: "ac5e57122bf44de78e65e5c2a96a42ee" # Natural Resources Map
+      - UUID: "7d72bba056b6470d9ca9debeb18251ba" # Historical Districts Map
+      - UUID: "d01a0f97936444569757f0bbde26e8f2" # Future Land Use Public Map
+      - UUID: "95e1ace26efc43de818a5d59181e7d78" # Voting Ward Map
+      - UUID: "619ea6b035c94519ba840b8db8ca577b" # Historic Growth Areas Map
+    MapList:
+      - UUID: "f5c6f84b15a6429db5768232aea685ad" # Zoning Map
+      - UUID: "a6262a5233a24c51ac107c25d458e447" # 2024 Hybrid Aerial
+      - UUID: "f7ceb435adcb43fc8eb0e56527cf45af" # Jurisdictional Boundaries Map
+      - UUID: "28bb7b8a4eba4bc682e2bdfabf166736" # Stoughton CSMs
+      - UUID: "1ffbae18712243ea910834ca2e5bb034" # Dane County Municipal Boundaries
+      - UUID: "bf2cc3ae8f9744d39021177ae18e527b" # 2022 Hybrid Aerial
+      - UUID: "d43eadf3f26f46939b9e367dffcd422f" # 2020 Hybrid Aerial
+      - UUID: "3edae251a0b54763808050715a89c309" # 2014 Hybrid Aerial
+      - UUID: "f44873c9968a422fa57b7d94dca53e89" # 2017 Hybrid Aerial
+      - UUID: "c186a65b190e41f3bc8dccbd43a412d0" # Map 1 Jurisdictional Boundaries PDF
+      - UUID: "0df2f0d9ff6d4ff2990f43401ae378e5" # Map 2 Natural Resources Base PDF
+      - UUID: "6b11030f8b5441a5920e4172167c6a9c" # Map 3 Existing Land Use PDF
+      - UUID: "2ca29e739a0144fc950f11c265e3fb31" # Map 4 Historic Growth Areas PDF
+      - UUID: "f1327a7a6e6b459f99904e2eb4fc7aad" # Map 5 Peripheral Growth Analysis PDF
+      - UUID: "170903032459434ea4f84f656bdc36f2" # Map 6c Future Land Use PDF
+      - UUID: "24b30a9059b949caba012928cc9b20db" # Map 6d Infill Analysis PDF
+      - UUID: "7faa9313d7474f47b002d3b37225f365" # Map 7 Community Character PDF
+      - UUID: "22867af6f62b4cf59a4bfef7235b64bf" # Map 8 Existing Transportation PDF
+      - UUID: "9c3d1a4c0a4e4af0b649852392140edd" # Map 9 Planned Transportation PDF
+    SkipList:
+      - UUID: "61d72b5aa2264855b2b1665fcad62e9a" # City data portal Hub site
+      - UUID: "48edf0c1b43d47d6a55010526cdec827" # Duplicate CSM and Subdivisions service
+      - UUID: "2513c5dd7ddb4ec9ad6ff79e6d5b0214" # Conditional Use Permit Inventory
+      - UUID: "3799871df27a404cb8b7bd1b1337c968" # Natural Resources Story Map
 
 ############################
 # Regional Planning Comm's #
@@ -919,6 +958,123 @@ DCAT_Sites:
 ######################
 #    Miscellaneous   #
 ######################
+  MMSD_OpenData:
+    CreatedBy: "Milwaukee Metropolitan Sewerage District"
+    SiteURL: "https://share-open-data-mmsdgis.hub.arcgis.com/api/feed/dcat-us/1.1.json"
+    SiteName: "MMSD"
+    Spatial: ["Milwaukee Metropolitan Sewerage District", "Wisconsin", "United States"]
+    DefaultBbox: "MilwaukeeCounty"
+    MapList:
+      - UUID: "1da1fe969f9640b09f47a224d37a6963" # MMSD Green Infrastructure
+    SkipList:
+      - UUID: "1ba18b5c3ccf4111b4322da70fd8a184" # MMSD Open Data Portal Hub site
+      - UUID: "9840f87d31d845ddb34832543330b1a0" # Share Open Data Hub site
+
+  ChicagoWildernessAlliance_OpenData:
+    CreatedBy: "Chicago Wilderness Alliance"
+    SiteURL: "https://hub.chicagowilderness.org/api/feed/dcat-us/1.1.json"
+    SiteName: "ChicagoWildernessAlliance"
+    Spatial: ["Chicago Wilderness Region", "United States"]
+    DefaultBbox: "Chicago Wilderness Alliance"
+    AppList:
+      - UUID: "d13b6ef24ff84aa481b34a840371b383" # Illinois Coastal Stopover Tool
+      - UUID: "8761f0b9c0d44095a3cbeb1e66bb7317" # Powderhorn Lake Habitat Restoration
+      - UUID: "293c67b5b148451fb9e075127e3b8845" # gROWing Chicago Prioritization Dashboard
+    MapList:
+      - UUID: "e3e9329416a544ab90aeb2cc4de867c1" # High Heat Areas
+      - UUID: "e6c2c37f703748b193d2407294b72659" # Flood Risk Areas
+      - UUID: "5124d2414c3649439696a3de0e285193" # Flood Risk Areas
+      - UUID: "b9e5b493010e47e795c791bf9989bd90" # Southeast Cook County Land Acquisition Plan
+      - UUID: "c5314850781442bfa054db762ed7e257" # Southeast Cook County Land Acquisition Plan
+      - UUID: "d5dd955ac578462d9877ca87004f6c67" # Air Toxic Respiratory Hazard Index
+      - UUID: "8b770384c7f8459fa57fb5ecea777449" # Prairies Climate Adaptation Resource
+      - UUID: "a3497a680c8347feb532f7443d900946" # GIV 2.3 Flood Control
+      - UUID: "403d5de4dd19436c868795d2770b0d7f" # GIV 2.3 Carbon Sequestration
+      - UUID: "d441fb4c0c664ba09b3f97a073d8ca22" # GIV 2.2 Forests and Protected Lands
+      - UUID: "47bdee744a714178b0abd333ec643954" # GIV 2.2 Wetlands and Protected Lands
+      - UUID: "bc4d51ad3dd245329e32337fd2276122" # GIV Prairies and Protected Lands
+      - UUID: "fcf8e15cbcb7487d8e0b27e0e92e1abd" # GIV 2.2 Freshwater Systems
+      - UUID: "7652d10e1f8741b98091f717837a548a" # GIV 2.2 Ecological Network
+      - UUID: "93b7d0578da54daa9561abfd422e326a" # GIV 2.2 Composite
+      - UUID: "d1e43546ecad4c90ae36123d1a519683" # High Heat Areas
+      - UUID: "53b1bff527d64103b8364ad4a4b0b8e1" # Air Toxic Respiratory Hazard Index
+      - UUID: "017a5176c37f47de9e933632c9fd32ef" # Prairies Climate Adaptation Worksheet
+      - UUID: "b1ed8bc230e4437ba547e7530d2f3809" # Prairies Climate Adaptation Resource
+      - UUID: "115d340ea892457e8c637d10eb0713d6" # Calumet Conservation Action Planning
+      - UUID: "503a1c2c13774ab6b9fe5b72dfa07c7c" # Biodiversity in Focus
+      - UUID: "30e958b18bc547279891056313d15e83" # Southern Lake Michigan Coastal Landscape
+      - UUID: "fa26472f46364a6ba157f0ee185de244" # Dot-density Race Map
+      - UUID: "0ec2bc7e69cb4f8f9254d7ed561d3a52" # Cropland Data Layer Map
+      - UUID: "42c1bbba886c493f894ac5f0bf9e41fc" # McHenry County Agricultural Conversion
+      - UUID: "2d07d3e8d62149609fb625c5d14cdee3" # Kane County Agricultural Conversion
+      - UUID: "8b745c573d1d46d39d56a08bcac041d3" # Agricultural Land Conversion
+      - UUID: "c5b26d4ad21d4c51bbcda9a33b6e8f87" # GIV 2.3 Native Flora and Fauna
+      - UUID: "0a44287c8f6d4ce681610746e19d9fd7" # GIV 2.3 Water Purification
+      - UUID: "bb1fa40b7cc34e4582c238e909358b90" # GIV 2.3 Groundwater Recharge
+      - UUID: "43d509d7821c47e8815a46af9e129a86" # GIV 2.3 Recreation and Tourism
+      - UUID: "89d013d5931f4bb6897458c3f6f048ff" # GIV 2.3 Ecosystem Services
+      - UUID: "94497632076640a99bec58b46183f811" # Percent Developed / Imperviousness
+    SkipList:
+      - UUID: "d07ce7081fcb41faba93e3295c59d082" # Healthy Water Hub page
+      - UUID: "1d161ad7746249c68a9f5494109096bc" # Climate Action Hub page
+      - UUID: "e095f61aa1694352bdf38df1e652b816" # Accessing Nature Hub page
+      - UUID: "c34b854bd92244c39d88e595d821b03e" # Protecting Landscapes Hub page
+      - UUID: "4c2d41d7c32640fdaa75087c9b0d7b27" # Green Infrastructure Hub page
+      - UUID: "c2aa16ae30404b13924769dbe2fc6939" # Healthy Lands Hub page
+      - UUID: "ddb54e39297842c099618f9a1f3ba452" # AGL monitoring Hub site
+      - UUID: "1df6c01ac74e4847adb20e5618886085" # Test page
+      - UUID: "1fad935f3b9b4523b9b761b639031657" # Duplicate content page
+      - UUID: "02f6a2a4504e42af8905de61732998bf" # Duplicate content page
+      - UUID: "e5f2a282a1314c11a3704fdcdc22c5d7" # Duplicate content page
+      - UUID: "038311f66a864f35bee13187e1e9df27" # Duplicate content page
+      - UUID: "29c01c2a43aa43d7a7ede03887da2079" # Duplicate content page
+      - UUID: "3a79848a6a86419d8cba683fccc2413c" # Duplicate content page
+      - UUID: "7947e288283e41f09cb7dbf3c85ca311" # Duplicate content page
+      - UUID: "92e64f0a81a04ee1bb14c91896c67e45" # Survey page
+      - UUID: "7b33082c1cf04689b6f449f470c97ddc" # Hub page without downloads
+      - UUID: "43239254452a4599b3bf5049fb3e253f" # Prairies climate-adaptation poster
+      - UUID: "6cf12215960943e39c500bb0867fb0cb" # Greenhouse-gas inventory report
+      - UUID: "9532317ffdcc4f2db876978d22f5bf13" # State of the Birds report
+      - UUID: "630658d5c71d4cb4838ed391adda580b" # Nutrient-loss strategy report
+
+  EastRiverCollaborative_OpenData:
+    CreatedBy: "East River Collaborative"
+    SiteURL: "https://east-river-collaborative.tnc.org/api/feed/dcat-us/1.1.json"
+    SiteName: "EastRiverCollaborative"
+    Spatial: ["East River Watershed", "Wisconsin", "United States"]
+    DefaultBbox: "Brown"
+    MapList:
+      - UUID: "8def9b4423c64910a7f67c2de6a1c9cb" # Interactive Map
+      - UUID: "fd01ed67e28d438a8fff84a636eab938" # Flood Vulnerability Index
+      - UUID: "3c5683870717486081bac07d2ab9dce8" # Brown County Interactive Map
+      - UUID: "854c6300043243eb8626d8cfd1401770" # Flood Study Maps; embeds eec3228caf414d5ab32a47447a30efc5
+      - UUID: "e48d8697bea24e2bb6f5de4bebd697eb" # Maps
+    SkipList:
+      - UUID: "97cf092cc598467fb7541a3bdd82e872" # Survey
+      - UUID: "b9cc993d94644680adfdb7fff791a684" # Hub site
+      - UUID: "1c57504db1b341129be959e7e87afad8" # About page
+      - UUID: "8e5b1f9147c04b5d8ab99d67b9a87dbb" # Plans and reports page
+      - UUID: "437acd624a694520b93c7784d3cea92c" # Plans and reports page
+      - UUID: "2d04d8fb31f44b88b0179ca4b92d59ef" # Contact page
+      - UUID: "98541c298fa24de980ec557abd2988ec" # About page
+      - UUID: "024dc7d9cfb146df8aac8c6d683651ca" # Newsletter archive
+      - UUID: "157a3df1d14a4838a2694ca53f1da4bb" # News page
+      - UUID: "ebca297a926249f2ac02e7fe48272d4a" # Staff profile
+      - UUID: "7713283e1e2b42ef9df283b9a01e5af5" # Events page
+      - UUID: "ca055818cc034c608abbbdaf2ff4a92a" # Resources page
+      - UUID: "742df10ab8c54d2fbf138cfe2e18a5e6" # Resources page
+      - UUID: "1d5b53ba1e114629984bd13c41e9f327" # Resources page
+      - UUID: "f934c4f443874306b21cb4822b3c8a59" # News story
+      - UUID: "852237097be647b2bec9d0a7df5c8c00" # FAQ page
+      - UUID: "b23f9bd08c2448229832871a16484698" # Flooding report PDF
+      - UUID: "111f3b99b2144c358ad403e711320af1" # Meeting agenda PDF
+      - UUID: "4dcceb0e15f64e22850a44788dd96a68" # Floodplain study PDF
+      - UUID: "e4e7d0c0323b42aab9f3a89b24ecec2b" # Watershed plan PDF
+      - UUID: "0aebfe7110cd4e22a7bd9637b1ebe97b" # Habitat conservation plan PDF
+      - UUID: "f82e96213e8a4afc938b69dd8e88c3bf" # Green infrastructure guide PDF
+      - UUID: "e31b489991af4afb9372daaaee7b2163" # Economic assessment PDF
+      - UUID: "91cef1c71e424a3c9ce6a3f1fc1560db" # Resilience framework PDF
+
   DataYouCanUse_OpenData:
     CreatedBy: "Data You Can Use"
     SiteURL: "https://getdata-dycu.hub.arcgis.com/api/feed/dcat-us/1.1.json"
