@@ -3,13 +3,16 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.2.1"
+ruby "3.4.10"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.3"
 
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem "sprockets-rails"
+# The modern Rails asset pipeline
+gem "propshaft"
+
+# Compile Bootstrap and application CSS
+gem "cssbundling-rails"
 
 # Use sqlite3 as the dev and test environment database
 gem "sqlite3", "~> 1.7"
@@ -53,10 +56,6 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-# Keep the Ruby and JS Vite plugins on a compatible line.
-gem "vite_rails", "~> 3.0.20"
-gem "vite_ruby", "~> 3.9.3"
-
 group :production do
   gem "mysql2"
   gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
@@ -94,27 +93,14 @@ group :test do
   gem "webdrivers"
   gem "minitest", "< 6"
 end
-gem "blacklight", "~> 7.42"
 
-# BL Advanced Search / Pinned to EWL bug-fix
-# See: https://github.com/projectblacklight/blacklight_advanced_search/issues/127
-gem "blacklight_advanced_search", git: "https://github.com/ewlarson/blacklight_advanced_search.git",
-  branch: "bl7-fix-gentle-hands"
-gem "geoblacklight", "~> 4.7.0"
-gem "geoblacklight_sidecar_images", "~> 1.1"
+gem "blacklight_advanced_search", "~> 8.0"
+gem "geoblacklight", "~> 5.3"
 gem "mini_magick", "~> 4.0"
-gem "sprockets", "~> 4.2"
-
-group :development, :test do
-  gem "solr_wrapper", ">= 0.3"
-end
-gem "bootstrap", "~> 4.0"
+gem "bootstrap", "~> 5.3"
 gem "devise"
 gem "devise-guests", "~> 0.8"
-gem "jquery-rails"
 gem "rsolr", ">= 1.0", "< 3"
-gem "sassc-rails", "~> 2.1"
-gem "twitter-typeahead-rails", "0.11.1"
 
 # ENV
 gem "dotenv-rails", "~> 3.1"
@@ -142,10 +128,6 @@ gem "exception_notification", "~> 5.0"
 
 gem "base64", "~> 0.2.0"
 
-# Blacklight::Allmaps
-# Temporary fork to validate the purge_orphans fix until it lands upstream.
-gem "blacklight_allmaps", git: "https://github.com/srappel/blacklight-allmaps.git",
-  branch: "bugfix/purge_docid"
 gem "capistrano-yarn"
 
 # Rackup
