@@ -24,21 +24,6 @@ class SolrDocument
   # and Blacklight::Document::SemanticFields#to_semantic_values
   # Recommendation: Use field names from Dublin Core
   use_extension(Blacklight::Document::DublinCore)
-  def sidecar
-    # Find or create, and set version
-    sidecar = SolrDocumentSidecar.where(
-      document_id: id,
-      document_type: self.class.to_s
-    ).first_or_create do |sc|
-      sc.version = _source["_version_"]
-    end
-
-    sidecar.version = _source["_version_"]
-    sidecar.save
-
-    sidecar
-  end
-
   # Show the download button regardless of restriction
   def public?
     true
@@ -66,17 +51,4 @@ class SolrDocument
     title.match?(NON_LATIN_LEADING_TITLE)
   end
 
-  def sidecar_allmaps
-    # Find or create, and set version
-    sidecar = Blacklight::Allmaps::Sidecar.where(
-      solr_document_id: id
-    ).first_or_create do |sc|
-      sc.solr_version = _source["_version_"]
-    end
-
-    sidecar.solr_version = _source["_version_"]
-    sidecar.save
-
-    sidecar
-  end
 end

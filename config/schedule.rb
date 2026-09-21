@@ -20,15 +20,9 @@ end
 
 # Weekly maintenance jobs
 
-# Harvest Allmaps IIIF annotation data.
-every :sunday, at: "3:00am", roles: [:app] do
-  rake "blacklight_allmaps:sidecars:harvest:allmaps"
-end
-
-# Refresh the georeferenced facet after the Sunday Allmaps harvest window.
-every :sunday, at: "7:00am", roles: [:app] do
-  rake "blacklight_allmaps:index:georeferenced_facet"
-end
+# Allmaps jobs are disabled while Blacklight Allmaps lacks GeoBlacklight 5 /
+# Blacklight 8 compatibility. Restore the harvest, facet refresh, and orphan
+# purge schedules when that integration is reintroduced.
 
 # Updates OpenGeoMetadata, harvests DCAT, converts legacy records, normalizes harvested Aardvark,
 # and re-indexes into Solr.
@@ -43,17 +37,6 @@ end
 
 # Monthly maintenance jobs
 
-# Retry thumbnail harvesting monthly at 1:00 a.m. on the first day of the month.
-every "0 1 1 * *", roles: [:app] do
-  rake "gblsci:images:harvest_retry"
-end
-
-# Purge thumbnail orphans monthly on the second Monday at 4:00AM.
-every "0 4 8-14 * 1", roles: [:app] do
-  rake "gblsci:images:harvest_purge_orphans"
-end
-
-# Purge Allmaps sidecar orphans monthly on the third Tuesday at 4:00AM.
-every "0 4 15-21 * 2", roles: [:app] do
-  rake "blacklight_allmaps:sidecars:purge_orphans"
-end
+# Thumbnail sidecar jobs are disabled while geoblacklight_sidecar_images lacks
+# GeoBlacklight 5 compatibility. Restore retry and orphan-purge schedules when
+# the integration is reintroduced.

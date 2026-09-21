@@ -7,9 +7,8 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_tag '$.fx.off = true;' if Rails.env.test? %>
     <%= javascript_importmap_tags %>
-</head>
+  </head>
 
   <body>
     <%= yield %>

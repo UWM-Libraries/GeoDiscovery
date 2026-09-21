@@ -51,5 +51,4 @@ Rails.application.routes.draw do
     concerns :gbl_downloadable
   end
   resources :download, only: [:show]
-  mount Blacklight::Allmaps::Engine => "/"
 end
