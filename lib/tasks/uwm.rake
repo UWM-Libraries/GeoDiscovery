@@ -174,6 +174,11 @@ namespace :uwm do
       edu.cornell
       edu.princeton.arks
       edu.stanford.purl
+      org.humdata
+      gov.nasa.gibs
+      gov.usgs.htmc
+      gov.usgs.tnm
+      geobtaa
     ]
 
     pull_repos.each do |repo|
