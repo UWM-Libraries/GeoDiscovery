@@ -112,7 +112,7 @@ gem "bootstrap", "~> 4.0"
 gem "devise"
 gem "devise-guests", "~> 0.8"
 gem "jquery-rails"
-gem "rsolr", ">= 1.0", "< 3"
+gem "rsolr", ">= 1.0", "< 4"
 gem "sassc-rails", "~> 2.1"
 gem "twitter-typeahead-rails", "0.11.1"
 
