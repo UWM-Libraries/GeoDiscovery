@@ -124,7 +124,7 @@ gem "standardrb"
 
 # Cron Tasks
 gem "sitemap_generator", "~> 7.1"
-gem "whenever", "~> 1.1.3"
+gem "whenever", "~> 1.1.4"
 
 # Admin View
 gem "awesome_print"
